@@ -75,5 +75,7 @@ class LoginFragment : Fragment() {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
+
+        /// aaaa
     }
 }
