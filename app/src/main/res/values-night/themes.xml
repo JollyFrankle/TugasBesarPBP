@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TugasBesarPBP" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.TugasBesarPBP" parent="Theme.Material3.Dark">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/bs_blue_700</item>
         <item name="colorPrimaryVariant">@color/bs_blue_700</item>

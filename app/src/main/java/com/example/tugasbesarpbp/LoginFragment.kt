@@ -27,7 +27,7 @@ class LoginFragment : Fragment() {
 
     // array of accepted username and password
     private val accepted = arrayOf(
-        "admin" to "0932",
+        "admin" to "admin",
         "user" to "user"
     )
 

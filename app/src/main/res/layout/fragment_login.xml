@@ -51,7 +51,7 @@
                     android:layout_marginEnd="16dp"
                     android:fontFamily="sans-serif"
                     android:text="JogjaKost"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     android:textColor="@color/color_secondary"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -62,9 +62,9 @@
                     android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilLoginUsername"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Username"
@@ -93,7 +93,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilLoginPassword"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
@@ -118,9 +118,9 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +129,7 @@
 
                 <Button
                     android:id="@+id/btnLogin"
-                    style="@style/Widget.MaterialComponents.Button"
+                    style="@style/Widget.Material3.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -139,7 +139,7 @@
 
             <Button
                 android:id="@+id/btnLoginMoveToRegis"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

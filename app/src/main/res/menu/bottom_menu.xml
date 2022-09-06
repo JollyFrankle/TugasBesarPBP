@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Home"
+        android:icon="@drawable/ic_home_24"
+        android:id="@+id/btnMenuBtmHome"/>
+    <item
+        android:title="Search"
+        android:icon="@drawable/ic_search_24"
+        android:id="@+id/btnMenuBtmSearch"/>
+    <item
+        android:title="Notifications"
+        android:icon="@drawable/ic_notifications_24"
+        android:id="@+id/btnMenuBtmNotification"/>
+</menu>
