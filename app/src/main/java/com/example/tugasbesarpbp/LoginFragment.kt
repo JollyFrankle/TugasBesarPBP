@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputLayout
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
-    // aaa
+    // aaa  www
     private lateinit var btnLogin: Button
     private lateinit var tilUsername: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
@@ -76,5 +76,7 @@ class LoginFragment : Fragment() {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
+
+        /// aaaa
     }
 }
