@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
+    // aaa
     private lateinit var btnLogin: Button
     private lateinit var tilUsername: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
@@ -48,8 +49,9 @@ class LoginFragment : Fragment() {
     // --> https://stackoverflow.com/questions/51672231/kotlin-button-onclicklistener-event-inside-a-fragment && copilot
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         btnLogin = view.findViewById(R.id.btnLogin)
-        tilUsername = view.findViewById(R.id.tilLoginEmail)
+        tilUsername = view.findViewById(R.id.tilLoginUsername)
         tilPassword = view.findViewById(R.id.tilLoginPassword)
 
         btnLogin.setOnClickListener {
@@ -69,8 +71,8 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // txtRegisChangeFragment on click
-        view.findViewById<TextView>(R.id.txtLoginChangeFragment).setOnClickListener {
+        // btnLoginMoveToRegis on click
+        view.findViewById<Button>(R.id.btnLoginMoveToRegis).setOnClickListener {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }

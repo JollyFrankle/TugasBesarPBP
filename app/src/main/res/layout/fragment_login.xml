@@ -66,11 +66,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilLoginEmail"
+                    android:id="@+id/tilLoginUsername"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Alamat Email"
+                    android:hint="Username"
                     app:boxBackgroundColor="@color/bs_white"
                     app:boxStrokeColor="@color/color_primary"
                     app:hintTextColor="@color/color_primary"
@@ -94,10 +94,9 @@
                     android:hint="Password"
                     app:boxBackgroundColor="@color/bs_white"
                     app:boxStrokeColor="@color/color_primary"
-                    app:hintTextColor="@color/color_primary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tilLoginEmail"
+                    app:layout_constraintTop_toBottomOf="@+id/tilLoginUsername"
                     app:startIconDrawable="@drawable/ic_lock_24">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -117,7 +116,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:clipToPadding="false"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
@@ -125,24 +124,23 @@
             <Button
                 android:id="@+id/btnLogin"
                 style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Log in" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtLoginChangeFragment"
+        <Button
+            android:id="@+id/btnLoginMoveToRegis"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:layout_weight="1"
-            android:text="Belum punya akun? Register."
+            android:text="Register"
             android:textColor="@color/color_on_secondary"
-            android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
