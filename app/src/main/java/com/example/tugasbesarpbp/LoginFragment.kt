@@ -48,8 +48,9 @@ class LoginFragment : Fragment() {
     // --> https://stackoverflow.com/questions/51672231/kotlin-button-onclicklistener-event-inside-a-fragment && copilot
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         btnLogin = view.findViewById(R.id.btnLogin)
-        tilUsername = view.findViewById(R.id.tilLoginEmail)
+        tilUsername = view.findViewById(R.id.tilLoginUsername)
         tilPassword = view.findViewById(R.id.tilLoginPassword)
 
         btnLogin.setOnClickListener {
