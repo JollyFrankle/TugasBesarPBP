@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,5 +28,4 @@
         app:menu="@menu/top_right_menu"
         tools:layout_editor_absoluteY="676dp" />
 
-    // tampilan bottom Navi
 </androidx.constraintlayout.widget.ConstraintLayout>
