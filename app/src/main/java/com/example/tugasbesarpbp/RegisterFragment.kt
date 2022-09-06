@@ -87,8 +87,15 @@ class RegisterFragment : Fragment() {
             if (!error) {
                 Snackbar.make(view, "Register berhasil", Snackbar.LENGTH_SHORT).show()
 
-                // go to home activity
-                (activity as MainActivity).goToHome()
+                val loginFragment: Fragment = LoginFragment()
+                // add username and password to bundle
+                val bundle = Bundle()
+                bundle.putString("username", name)
+                bundle.putString("password", password)
+                loginFragment.arguments = bundle
+
+                // change fragment to login fragment
+                (activity as MainActivity).changeFragment(loginFragment)
             } else {
                 Snackbar.make(view, "Register gagal. Cek ulang bagian yang ditandai.", Snackbar.LENGTH_LONG).show()
             }
