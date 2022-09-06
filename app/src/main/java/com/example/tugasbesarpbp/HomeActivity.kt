@@ -11,7 +11,10 @@ class HomeActivity : AppCompatActivity() {
         // set title bar
         val actionbar = supportActionBar
         //set actionbar title
-        actionbar!!.title = "Home - JogjaKost"
+        actionbar!!.title = "Home - JogjaKost";
+
+        // hide the action bar
+        actionbar.hide()
 
     }
 }

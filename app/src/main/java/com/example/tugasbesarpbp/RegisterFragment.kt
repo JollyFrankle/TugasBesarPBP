@@ -40,7 +40,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnRegister = view.findViewById(R.id.btnRegister)
-        tilName = view.findViewById(R.id.tilRegisName)
+        tilName = view.findViewById(R.id.tilRegisUsername)
         tilEmail = view.findViewById(R.id.tilRegisEmail)
         tilPassword = view.findViewById(R.id.tilRegisPassword)
         tilPasswordConfirm = view.findViewById(R.id.tilRegisPasswordConfirm)
@@ -63,8 +63,8 @@ class RegisterFragment : Fragment() {
                 tilPasswordConfirm.error = null
             }
 
-            // check if email format is valid
-            if (!email.contains("@")) {
+            // check if email format is valid using regex
+            if (!email.matches(Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"))) {
                 tilEmail.error = "Email tidak valid"
                 error = true
             } else {
