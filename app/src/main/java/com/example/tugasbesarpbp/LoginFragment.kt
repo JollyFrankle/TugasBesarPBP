@@ -70,8 +70,8 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // txtRegisChangeFragment on click
-        view.findViewById<TextView>(R.id.txtLoginChangeFragment).setOnClickListener {
+        // btnLoginMoveToRegis on click
+        view.findViewById<Button>(R.id.btnLoginMoveToRegis).setOnClickListener {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
