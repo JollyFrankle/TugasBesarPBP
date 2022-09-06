@@ -12,8 +12,10 @@
         <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/fragment_gallery.xml" value="0.22826086956521738" />
         <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/nav_header_bottom_navigation.xml" value="0.22826086956521738" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/activity_main.xml" value="0.5544554455445545" />
+        <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/fragment_list_item.xml" value="0.33" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/fragment_login.xml" value="0.33177083333333335" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/fragment_register.xml" value="0.33" />
+        <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/rv_item_kost.xml" value="0.4959785522788204" />
       </map>
     </option>
   </component>
