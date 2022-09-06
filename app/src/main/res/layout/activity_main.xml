@@ -7,15 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
-        </FrameLayout>
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -29,5 +29,5 @@
         app:menu="@menu/top_right_menu"
         tools:layout_editor_absoluteY="676dp" />
 
-    // tampilan bottom Nav
+    // tampilan bottom Navi
 </androidx.constraintlayout.widget.ConstraintLayout>

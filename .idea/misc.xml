@@ -3,22 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/drawable/ic_home_24.xml" value="0.2595" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/activity_home.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/fragment_list_item.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/fragment_login.xml" value="0.17255434782608695" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/fragment_register.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/rv_item_kost.xml" value="0.19895833333333332" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25416666666666665" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/menu/top_right_menu.xml" value="0.1" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/activity_home.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/fragment_list_item.xml" value="0.176" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/fragment_login.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/fragment_register.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/layout/rv_item_kost.xml" value="0.22826086956521738" />
-        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/menu/top_right_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/drawable/ic_search_24.xml" value="0.2595" />
+        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP-master/app/src/main/res/menu/top_right_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Kuliah online/SMSTR 5/Pemrograman Berbasis Platform/Android Project/TugasBesarPBP/app/src/main/res/drawable/ic_home_24.xml" value="0.2595" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/activity_main.xml" value="0.5544554455445545" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/fragment_list_item.xml" value="0.33" />
         <entry key="..\:/PBP/TugasBesarPBP/app/src/main/res/layout/fragment_login.xml" value="0.33177083333333335" />
