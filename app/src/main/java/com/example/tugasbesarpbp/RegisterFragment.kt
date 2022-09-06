@@ -54,7 +54,11 @@ class RegisterFragment : Fragment() {
             var error = false
 
             // check if password and confirm password is same
-            if (password != passwordConfirm) {
+            // check if password is less than 8 characters
+            if (password.length < 8) {
+                tilPassword.error = "Password must be at least 8 characters"
+                error = true
+            } else if (password != passwordConfirm) {
                 tilPassword.error = "Password tidak sama"
                 tilPasswordConfirm.error = "Password tidak sama"
                 error = true
@@ -90,10 +94,9 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        // txtRegisChangeFragment on click
-        view.findViewById<TextView>(R.id.txtRegisChangeFragment).setOnClickListener {
-            val fragment = LoginFragment()
-            (activity as MainActivity).changeFragment(fragment)
+        // btnRegisMoveToLogin on click
+        view.findViewById<TextView>(R.id.btnRegisMoveToLogin).setOnClickListener {
+            (activity as MainActivity).changeFragment(LoginFragment())
         }
     }
 }
