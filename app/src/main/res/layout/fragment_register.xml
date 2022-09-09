@@ -112,15 +112,16 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilRegisTanggalLahir"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:enabled="false"
                         android:hint="Tanggal Lahir"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btnPickDate"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tilRegisEmail"
-                        app:startIconDrawable="@drawable/ic_date_24"
-                        android:enabled="false">
+                        app:startIconDrawable="@drawable/ic_date_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tietRegisTanggalLahir"
@@ -131,12 +132,18 @@
 
                     <Button
                         android:id="@+id/btnPickDate"
-                        android:text="PICK A DATE"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="2dp"
+                        android:width="49dp"
+                        android:drawableEnd="@drawable/ic_calendar_24"
+                        android:minWidth="32dp"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="12dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tilRegisTanggalLahir"></Button>
+                        app:layout_constraintTop_toTopOf="@+id/tilRegisTanggalLahir"></Button>
 
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -148,7 +155,7 @@
                         android:hint="Nomor Telepon"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btnPickDate"
+                        app:layout_constraintTop_toBottomOf="@+id/tilRegisTanggalLahir"
                         app:startIconDrawable="@drawable/ic_baseline_local_phone_24">
 
                         <com.google.android.material.textfield.TextInputEditText

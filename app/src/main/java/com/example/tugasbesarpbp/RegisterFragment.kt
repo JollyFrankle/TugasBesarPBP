@@ -59,7 +59,6 @@ class RegisterFragment : Fragment() {
         btnPickDateRegis = view.findViewById(R.id.btnPickDate)
 
         btnPickDateRegis.setOnClickListener(View.OnClickListener {
-            Log.d("AAA", "hererererereererere")
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -123,7 +122,7 @@ class RegisterFragment : Fragment() {
             if(nomorTelepon.length == 12){
                 tilNomorTelepon.error = null
             } else{
-                tilNomorTelepon.error = "Nomor telepon harus 16 digit, digit = " + nomorTelepon.length
+                tilNomorTelepon.error = "Nomor telepon harus 12 digit"
                 error = true
             }
 

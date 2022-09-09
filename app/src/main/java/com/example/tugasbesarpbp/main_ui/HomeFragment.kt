@@ -26,6 +26,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // set actionbar title
-        (activity as HomeActivity).setActionBarTitle("Veronica")
+        (activity as HomeActivity).setActionBarTitle("Application Home")
     }
 }

@@ -37,6 +37,13 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // set actionbar title
+        (activity as HomeActivity).setActionBarTitle("Profile Fragment")
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
