@@ -18,14 +18,6 @@ class MainActivity : AppCompatActivity() {
         changeFragment(fragment)
     }
 
-    // change fragment
-    fun changeFragmentCopilot(fragment: Fragment) {
-        // sama sih dengan di bawah
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.frameLayout, fragment)
-        transaction.commit()
-    }
-
     fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
@@ -37,5 +29,6 @@ class MainActivity : AppCompatActivity() {
         // go to home activity
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

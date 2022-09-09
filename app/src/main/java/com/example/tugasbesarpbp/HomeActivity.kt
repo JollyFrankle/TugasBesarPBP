@@ -7,6 +7,14 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.tugasbesarpbp.main_ui.HomeFragment
+import com.example.tugasbesarpbp.main_ui.ListItemFragment
+import com.google.android.material.navigation.NavigationBarView
 
 class HomeActivity : AppCompatActivity() {
 
@@ -14,15 +22,20 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val fragment = ListItemFragment()
-        changeFragment(fragment)
+        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
+        btmMenu.setupWithNavController(navHostFragment.navController)
     }
 
     // change fragment
-    fun changeFragment(fragment: Fragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.commit()
+    private fun changeFragment(fragment: Fragment) {
+        // change fragment with animation
+        supportFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.frameLayout, fragment)
+            .commit()
     }
 
     // set title bar

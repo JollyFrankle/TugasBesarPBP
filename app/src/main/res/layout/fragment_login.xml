@@ -25,7 +25,7 @@
                 android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/bs_white"
+                android:background="@color/bs_bg_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -77,9 +77,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Username"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:hintTextColor="@color/color_primary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -98,12 +95,10 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:hint="Password"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tilLoginUsername"
-                        app:startIconDrawable="@drawable/ic_lock_24">
+                        app:startIconDrawable="@drawable/ic_lock_24"
+                        app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"

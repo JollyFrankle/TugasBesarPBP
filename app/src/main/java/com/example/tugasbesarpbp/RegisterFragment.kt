@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.example.tugasbesarpbp.entity.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 
@@ -17,7 +18,7 @@ import com.google.android.material.textfield.TextInputLayout
  */
 class RegisterFragment : Fragment() {
     private lateinit var btnRegister: Button
-    private lateinit var tilName: TextInputLayout
+    private lateinit var tilUsername: TextInputLayout
     private lateinit var tilEmail: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
     private lateinit var tilPasswordConfirm: TextInputLayout
@@ -40,13 +41,13 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnRegister = view.findViewById(R.id.btnRegister)
-        tilName = view.findViewById(R.id.tilRegisUsername)
+        tilUsername = view.findViewById(R.id.tilRegisUsername)
         tilEmail = view.findViewById(R.id.tilRegisEmail)
         tilPassword = view.findViewById(R.id.tilRegisPassword)
         tilPasswordConfirm = view.findViewById(R.id.tilRegisPasswordConfirm)
 
         btnRegister.setOnClickListener {
-            val name = tilName.editText?.text.toString()
+            val username = tilUsername.editText?.text.toString()
             val email = tilEmail.editText?.text.toString()
             val password = tilPassword.editText?.text.toString()
             val passwordConfirm = tilPasswordConfirm.editText?.text.toString()
@@ -76,21 +77,35 @@ class RegisterFragment : Fragment() {
             }
 
             // check if name is empty
-            if (name.isEmpty()) {
-                tilName.error = "Nama tidak boleh kosong"
+            if (username.isEmpty()) {
+                tilUsername.error = "Username tidak boleh kosong"
                 error = true
             } else {
-                tilName.error = null
+                tilUsername.error = null
+            }
+
+            // check if username is already taken
+            val listOfUser: MutableList<User> = User.getList()
+            for (user in listOfUser) {
+                if (user.getUsername() == username) {
+                    tilUsername.error = "Username sudah terdaftar"
+                    error = true
+                    break
+                }
             }
 
             // all input is valid
             if (!error) {
+                // add to User using add()
+                val user = User(999, email, username, password, tglLahir = "2022-02-01", noTelp = "081234567890")
+                User.add(user)
+
                 Snackbar.make(view, "Register berhasil", Snackbar.LENGTH_SHORT).show()
 
                 val loginFragment: Fragment = LoginFragment()
                 // add username and password to bundle
                 val bundle = Bundle()
-                bundle.putString("username", name)
+                bundle.putString("username", username)
                 bundle.putString("password", password)
                 loginFragment.arguments = bundle
 

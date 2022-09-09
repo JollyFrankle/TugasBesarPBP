@@ -12,14 +12,12 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/product_sans</item>
     </style>
 
-    <style name="Theme.TugasBesarPBP.NoActionBar">
+    <!-- no actionbar -->
+    <style name="Theme.TugasBesarPBP.NoActionBar" parent="Theme.TugasBesarPBP">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="Theme.TugasBesarPBP.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.TugasBesarPBP.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

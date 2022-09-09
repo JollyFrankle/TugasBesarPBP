@@ -41,12 +41,6 @@ class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapte
 
         // set image from url (currentItem.foto):
         ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
-//        val imageUri: Uri = Uri.parse(currentItem.foto)
-//        val bmp: Bitmap = BitmapFactory.decodeStream(URL(currentItem.foto).openConnection().getInputStream())
-//        holder.imageEl.setImageBitmap(bmp)
-//        holder.imageEl.setImageURI(imageUri)
-
-//        holder.imageEl.setImageURI(Uri.parse(currentItem.foto))
     }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

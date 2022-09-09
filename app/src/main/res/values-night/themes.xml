@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.TugasBesarPBP" parent="Theme.Material3.Dark">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/bs_blue_700</item>
+        <item name="colorPrimary">@color/bs_blue</item>
         <item name="colorPrimaryVariant">@color/bs_blue_700</item>
         <item name="colorOnPrimary">@color/bs_white</item>
         <!-- Secondary brand color. -->
