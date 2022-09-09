@@ -113,6 +113,13 @@ class RegisterFragment : Fragment() {
                 tilUsername.error = null
             }
 
+            if(tanggalLahir.isEmpty()){
+                tilTanggalLahir.error = "Tanggal lahir harus diisi"
+                error = true
+            } else{
+                tilTanggalLahir.error = null
+            }
+
             if(nomorTelepon.length == 12){
                 tilNomorTelepon.error = null
             } else{
