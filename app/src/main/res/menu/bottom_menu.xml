@@ -10,8 +10,10 @@
         android:id="@+id/listItemFragment"/>
     <item
         android:title="Notifications"
-        android:icon="@drawable/ic_notifications_24" />
+        android:icon="@drawable/ic_notifications_24"
+        android:id="@+id/notificationsFragment"/>
     <item
         android:icon="@drawable/ic_person_24"
-        android:title="Profile" />
+        android:title="Profile"
+        android:id="@+id/profileFragment"/>
 </menu>

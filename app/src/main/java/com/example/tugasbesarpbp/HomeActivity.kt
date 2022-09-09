@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -7,14 +8,10 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.tugasbesarpbp.main_ui.HomeFragment
-import com.example.tugasbesarpbp.main_ui.ListItemFragment
 import com.google.android.material.navigation.NavigationBarView
+import java.util.*
 
 class HomeActivity : AppCompatActivity() {
 
@@ -26,6 +23,10 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
 
         btmMenu.setupWithNavController(navHostFragment.navController)
+        val c = Calendar.getInstance()
+        val myYear = c[Calendar.YEAR]
+        val myMonth = c[Calendar.MONTH]
+        val myDay = c[Calendar.DAY_OF_MONTH]
     }
 
     // change fragment

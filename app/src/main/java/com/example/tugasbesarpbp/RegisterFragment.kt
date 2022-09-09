@@ -1,6 +1,8 @@
 package com.example.tugasbesarpbp
 
+import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,9 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.tugasbesarpbp.entity.User
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -22,6 +26,10 @@ class RegisterFragment : Fragment() {
     private lateinit var tilEmail: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
     private lateinit var tilPasswordConfirm: TextInputLayout
+    private lateinit var tilTanggalLahir: TextInputLayout
+    private lateinit var tilNomorTelepon: TextInputLayout
+    private lateinit var tietTanggalLahir: TextInputEditText
+    private lateinit var btnPickDateRegis: Button
 
     // tidak ada guna?
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,12 +53,33 @@ class RegisterFragment : Fragment() {
         tilEmail = view.findViewById(R.id.tilRegisEmail)
         tilPassword = view.findViewById(R.id.tilRegisPassword)
         tilPasswordConfirm = view.findViewById(R.id.tilRegisPasswordConfirm)
+        tilTanggalLahir = view.findViewById(R.id.tilRegisTanggalLahir)
+        tilNomorTelepon = view.findViewById(R.id.tilRegisNomorTelepon)
+        tietTanggalLahir = view.findViewById(R.id.tietRegisTanggalLahir)
+        btnPickDateRegis = view.findViewById(R.id.btnPickDate)
+
+        btnPickDateRegis.setOnClickListener(View.OnClickListener {
+            Log.d("AAA", "hererererereererere")
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+            val dpd = DatePickerDialog((activity as MainActivity), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Display Selected date in TextView
+                tilTanggalLahir.editText?.setText("" + dayOfMonth + "/" + month + "/" + year)
+            }, year, month, day)
+            dpd.datePicker.maxDate = System.currentTimeMillis()
+            dpd.show()
+
+        })
 
         btnRegister.setOnClickListener {
             val username = tilUsername.editText?.text.toString()
             val email = tilEmail.editText?.text.toString()
             val password = tilPassword.editText?.text.toString()
             val passwordConfirm = tilPasswordConfirm.editText?.text.toString()
+            val tanggalLahir = tilTanggalLahir.editText?.text.toString()
+            val nomorTelepon = tilNomorTelepon.editText?.text.toString()
 
             var error = false
 
@@ -82,6 +111,13 @@ class RegisterFragment : Fragment() {
                 error = true
             } else {
                 tilUsername.error = null
+            }
+
+            if(nomorTelepon.length == 12){
+                tilNomorTelepon.error = null
+            } else{
+                tilNomorTelepon.error = "Nomor telepon harus 16 digit, digit = " + nomorTelepon.length
+                error = true
             }
 
             // check if username is already taken
