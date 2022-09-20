@@ -166,7 +166,7 @@ class RegisterFragment : Fragment() {
         }
 
         // btnRegisMoveToLogin on click
-        view.findViewById<TextView>(R.id.btnRegisMoveToLogin).setOnClickListener {
+        _binding?.btnRegisMoveToLogin?.setOnClickListener {
             (activity as MainActivity).changeFragment(LoginFragment())
         }
     }
