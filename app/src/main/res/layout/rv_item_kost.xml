@@ -6,14 +6,15 @@
     android:layout_height="wrap_content"
     tools:context=".rv_adapters.RVItemKostAdapter">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="4dp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +29,8 @@
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:adjustViewBounds="true"
-                android:background="@color/bs_blue"
+                android:background="#800D6EFD"
+                android:scaleType="centerCrop"
                 android:src="@drawable/tugu_yogya"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +54,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Putra Putri Harapan Bangsa"
+                    android:text="Tipe Kost"
                     android:textColor="@color/bs_blue"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +70,7 @@
                     android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="Kost Apik STAN Bintaro Andalusia Tipe C Pondok Aren Tangerang Selatan 8034AP"
+                    android:text="Nama Kost"
                     android:textAlignment="textStart"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textSize="16sp"
@@ -84,12 +86,24 @@
                     android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="K. Mandi Dalam · Kloset Duduk · Kasur"
+                    android:text="Fasilitas Kost"
                     android:textColor="@color/bs_gray"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtRVItemKostNama" />
+
+                <TextView
+                    android:id="@+id/txtRVItemKostPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:text="Rp 1.600.000"
+                    android:textColor="@color/bs_blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView5" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -102,21 +116,9 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/txtRVItemKostPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:text="Rp 1.600.000"
-                    android:textColor="@color/bs_blue_700"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textView5" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

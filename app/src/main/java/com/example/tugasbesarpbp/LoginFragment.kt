@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.example.tugasbesarpbp.entity.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 
@@ -24,17 +25,6 @@ class LoginFragment : Fragment() {
 
     private var username: String = ""
     private var password: String = ""
-
-    // array of accepted username and password
-    private val accepted = arrayOf(
-        "admin" to "0932",
-        "user" to "user"
-    )
-
-    // check if username and password is valid (copilot)
-    private fun isValid(username: String, password: String): Boolean {
-        return accepted.contains(username to password)
-    }
 
     // tidak ada guna?
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,24 +58,14 @@ class LoginFragment : Fragment() {
         if (username.isNotEmpty() && password.isNotEmpty()) {
             tilUsername.editText?.setText(username)
             tilPassword.editText?.setText(password)
-
-            // add username and password to accepted
-            accepted.plus(username to password)
-
-            // print accepted
-            for(i in accepted) {
-                Log.d("accepted", i.toString())
-            }
         }
 
         btnLogin.setOnClickListener {
             val username = tilUsername.editText?.text.toString()
             val password = tilPassword.editText?.text.toString()
 
-            if (isValid(username, password)) {
+            if (User.getLogin(username, password) != null) {
                 // login success
-//                Snackbar.make(view, "Login success", Snackbar.LENGTH_SHORT).show()
-
                 // go to home activity
                 (activity as MainActivity).goToHome()
             } else {

@@ -1,5 +1,7 @@
 package com.example.tugasbesarpbp.rv_adapters
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.entity.ItemKost
+import java.net.URL
 import java.util.*
 
 class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
@@ -37,7 +40,7 @@ class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapte
         holder.fasilitasEl.text = fasilitas
 
         // set image from url (currentItem.foto):
-//        holder.imageEl.setImageURI(Uri.parse(currentItem.foto))
+        ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
     }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

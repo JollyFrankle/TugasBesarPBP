@@ -2,18 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Home"
-        android:icon="@drawable/ic_home_24"
-        android:id="@+id/home"/>
-    <item
-        android:title="Search"
-        android:icon="@drawable/ic_search_24"
-        android:id="@+id/search"/>
-    <item
-        android:title="Notifications"
-        android:icon="@drawable/ic_notifications_24"
-        android:id="@+id/notification"/>
-    <item
         android:id="@+id/btnLogOut"
         android:title="Log out"/>
 </menu>

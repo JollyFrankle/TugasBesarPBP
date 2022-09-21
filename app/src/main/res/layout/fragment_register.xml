@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="@color/color_secondary"
     tools:context=".RegisterFragment">
 
@@ -27,7 +28,7 @@
                 android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/bs_white"
+                android:background="@color/bs_bg_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -53,7 +54,7 @@
                     android:layout_marginEnd="16dp"
                     android:fontFamily="sans-serif"
                     android:text="JogjaKost"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     android:textColor="@color/color_secondary"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,9 +65,9 @@
                     android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -75,13 +76,10 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilRegisUsername"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Username"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:hintTextColor="@color/color_primary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -95,14 +93,11 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilRegisEmail"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:hint="Alamat Email"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:hintTextColor="@color/color_primary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tilRegisUsername"
@@ -115,18 +110,71 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilRegisTanggalLahir"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:enabled="false"
+                        android:hint="Tanggal Lahir"
+                        app:layout_constraintEnd_toStartOf="@+id/btnPickDate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tilRegisEmail"
+                        app:startIconDrawable="@drawable/ic_date_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tietRegisTanggalLahir"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text|textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnPickDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="2dp"
+                        android:width="49dp"
+                        android:drawableEnd="@drawable/ic_calendar_24"
+                        android:minWidth="32dp"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="12dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tilRegisTanggalLahir"></Button>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilRegisNomorTelepon"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:hint="Nomor Telepon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tilRegisTanggalLahir"
+                        app:startIconDrawable="@drawable/ic_baseline_local_phone_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text|textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilRegisPassword"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:hint="Password"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:hintTextColor="@color/color_primary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tilRegisEmail"
+                        app:layout_constraintTop_toBottomOf="@+id/tilRegisNomorTelepon"
+                        app:passwordToggleEnabled="true"
                         app:startIconDrawable="@drawable/ic_lock_24">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -137,17 +185,15 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilRegisPasswordConfirm"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:hint="Konfirmasi Password"
-                        app:boxBackgroundColor="@color/bs_white"
-                        app:boxStrokeColor="@color/color_primary"
-                        app:hintTextColor="@color/color_primary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tilRegisPassword"
+                        app:passwordToggleEnabled="true"
                         app:startIconDrawable="@drawable/ic_lock_24">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -164,9 +210,9 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -175,7 +221,7 @@
 
                 <Button
                     android:id="@+id/btnRegister"
-                    style="@style/Widget.MaterialComponents.Button"
+                    style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -184,7 +230,7 @@
 
             <Button
                 android:id="@+id/btnRegisMoveToLogin"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
