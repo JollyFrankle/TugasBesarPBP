@@ -23,21 +23,21 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
 
         btmMenu.setupWithNavController(navHostFragment.navController)
-        val c = Calendar.getInstance()
-        val myYear = c[Calendar.YEAR]
-        val myMonth = c[Calendar.MONTH]
-        val myDay = c[Calendar.DAY_OF_MONTH]
+//        val c = Calendar.getInstance()
+//        val myYear = c[Calendar.YEAR]
+//        val myMonth = c[Calendar.MONTH]
+//        val myDay = c[Calendar.DAY_OF_MONTH]
     }
 
     // change fragment
-    private fun changeFragment(fragment: Fragment) {
-        // change fragment with animation
-        supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            .replace(R.id.frameLayout, fragment)
-            .commit()
-    }
+//    private fun changeFragment(fragment: Fragment) {
+//        // change fragment with animation
+//        supportFragmentManager
+//            .beginTransaction()
+//            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+//            .replace(R.id.frameLayout, fragment)
+//            .commit()
+//    }
 
     // set title bar
     fun setActionBarTitle(title: String) {
