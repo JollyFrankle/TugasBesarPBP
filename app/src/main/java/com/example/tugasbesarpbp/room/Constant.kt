@@ -1,4 +1,4 @@
-package com.example.tugasbesarpbp.room.user
+package com.example.tugasbesarpbp.room
 
 class Constant {
     companion object{

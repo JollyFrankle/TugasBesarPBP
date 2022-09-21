@@ -1,4 +1,4 @@
-package com.example.tugasbesarpbp.room.user
+package com.example.tugasbesarpbp.room
 
 import android.content.Context
 import androidx.room.Database
@@ -6,13 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [User::class],
+    entities = [
+        com.example.tugasbesarpbp.room.user.User::class
+               ],
     version = 1
 )
-abstract class UserDB: RoomDatabase() {
-    abstract fun UserDao() : UserDao
+abstract class MainDB: RoomDatabase() {
+    abstract fun UserDao() : com.example.tugasbesarpbp.room.user.UserDao
     companion object {
-        @Volatile private var instance : UserDB? = null
+        @Volatile private var instance: MainDB? = null
         private val LOCK = Any()
         operator fun invoke(context: Context) = instance ?:
         synchronized(LOCK){
@@ -23,8 +25,8 @@ abstract class UserDB: RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                UserDB::class.java,
-                "User12345.db"
+                MainDB::class.java,
+                "main.db"
             ).build()
     }
 }
