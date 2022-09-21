@@ -82,5 +82,3 @@ class UpdateActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 }
-
-//
