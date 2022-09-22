@@ -28,6 +28,6 @@
     <style name="Theme.TugasBesarPBP.Splash" parent="Theme.TugasBesarPBP">
 <!--        <item name="android:windowBackground">@drawable/tugu_yogya</item>-->
         <item name="android:statusBarColor">@color/color_primary</item>
-        <item name="android:windowBackground">@color/color_primary</item>
+        <item name="android:background">@color/color_primary</item>
     </style>
 </resources>

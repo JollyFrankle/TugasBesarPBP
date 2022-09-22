@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -54,6 +55,14 @@ class LoginFragment : Fragment() {
         btnLogin = view.findViewById(R.id.btnLogin)
         tilUsername = view.findViewById(R.id.tilLoginUsername)
         tilPassword = view.findViewById(R.id.tilLoginPassword)
+
+        val session: SharedPreferences = (activity as MainActivity).getSession()
+        if(session.contains("username")) {
+            tilUsername.editText?.setText(session.getString("username", ""))
+        }
+        if(session.contains("password")) {
+            tilUsername.editText?.setText(session.getString("username", ""))
+        }
 
         // if username & password is not null, show it
         if (username.isNotEmpty() && password.isNotEmpty()) {

@@ -38,6 +38,7 @@ class ProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val user = db.UserDao().getUserById(session.getInt("id", 0))
             if(user != null){
+                binding.tvDisplayName.text = user.nama
                 binding.tvVPUsername.text = user.username
                 binding.tvVPEmail.text = user.email
                 binding.tvVPTanggalLahir.text = user.tanggalLahir

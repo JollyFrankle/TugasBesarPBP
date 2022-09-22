@@ -70,7 +70,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/profileDisplayName"
+                        android:id="@+id/tvDisplayName"
                         style="@style/TextAppearance.Material3.HeadlineSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
