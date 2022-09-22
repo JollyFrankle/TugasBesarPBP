@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class MainDB: RoomDatabase() {
-    abstract fun UserDao() : com.example.tugasbesarpbp.room.user.UserDao
+    abstract fun UserDao(): com.example.tugasbesarpbp.room.user.UserDao
     companion object {
         @Volatile private var instance: MainDB? = null
         private val LOCK = Any()

@@ -1,16 +1,18 @@
 package com.example.tugasbesarpbp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import com.example.tugasbesarpbp.entity.User
+import com.example.tugasbesarpbp.room.user.User
+import com.example.tugasbesarpbp.room.MainDB
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -26,7 +28,6 @@ class LoginFragment : Fragment() {
     private var username: String = ""
     private var password: String = ""
 
-    // tidak ada guna?
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,13 +65,25 @@ class LoginFragment : Fragment() {
             val username = tilUsername.editText?.text.toString()
             val password = tilPassword.editText?.text.toString()
 
-            if (User.getLogin(username, password) != null) {
-                // login success
-                // go to home activity
-                (activity as MainActivity).goToHome()
-            } else {
-                // login failed
-                Snackbar.make(view, "Login failed", Snackbar.LENGTH_SHORT).show()
+            // Check username and password
+            val mainDB by lazy { MainDB((activity as MainActivity)) }
+
+            // CoroutineScope untuk menjalankan fungsi async
+            CoroutineScope(Dispatchers.IO).launch {
+                val user: User? = mainDB.UserDao().getUserByCred(username, password)
+
+                if (user != null) {
+                    // login success
+                    // save session
+                    val session = (activity as MainActivity).getSession()
+                    session.edit().putInt("id", user.id).apply()
+
+                    // go to home activity
+                    (activity as MainActivity).goToHome()
+                } else {
+                    // login failed
+                    Snackbar.make(view, "Login failed", Snackbar.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -79,7 +92,5 @@ class LoginFragment : Fragment() {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
-
-        /// aaaa
     }
 }

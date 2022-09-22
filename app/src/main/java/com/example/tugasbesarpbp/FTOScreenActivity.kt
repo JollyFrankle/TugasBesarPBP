@@ -6,6 +6,11 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import com.example.tugasbesarpbp.room.MainDB
+import com.example.tugasbesarpbp.room.user.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /*
  * First-Time Opened Screen Activity
@@ -28,6 +33,15 @@ class FTOScreenActivity : AppCompatActivity() {
         // If first time opened, open FTOScreenActivity
         if (isFirstTimeOpened) {
             setContentView(R.layout.activity_ftoscreen)
+            // Add default username & password to database
+            val mainDB by lazy { MainDB(this) }
+            val userDAO = mainDB.UserDao()
+
+            val userAdmin = User(1, "Administrator", "admin", "admin", "admin@www.com", "2022-01-01", "083456789012")
+            CoroutineScope(Dispatchers.IO).launch {
+                userDAO.addUser(userAdmin)
+            }
+
             // set timer for 3 seconds
             val timer = object : CountDownTimer(3000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {

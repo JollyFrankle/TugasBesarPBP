@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.tugasbesarpbp.main_ui.NotificationsFragment"
+        android:name="com.example.tugasbesarpbp.main_ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

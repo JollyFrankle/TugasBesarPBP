@@ -19,4 +19,15 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- border radius 8dp -->
+    <style name="Theme.TugasBesarPBP.BorderRadius8dp" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="Theme.TugasBesarPBP.Splash" parent="Theme.TugasBesarPBP">
+<!--        <item name="android:windowBackground">@drawable/tugu_yogya</item>-->
+        <item name="android:statusBarColor">@color/color_primary</item>
+        <item name="android:windowBackground">@color/color_primary</item>
+    </style>
 </resources>
