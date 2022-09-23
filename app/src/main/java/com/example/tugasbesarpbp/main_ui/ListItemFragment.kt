@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.HomeActivity
 import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.entity.ItemKost
+import com.example.tugasbesarpbp.entity.ItemKost.Companion.itemKosts
+import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.rv_adapters.RVItemKostAdapter
 
 class ListItemFragment : Fragment() {
@@ -30,7 +32,6 @@ class ListItemFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(context)
         val adapter: RVItemKostAdapter = RVItemKostAdapter(ItemKost.itemKosts)
-
         val rvItemKost: RecyclerView = view.findViewById(R.id.rvItemKostContainer)
 
         rvItemKost.layoutManager = layoutManager

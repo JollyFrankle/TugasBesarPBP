@@ -17,11 +17,18 @@
         tools:replace="android:icon"
         tools:targetApi="31">
         <activity
+            android:name=".EditViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateActivity"
+            android:exported="false" />
+        <activity
             android:name=".FTOScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.TugasBesarPBP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,8 +39,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:theme="@style/Theme.TugasBesarPBP.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.TugasBesarPBP.NoActionBar" />
     </application>
 
 </manifest>

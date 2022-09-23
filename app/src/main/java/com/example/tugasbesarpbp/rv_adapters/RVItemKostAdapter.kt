@@ -1,8 +1,6 @@
 package com.example.tugasbesarpbp.rv_adapters
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.entity.ItemKost
+import com.example.tugasbesarpbp.room.kost.Kost
+import com.google.android.material.card.MaterialCardView
 import java.net.URL
 import java.util.*
 
-class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
+class RVItemKostAdapter(private val data: Array<ItemKost>, private val listener: OnAdapterListener) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -27,11 +27,18 @@ class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapte
         return data.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(list: ArrayList<Kost>){
+        data.clear()
+        data.addAll(list)
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         val currentItem = data[position]
-        holder.namaEl.text = currentItem.nama
-        holder.tipeEl.text = currentItem.tipe
-        holder.hargaEl.text = "Rp " + "%,.0f".format(Locale("id", "ID"), currentItem.harga)
+        holder.namaEl.text = currentItem.namaKost
+//        holder.tipeEl.text = currentItem.tipe
+//        holder.hargaEl.text = "Rp " + "%,.0f".format(Locale("id", "ID"), currentItem.harga)
         // loop through fasilitas
         var fasilitas = ""
         for (i in currentItem.fasilitas!!) {
@@ -40,7 +47,17 @@ class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapte
         holder.fasilitasEl.text = fasilitas
 
         // set image from url (currentItem.foto):
-        ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
+//        ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
+
+//        holder.namaEl.setOnClickListener(){
+//            Log.d("Nama", "Clicked")
+//        }
+//        holder.tipeEl.setOnClickListener(){
+//            Log.d("Tipe", "Clicked")
+//        }
+//        holder.fasilitasEl.setOnClickListener(){
+//            Log.d("Fasilitas", "Clicked")
+//        }
     }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -49,5 +66,12 @@ class RVItemKostAdapter(private val data: Array<ItemKost>) : RecyclerView.Adapte
         val fasilitasEl: TextView = itemView.findViewById(R.id.txtRVItemKostFasilitas)
         val namaEl: TextView = itemView.findViewById(R.id.txtRVItemKostNama)
         val imageEl: ImageView = itemView.findViewById(R.id.imgRVItemKostImage)
+        val cardClicked: MaterialCardView = itemView.findViewById((R.id.cardView))
+    }
+
+    interface OnAdapterListener{
+        fun onClick(kost: ItemKost)
+        fun onUpdate(kost: Kost)
+        fun onDelete(kost: Kost)
     }
 }

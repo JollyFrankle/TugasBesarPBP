@@ -4,4 +4,8 @@
     <item
         android:id="@+id/btnLogOut"
         android:title="Log out"/>
+
+    <item
+        android:id="@+id/btnCreate"
+        android:title="Create Kost"/>
 </menu>

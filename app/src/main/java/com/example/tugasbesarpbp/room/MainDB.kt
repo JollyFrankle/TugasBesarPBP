@@ -7,12 +7,14 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-        com.example.tugasbesarpbp.room.user.User::class
+        com.example.tugasbesarpbp.room.user.User::class,
+        com.example.tugasbesarpbp.room.kost.Kost::class
                ],
     version = 1
 )
 abstract class MainDB: RoomDatabase() {
     abstract fun UserDao(): com.example.tugasbesarpbp.room.user.UserDao
+    abstract fun KostDao(): com.example.tugasbesarpbp.room.kost.KostDao
     companion object {
         @Volatile private var instance: MainDB? = null
         private val LOCK = Any()

@@ -64,6 +64,12 @@ class HomeActivity : AppCompatActivity() {
                 val dialog: AlertDialog = builder.create()
                 dialog.show()
             }
+
+            R.id.btnCreate -> {
+                val intent = Intent(this, CreateActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
