@@ -26,6 +26,15 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         btmMenu.setupWithNavController(navHostFragment.navController)
 
+        //
+        val fragment = intent.extras?.getString("fragment")
+        fragment?.let {
+            when (it) {
+                "item" -> btmMenu.selectedItemId = R.id.listItemFragment
+                "profile" -> btmMenu.selectedItemId = R.id.profileFragment
+            }
+        }
+
         // Session identifier
         spSession = getSharedPreferences("session", MODE_PRIVATE)
     }
@@ -67,6 +76,8 @@ class HomeActivity : AppCompatActivity() {
 
             R.id.btnCreate -> {
                 val intent = Intent(this, CreateActivity::class.java)
+                intent.putExtra("action", CreateActivity.CREATE)
+                intent.putExtra("id", 0)
                 startActivity(intent)
                 finish()
             }
@@ -76,5 +87,24 @@ class HomeActivity : AppCompatActivity() {
 
     fun getSession(): SharedPreferences {
         return spSession
+    }
+
+    fun goToActivity(activity: Class<*>) {
+        val intent = Intent(this, activity)
+        startActivity(intent)
+    }
+
+    fun changeMenu(fragment: String) {
+        val menu: Int = when(fragment) {
+            "home" -> R.id.homeFragment
+            "profile" -> R.id.profileFragment
+            else -> R.id.homeFragment
+        }
+        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
+        btmMenu.selectedItemId = menu
+        // refresh
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(menu)
     }
 }

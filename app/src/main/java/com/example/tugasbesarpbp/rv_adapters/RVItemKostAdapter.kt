@@ -1,6 +1,10 @@
 package com.example.tugasbesarpbp.rv_adapters
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +12,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.R
-import com.example.tugasbesarpbp.entity.ItemKost
 import com.example.tugasbesarpbp.room.kost.Kost
 import com.google.android.material.card.MaterialCardView
 import java.net.URL
 import java.util.*
 
-class RVItemKostAdapter(private val data: Array<ItemKost>, private val listener: OnAdapterListener) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
+class RVItemKostAdapter(private val data: ArrayList<Kost>, private val listener: OnAdapterListener) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -38,26 +41,21 @@ class RVItemKostAdapter(private val data: Array<ItemKost>, private val listener:
         val currentItem = data[position]
         holder.namaEl.text = currentItem.namaKost
 //        holder.tipeEl.text = currentItem.tipe
-//        holder.hargaEl.text = "Rp " + "%,.0f".format(Locale("id", "ID"), currentItem.harga)
-        // loop through fasilitas
-        var fasilitas = ""
-        for (i in currentItem.fasilitas!!) {
-            fasilitas += i + " - "
-        }
-        holder.fasilitasEl.text = fasilitas
+        holder.hargaEl.text = "Rp " + "%,.0f".format(Locale("id", "ID"), currentItem.harga)
+//         loop through fasilitas
+//        var fasilitas = ""
+//        for (i in currentItem.fasilitas!!) {
+//            fasilitas += i + " - "
+//        }
+        holder.fasilitasEl.text = currentItem.fasilitas
+
 
         // set image from url (currentItem.foto):
 //        ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
 
-//        holder.namaEl.setOnClickListener(){
-//            Log.d("Nama", "Clicked")
-//        }
-//        holder.tipeEl.setOnClickListener(){
-//            Log.d("Tipe", "Clicked")
-//        }
-//        holder.fasilitasEl.setOnClickListener(){
-//            Log.d("Fasilitas", "Clicked")
-//        }
+        holder.cardClicked.setOnClickListener {
+            listener.onClick(currentItem)
+        }
     }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -70,7 +68,7 @@ class RVItemKostAdapter(private val data: Array<ItemKost>, private val listener:
     }
 
     interface OnAdapterListener{
-        fun onClick(kost: ItemKost)
+        fun onClick(kost: Kost)
         fun onUpdate(kost: Kost)
         fun onDelete(kost: Kost)
     }

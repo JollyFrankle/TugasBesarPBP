@@ -24,4 +24,8 @@ interface UserDao {
 
     @Query("SELECT * FROM User WHERE username = :username OR email = :email;")
     suspend fun getUserByUsernameOrEmail(username: String, email: String): User?
+
+    // custom update query
+    @Query("UPDATE User SET nama = :nama, email = :email, tanggalLahir = :tanggalLahir, nomorTelepon = :nomorTelepon WHERE id = :id;")
+    suspend fun updateUser(id: Int, nama: String, email: String, tanggalLahir: String, nomorTelepon: String)
 }

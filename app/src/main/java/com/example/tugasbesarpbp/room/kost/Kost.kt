@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class Kost (
     @PrimaryKey(autoGenerate = true) val id: Int,
     val namaKost: String,
-    val alamat: String,
-    val fasilitas: String
+    val fasilitas: String,
+    val harga: Double
 )

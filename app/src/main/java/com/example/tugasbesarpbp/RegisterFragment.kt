@@ -29,19 +29,6 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private val db by lazy { MainDB(activity as MainActivity) }
-    private val userDao = db.UserDao()
-
-//    private lateinit var btnRegister: Button
-//    private lateinit var tilUsername: TextInputLayout
-//    private lateinit var tilEmail: TextInputLayout
-//    private lateinit var tilPassword: TextInputLayout
-//    private lateinit var tilPasswordConfirm: TextInputLayout
-//    private lateinit var tilTanggalLahir: TextInputLayout
-//    private lateinit var tilNomorTelepon: TextInputLayout
-//    private lateinit var tietTanggalLahir: TextInputEditText
-//    private lateinit var btnPickDateRegis: Button
-
     // tidak ada guna?
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
@@ -60,6 +47,9 @@ class RegisterFragment : Fragment() {
     // --> https://stackoverflow.com/questions/51672231/kotlin-button-onclicklistener-event-inside-a-fragment && copilot
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val db by lazy { MainDB(activity as MainActivity) }
+        val userDao = db.UserDao()
 //        btnRegister = view.findViewById(R.id.btnRegister)
 //        tilUsername = view.findViewById(R.id.tilRegisUsername)
 //        tilEmail = view.findViewById(R.id.tilRegisEmail)

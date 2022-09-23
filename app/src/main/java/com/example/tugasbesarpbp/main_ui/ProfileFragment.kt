@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.tugasbesarpbp.HomeActivity
+import com.example.tugasbesarpbp.MainActivity
 import com.example.tugasbesarpbp.R
+import com.example.tugasbesarpbp.UpdateActivity
 import com.example.tugasbesarpbp.databinding.FragmentProfileBinding
 import com.example.tugasbesarpbp.room.MainDB
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +46,12 @@ class ProfileFragment : Fragment() {
                 binding.tvVPTanggalLahir.text = user.tanggalLahir
                 binding.tvVPNomorTelepon.text = user.nomorTelepon
             }
+        }
+
+        // on click listener for profileBtnEdit
+        binding.profileBtnEdit.setOnClickListener {
+            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
+            (activity as HomeActivity).changeMenu("profile")
         }
     }
 }

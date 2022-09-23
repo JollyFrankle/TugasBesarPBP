@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -29,8 +30,18 @@ class LoginFragment : Fragment() {
     private var username: String = ""
     private var password: String = ""
 
+    private lateinit var spSession: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Shared Preferences
+        spSession = requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+
+        // get username and password from shared preferences
+//        val session = (activity as MainActivity).getSession()
+        username = spSession.getString("username", "").toString()
+        password = spSession.getString("password", "").toString()
 
         // get username and password from arguments
         arguments?.let {
@@ -84,8 +95,11 @@ class LoginFragment : Fragment() {
                 if (user != null) {
                     // login success
                     // save session
-                    val session = (activity as MainActivity).getSession()
-                    session.edit().putInt("id", user.id).apply()
+                    spSession.edit()
+                        .putInt("id", user.id)
+                        .putString("username", user.username)
+                        .putString("password", user.password)
+                        .apply()
 
                     // go to home activity
                     (activity as MainActivity).goToHome()

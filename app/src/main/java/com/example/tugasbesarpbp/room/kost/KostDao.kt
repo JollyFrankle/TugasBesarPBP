@@ -11,12 +11,14 @@ interface KostDao {
     @Update
     suspend fun updateKost(Kost: Kost)
 
-    @Delete
-    suspend fun deleteKost(Kost: Kost)
+    @Query("DELETE FROM kost WHERE id = :id")
+    suspend fun deleteKost(id: Int)
 
     @Query("SELECT * FROM Kost;")
-    fun getKost(): ArrayList<Kost>
+    fun getKost(): List<Kost>
 
+    @Query("SELECT * FROM Kost WHERE id = :id")
+    fun getKostById(id: Int): Kost
 //    @Query("SELECT * FROM User WHERE username = :username AND password = :password;")
 //    suspend fun getUserByCred(username: String, password: String): User?
 //
