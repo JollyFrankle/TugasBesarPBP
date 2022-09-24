@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "507958903784",
+    "project_id": "tugasbesarpbp-b3e5a",
+    "storage_bucket": "tugasbesarpbp-b3e5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507958903784:android:358af5fea1ba495a7b5a5d",
+        "android_client_info": {
+          "package_name": "com.example.tugasbesarpbp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507958903784-ukjof9c7v4qsa9hpbd7298qi10sqh35c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdAARtIYUihbGFJw24SjUWfBUCponVB18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507958903784-ukjof9c7v4qsa9hpbd7298qi10sqh35c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
