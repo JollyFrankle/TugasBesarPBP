@@ -33,7 +33,7 @@ class UpdateActivity : AppCompatActivity() {
         spSession = getSharedPreferences("session", Context.MODE_PRIVATE)
 
         // show back button
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val db by lazy { MainDB(this) }
         val userDao = db.UserDao()
@@ -132,10 +132,10 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     // on back pressed
-    override fun onBackPressed() {
-        val intent = Intent(this, HomeActivity::class.java)
-        intent.putExtra("fragment", "profile")
-        startActivity(intent)
-        finish()
-    }
+//    override fun onBackPressed() {
+//        val intent = Intent(this, HomeActivity::class.java)
+//        intent.putExtra("fragment", "profile")
+//        startActivity(intent)
+//        finish()
+//    }
 }

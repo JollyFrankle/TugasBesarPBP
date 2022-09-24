@@ -17,6 +17,7 @@ import com.example.tugasbesarpbp.room.MainDB
 import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.room.kost.KostDao
 import com.example.tugasbesarpbp.rv_adapters.RVItemKostAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class ListItemFragment : Fragment() {
     lateinit var kostAdapter: RVItemKostAdapter
     private lateinit var rvItemKost: RecyclerView
     private lateinit var kostDao: KostDao
+    private lateinit var btnAdd: FloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,9 +46,17 @@ class ListItemFragment : Fragment() {
         kostDao = db.KostDao()
 
         rvItemKost = view.findViewById(R.id.rvItemKostContainer)
+        btnAdd = view.findViewById(R.id.btnFloatAdd)
 
         // set actionbar title
         (activity as HomeActivity).setActionBarTitle("Daftar Kost")
+
+        btnAdd.setOnClickListener {
+            val intent = Intent(activity, CreateActivity::class.java)
+            intent.putExtra("action", CreateActivity.CREATE)
+            intent.putExtra("id", 0)
+            startActivity(intent)
+        }
 
         this.loadData()
         setupRecyclerView()

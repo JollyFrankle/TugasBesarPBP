@@ -51,7 +51,10 @@ class ProfileFragment : Fragment() {
         // on click listener for profileBtnEdit
         binding.profileBtnEdit.setOnClickListener {
             (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
-            (activity as HomeActivity).changeMenu("profile")
+        }
+
+        binding.btnFloatSignOut.setOnClickListener {
+            (activity as HomeActivity).signOut()
         }
     }
 }

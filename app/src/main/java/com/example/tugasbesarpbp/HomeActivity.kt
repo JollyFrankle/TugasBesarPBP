@@ -37,6 +37,9 @@ class HomeActivity : AppCompatActivity() {
 
         // Session identifier
         spSession = getSharedPreferences("session", MODE_PRIVATE)
+
+        // set navigation bar item selected color
+        btmMenu.itemActiveIndicatorColor = getColorStateList(R.color.bs_white)
     }
 
     // set title bar
@@ -54,33 +57,16 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.btnLogOut -> {
-                // confirm
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Log Out")
-                builder.setMessage("Are you sure?")
-                builder.setPositiveButton("Yes") { dialog, which ->
-                    // clear session
-                    spSession.edit().clear().apply()
-
-                    // go to login
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                builder.setNegativeButton("No") { dialog, which ->
-                    // do nothing
-                }
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
+                this.signOut()
             }
 
-            R.id.btnCreate -> {
-                val intent = Intent(this, CreateActivity::class.java)
-                intent.putExtra("action", CreateActivity.CREATE)
-                intent.putExtra("id", 0)
-                startActivity(intent)
-                finish()
-            }
+//            R.id.btnCreate -> {
+//                val intent = Intent(this, CreateActivity::class.java)
+//                intent.putExtra("action", CreateActivity.CREATE)
+//                intent.putExtra("id", 0)
+//                startActivity(intent)
+//                finish()
+//            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -106,5 +92,26 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         navController.navigate(menu)
+    }
+
+    fun signOut() {
+        // confirm
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Sign out")
+        builder.setMessage("Anda akan keluar dari aplikasi ini dan kredensial Anda akan dihapus.\r\nApakah Anda yakin?")
+        builder.setPositiveButton("Yes") { dialog, which ->
+            // clear session
+            spSession.edit().clear().apply()
+
+            // go to login
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // do nothing
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 }

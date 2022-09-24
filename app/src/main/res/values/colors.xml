@@ -23,6 +23,8 @@
     <color name="bs_gray">#6c757d</color>
     <color name="bs_bg_color">#fff</color>
 
+    <color name="bg_primary_tint">#F2F3FD</color>
+
     <color name="bs_blue_700">#0a53be</color>
     <color name="bs_red_700">#a52834</color>
 
