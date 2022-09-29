@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             .addAction(R.mipmap.ic_launcher, "Log in", actionIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        val pictureBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background)
+        val pictureBitmap = BitmapFactory.decodeResource(resources, R.drawable.img16x9welcome)
         // Big picture style
         val bigPictureStyle = NotificationCompat.BigPictureStyle(builder)
             .bigPicture(pictureBitmap)

@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp.main_ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -50,7 +51,9 @@ class ProfileFragment : Fragment() {
 
         // on click listener for profileBtnEdit
         binding.profileBtnEdit.setOnClickListener {
-            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
+            val intent = Intent(activity, UpdateActivity::class.java)
+            (activity as HomeActivity).resultLauncher.launch(intent)
+//            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
         }
 
         binding.btnFloatSignOut.setOnClickListener {

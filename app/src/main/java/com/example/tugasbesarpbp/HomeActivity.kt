@@ -1,11 +1,13 @@
 package com.example.tugasbesarpbp
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,13 +18,14 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var spSession: SharedPreferences
+    private lateinit var btmMenu: NavigationBarView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         // Menu di bawah (bottom navigation/navigation bar)
-        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
+        btmMenu = findViewById(R.id.bottomNavigationView)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         btmMenu.setupWithNavController(navHostFragment.navController)
 
@@ -98,7 +101,7 @@ class HomeActivity : AppCompatActivity() {
         // confirm
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Sign out")
-        builder.setMessage("Anda akan keluar dari aplikasi ini dan kredensial Anda akan dihapus.\r\nApakah Anda yakin?")
+        builder.setMessage("Anda akan keluar dari aplikasi ini dan username serta password akan dilupakan oleh sistem.\r\nApakah Anda yakin?")
         builder.setPositiveButton("Yes") { dialog, which ->
             // clear session
             spSession.edit().clear().apply()
@@ -113,5 +116,45 @@ class HomeActivity : AppCompatActivity() {
         }
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+//            val fragment = data?.extras?.getString("fragment")
+//            fragment?.let {
+//                when (it) {
+//                    "item" -> btmMenu.selectedItemId = R.id.listItemFragment
+//                    "profile" -> btmMenu.selectedItemId = R.id.profileFragment
+//                }
+//            }
+            // refresh current fragment
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(btmMenu.selectedItemId)
+//            println("_________________________ result: $fragment")
+        }
+    }
+
+    override fun onBackPressed() {
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+//        val currentFragment = navHostFragment.childFragmentManager.fragments[0]
+//        if (currentFragment is HomeFragment) {
+            // confirm
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Keluar")
+            builder.setMessage("Apakah Anda yakin ingin keluar dari aplikasi ini?")
+            builder.setPositiveButton("Yes") { dialog, which ->
+                finish()
+            }
+            builder.setNegativeButton("No") { dialog, which ->
+                // do nothing
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+//        } else {
+//            super.onBackPressed()
+//        }
     }
 }

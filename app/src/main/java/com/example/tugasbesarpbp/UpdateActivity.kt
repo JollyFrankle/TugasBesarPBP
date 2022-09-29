@@ -59,7 +59,7 @@ class UpdateActivity : AppCompatActivity() {
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 // Display Selected date in TextView
-                _binding?.tilUpdProfTanggalLahir?.editText?.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month) + "/" + year)
+                _binding?.tilUpdProfTanggalLahir?.editText?.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month+1) + "/" + year)
             }, year, month, day)
             dpd.datePicker.maxDate = System.currentTimeMillis()
             dpd.show()
@@ -117,10 +117,15 @@ class UpdateActivity : AppCompatActivity() {
                     )
 
                     // go back to previous activity
-                    val intent = Intent(this@UpdateActivity, HomeActivity::class.java)
-                    intent.putExtra("fragment", "profile")
-                    startActivity(intent)
+                    // send data to previous activity
+//                    val intent = Intent(this@UpdateActivity, HomeActivity::class.java)
+//                    intent.putExtra("fragment", "profile")
+                    setResult(RESULT_OK)
                     finish()
+//                    val intent = Intent(this@UpdateActivity, HomeActivity::class.java)
+//                    intent.putExtra("fragment", "profile")
+//                    startActivity(intent)
+//                    finish()
                 } else {
                     Snackbar.make(binding.root, "Update profil gagal. Cek ulang bagian yang ditandai.", Snackbar.LENGTH_LONG).show()
                 }
@@ -129,6 +134,12 @@ class UpdateActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    // on navigation back button pressed
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     // on back pressed

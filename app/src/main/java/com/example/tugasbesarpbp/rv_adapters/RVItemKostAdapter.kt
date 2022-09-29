@@ -49,10 +49,6 @@ class RVItemKostAdapter(private val data: ArrayList<Kost>, private val listener:
 //        }
         holder.fasilitasEl.text = currentItem.fasilitas
 
-
-        // set image from url (currentItem.foto):
-//        ItemKost.DownloadImageFromInternet(holder.imageEl).execute(currentItem.foto)
-
         holder.cardClicked.setOnClickListener {
             listener.onClick(currentItem)
         }
@@ -69,7 +65,7 @@ class RVItemKostAdapter(private val data: ArrayList<Kost>, private val listener:
 
     interface OnAdapterListener{
         fun onClick(kost: Kost)
-        fun onUpdate(kost: Kost)
-        fun onDelete(kost: Kost)
+//        fun onUpdate(kost: Kost)
+//        fun onDelete(kost: Kost)
     }
 }
