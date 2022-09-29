@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp.main_ui
 
+import android.app.Notification
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.*
@@ -30,6 +33,9 @@ class ListItemFragment : Fragment() {
     private lateinit var kostDao: KostDao
     private lateinit var btnAdd: FloatingActionButton
 
+    private val CHANNEL_ID_1 = "channel_notification_01"
+    private val notificationId3 = 103
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +43,6 @@ class ListItemFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_list_item, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

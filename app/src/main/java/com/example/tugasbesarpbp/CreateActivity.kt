@@ -42,6 +42,10 @@ class CreateActivity : AppCompatActivity() {
     private val notificationId1 = 101
     private val CHANNEL_ID_2 = "channel_notification_02"
     private val notificationId2 = 102
+    private val CHANNEL_ID_3 = "channel_notification_03"
+    private val notificationId3 = 103
+
+    private var progressDone = 0
 
     companion object {
         const val CREATE = 1
@@ -53,7 +57,7 @@ class CreateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create)
 
-        val builderManager = NotificationManagerCompat.from(this)
+        builderManager = NotificationManagerCompat.from(this)
 
         createNotificationChannel()
 
@@ -73,6 +77,7 @@ class CreateActivity : AppCompatActivity() {
 
         val db by lazy { MainDB(this) }
         val kostDao = db.KostDao()
+        sendNotification3()
 
         this.setInputElements(action, id, kostDao);
 
@@ -146,6 +151,8 @@ class CreateActivity : AppCompatActivity() {
                         kostDao.addKost(Kost(0, nama, fasilitas, harga))
                         sendNotification1()
                         sendNotification2()
+                        progressDone = 100
+                        sendNotification3()
                     } else if (action == EDIT) {
                         kostDao.updateKost(Kost(id, nama, fasilitas, harga))
                     }
@@ -276,43 +283,22 @@ class CreateActivity : AppCompatActivity() {
         }
     }
 
-//    private fun sendNotification3(){
-//        val pendingIntent : PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-//        val progressMax = 100
-//        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
-//            .setPriority(NotificationCompat.PRIORITY_HIGH)
-//            .setOngoing(true)
-//            .setOnlyAlertOnce(true)
-//            .setProgress(progressMax, 0, true)
-//            .setContentIntent(pendingIntent)
-//            .setAutoCancel(true)
-//
-//        builderManager.notify(1, builder.build())
-//
-//        Thread(Runnable{
-//            SystemClock.sleep(2000)
-//            var progress = 0
-//            while (progress <= progressMax) {
-//                SystemClock.sleep(
-//                    1000
-//                )
-//                progress += 20
-//                //Use this to make it a Fixed-duration progress indicator notification
-//
-//                //notification.setContentText(progress.toString()+"%")
-//                //.setProgress(progressMax, progress, false)
-//
-//                //notificationManager.notify(1, notification.build())
-//            }
-//
-//            builder.setContentText("Download complete")
-//                .setProgress(0, 0, false)
-//                .setOngoing(false)
-//            builderManager.notify(1, builder.build())
-//        }).start()
-//
-//        with(NotificationManagerCompat.from(this)){
-//            notify(notificationId2, builder.build())
-//        }
-//    }
+    private fun sendNotification3() {
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
+            .setContentTitle("Create Kost")
+            .setContentText("Create in progress")
+            .setSmallIcon(R.drawable.ic_home_24)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+        val PROGRESS_MAX = 100
+        val PROGRESS_CURRENT = 0
+        with(NotificationManagerCompat.from(this)) {
+            builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+            notify(notificationId3, builder.build())
+            if(progressDone == 100){
+                builder.setContentText("Kost created")
+                    .setProgress(0, 0, false)
+                notify(notificationId3, builder.build())
+            }
+        }
+    }
 }
