@@ -162,13 +162,16 @@ class RegisterFragment : Fragment() {
 
                         val loginFragment: Fragment = LoginFragment()
                         // add username and password to bundle
-                        val bundle = Bundle()
-                        bundle.putString("username", username)
-                        bundle.putString("password", password)
-                        loginFragment.arguments = bundle
+//                        val bundle = Bundle()
+//                        bundle.putString("username", username)
+//                        bundle.putString("password", password)
+//                        loginFragment.arguments = bundle
 
                         // change fragment to login fragment
                         (activity as MainActivity).changeFragment(loginFragment)
+
+                        (activity as MainActivity).sendRegisterNotification(name, username, password)
+                        Snackbar.make(view, "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", Snackbar.LENGTH_SHORT).show()
                     } else {
                         Snackbar.make(
                             view,
