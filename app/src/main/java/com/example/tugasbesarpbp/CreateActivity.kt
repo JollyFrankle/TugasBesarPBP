@@ -359,13 +359,13 @@ class CreateActivity : AppCompatActivity() {
     private fun sendNotification3() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
             .setContentTitle("Create Kost")
-            .setContentText("Create in progress")
+            .setContentText("Creation in progress")
             .setSmallIcon(R.drawable.ic_home_24)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         val PROGRESS_MAX = 100
         val PROGRESS_CURRENT = 0
         with(NotificationManagerCompat.from(this)) {
-            builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+            builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, true)
             notify(notificationId3, builder.build())
             if(progressDone == 100){
                 builder.setContentText("Kost created")
