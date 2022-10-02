@@ -17,10 +17,7 @@
         tools:replace="android:icon"
         tools:targetApi="31">
         <activity
-            android:name=".EditViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreateActivity"
+            android:name=".CRUDKostActivity"
             android:exported="false" />
         <activity
             android:name=".FTOScreenActivity"
@@ -36,7 +33,7 @@
             android:exported="false"
             android:label="@string/app_name" />
         <activity
-            android:name=".UpdateActivity"
+            android:name=".UpdateProfileActivity"
             android:exported="false"
             android:label="Update Profile" />
         <activity

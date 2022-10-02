@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.tugasbesarpbp.HomeActivity
-import com.example.tugasbesarpbp.MainActivity
-import com.example.tugasbesarpbp.R
-import com.example.tugasbesarpbp.UpdateActivity
+import com.example.tugasbesarpbp.UpdateProfileActivity
 import com.example.tugasbesarpbp.databinding.FragmentProfileBinding
 import com.example.tugasbesarpbp.room.MainDB
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +49,7 @@ class ProfileFragment : Fragment() {
 
         // on click listener for profileBtnEdit
         binding.profileBtnEdit.setOnClickListener {
-            val intent = Intent(activity, UpdateActivity::class.java)
+            val intent = Intent(activity, UpdateProfileActivity::class.java)
             (activity as HomeActivity).resultLauncher.launch(intent)
 //            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
         }

@@ -1,4 +1,4 @@
-package com.example.tugasbesarpbp
+package com.example.tugasbesarpbp.auth_ui
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.tugasbesarpbp.MainActivity
+import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.room.user.User
 import com.example.tugasbesarpbp.room.MainDB
 import com.google.android.material.snackbar.Snackbar

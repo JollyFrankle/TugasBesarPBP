@@ -1,22 +1,15 @@
 package com.example.tugasbesarpbp.main_ui
 
-import android.app.Notification
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.*
-import com.example.tugasbesarpbp.room.Constant
 import com.example.tugasbesarpbp.room.MainDB
 import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.room.kost.KostDao
@@ -59,12 +52,17 @@ class ListItemFragment : Fragment() {
         btnSearch = view.findViewById(R.id.btnSearch)
         searchInput = view.findViewById(R.id.tilSearch)
 
+        // arguments
+        arguments.let {
+            searchInput.editText?.setText(it?.getString("search", ""))
+        }
+
         // set actionbar title
         (activity as HomeActivity).setActionBarTitle("Daftar Kost")
 
         btnAdd.setOnClickListener {
-            val intent = Intent(activity, CreateActivity::class.java)
-            intent.putExtra("action", CreateActivity.CREATE)
+            val intent = Intent(activity, CRUDKostActivity::class.java)
+            intent.putExtra("action", CRUDKostActivity.CREATE)
             intent.putExtra("id", 0)
 //            startActivity(intent)
             (activity as HomeActivity).resultLauncher.launch(intent)
@@ -82,7 +80,7 @@ class ListItemFragment : Fragment() {
     fun setupRecyclerView(){
         kostAdapter = RVItemKostAdapter(arrayListOf(), object: RVItemKostAdapter.OnAdapterListener{
             override fun onClick(kost: Kost){
-                intentEdit(kost.id, CreateActivity.READ)
+                intentEdit(kost.id, CRUDKostActivity.READ)
             }
 
 //            override fun onUpdate(kost: Kost){
@@ -131,7 +129,7 @@ class ListItemFragment : Fragment() {
     }
 
     private fun intentEdit(kostId: Int, intentType: Int){
-        val intent = Intent(activity, CreateActivity::class.java)
+        val intent = Intent(activity, CRUDKostActivity::class.java)
         intent.putExtra("id", kostId)
         intent.putExtra("action", intentType)
 //        startActivity(intent)

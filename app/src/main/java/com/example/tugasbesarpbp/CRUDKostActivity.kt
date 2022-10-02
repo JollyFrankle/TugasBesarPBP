@@ -25,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CreateActivity : AppCompatActivity() {
+class CRUDKostActivity : AppCompatActivity() {
 
 //    private var binding: ActivityCreateBinding? = null
 
@@ -83,14 +83,9 @@ class CreateActivity : AppCompatActivity() {
 //        val tilNama = binding.tilTambahNama.editText?.text.toString()
 
         val db by lazy { MainDB(this) }
-//<<<<<<< Updated upstream
         kostDao = db.KostDao()
-//        val kostDao = db.KostDao()
-        sendNotification3()
-//=======
-//
-//>>>>>>> Stashed changes
 
+        // Set status dari input dan tombol2 yg bisa diklik berdasarkan CREATE, READ, atau UPDATE:
         this.setInputElements()
 
         btnEdit.setOnClickListener {
@@ -182,12 +177,7 @@ class CreateActivity : AppCompatActivity() {
                 editData()
             }
             R.id.action_delete -> {
-//                val intent = Intent(this, HomeActivity::class.java)
-//                intent.putExtra("fragment", "list")
-//                startActivity(intent)
-//                finish()
-                setResult(RESULT_OK)
-                finish()
+                deleteData()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -245,6 +235,9 @@ class CreateActivity : AppCompatActivity() {
         }
 
         if(action == CREATE) {
+            // Send notification 3
+            sendNotification3()
+
             btnEdit.isEnabled = false
             btnDelete.isEnabled = false
         } else {
@@ -324,8 +317,6 @@ class CreateActivity : AppCompatActivity() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
             .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
             .setContentTitle(tilTambahNama.editText?.text.toString())
-                // setContentText untuk menampilkan text dibawah title dengan singkat
-//            .setContentText("Kost baru ditambahkan dengan harga Rp."+ tilTambahHarga.editText?.text.toString())
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setColor(Color.BLUE)
             .setAutoCancel(true)

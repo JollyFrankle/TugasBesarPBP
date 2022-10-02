@@ -19,6 +19,7 @@ import java.util.*
 class HomeActivity : AppCompatActivity() {
     private lateinit var spSession: SharedPreferences
     private lateinit var btmMenu: NavigationBarView
+    lateinit var navHostFragment: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +27,9 @@ class HomeActivity : AppCompatActivity() {
 
         // Menu di bawah (bottom navigation/navigation bar)
         btmMenu = findViewById(R.id.bottomNavigationView)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         btmMenu.setupWithNavController(navHostFragment.navController)
+        btmMenu.selectedItemId = R.id.homeFragment
 
         //
         val fragment = intent.extras?.getString("fragment")
@@ -43,6 +45,9 @@ class HomeActivity : AppCompatActivity() {
 
         // set navigation bar item selected color
         btmMenu.itemActiveIndicatorColor = getColorStateList(R.color.bs_white)
+
+        // hide action bar
+        supportActionBar?.hide()
     }
 
     // set title bar
@@ -92,7 +97,6 @@ class HomeActivity : AppCompatActivity() {
         val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
         btmMenu.selectedItemId = menu
         // refresh
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         navController.navigate(menu)
     }
@@ -130,7 +134,6 @@ class HomeActivity : AppCompatActivity() {
 //                }
 //            }
             // refresh current fragment
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(btmMenu.selectedItemId)
 //            println("_________________________ result: $fragment")
@@ -157,4 +160,9 @@ class HomeActivity : AppCompatActivity() {
 //            super.onBackPressed()
 //        }
     }
+
+    // change fragment
+//    fun changeFragment(dest: Int, args: Bundle? = null) {
+//        navHostFragment.navController.navigate(dest, args)
+//    }
 }

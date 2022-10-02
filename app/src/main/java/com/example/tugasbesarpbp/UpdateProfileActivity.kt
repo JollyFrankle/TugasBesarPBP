@@ -18,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class UpdateActivity : AppCompatActivity() {
+class UpdateProfileActivity : AppCompatActivity() {
     private var _binding: ActivityUpdateBinding? = null
     private val binding get() = _binding!!
     private lateinit var spSession: SharedPreferences

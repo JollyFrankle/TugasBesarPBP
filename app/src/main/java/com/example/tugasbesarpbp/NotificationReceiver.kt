@@ -3,7 +3,6 @@ package com.example.tugasbesarpbp
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 
 class NotificationReceiver: BroadcastReceiver() {
@@ -24,8 +23,8 @@ class NotificationReceiver: BroadcastReceiver() {
                 // Intent CreateActivity menerima
                 // - "action" (tindakan apa? Read, Create, atau Edit)
                 // - "id" (kalau tindakan Edit atau Read, maka mau tampilkan data dengan id berapa?) --> diteruskan dari notification
-                val showIntent = Intent(context, CreateActivity::class.java)
-                showIntent.putExtra("action", CreateActivity.READ)
+                val showIntent = Intent(context, CRUDKostActivity::class.java)
+                showIntent.putExtra("action", CRUDKostActivity.READ)
                 showIntent.putExtra("id", intent.getIntExtra("data", 0))
                 showIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(context!!, showIntent, null)
