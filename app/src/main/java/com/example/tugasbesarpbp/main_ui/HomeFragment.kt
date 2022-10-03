@@ -61,6 +61,8 @@ class HomeFragment : Fragment() {
             val keyword = view.findViewById<TextInputLayout>(R.id.tilHomeSearch).editText?.text.toString()
             bundle.putString("search", keyword)
             (activity as HomeActivity).navHostFragment.navController.navigate(fragment, bundle)
+
+//            (activity as HomeActivity).navHostFragment.navController.navi
         }
     }
 }

@@ -33,6 +33,22 @@ class ProfileFragment : Fragment() {
         // set actionbar title
         (activity as HomeActivity).setActionBarTitle("Profile Management")
 
+        // on click listener for profileBtnEdit
+        binding.profileBtnEdit.setOnClickListener {
+            val intent = Intent(activity, UpdateProfileActivity::class.java)
+            startActivity(intent)
+//            (activity as HomeActivity).resultLauncher.launch(intent)
+        }
+
+        binding.btnFloatSignOut.setOnClickListener {
+            (activity as HomeActivity).signOut()
+        }
+    }
+
+    // onStart --> ketika fragment ini muncul atau di tampilkan (mis. ketika kita kembali dari fragment/activity lain)
+    override fun onStart() {
+        super.onStart()
+
         // get session
         val session = (activity as HomeActivity).getSession()
         val db by lazy { MainDB(activity as HomeActivity) }
@@ -45,17 +61,6 @@ class ProfileFragment : Fragment() {
                 binding.tvVPTanggalLahir.text = user.tanggalLahir
                 binding.tvVPNomorTelepon.text = user.nomorTelepon
             }
-        }
-
-        // on click listener for profileBtnEdit
-        binding.profileBtnEdit.setOnClickListener {
-            val intent = Intent(activity, UpdateProfileActivity::class.java)
-            (activity as HomeActivity).resultLauncher.launch(intent)
-//            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
-        }
-
-        binding.btnFloatSignOut.setOnClickListener {
-            (activity as HomeActivity).signOut()
         }
     }
 }

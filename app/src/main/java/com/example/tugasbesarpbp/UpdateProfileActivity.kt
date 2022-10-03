@@ -41,8 +41,8 @@ class UpdateProfileActivity : AppCompatActivity() {
         // load data
         CoroutineScope(Dispatchers.IO).launch {
             val user: User? = db.UserDao().getUserById(spSession.getInt("id", 0))
-            if(user != null){
-                withContext(Dispatchers.Main){
+            if (user != null) {
+                withContext(Dispatchers.Main) {
                     binding.tilUpdProfNama.editText?.setText(user.nama)
                     binding.tilUpdProfUsername.editText?.setText(user.username)
                     binding.tilUpdProfEmail.editText?.setText(user.email)
@@ -57,10 +57,21 @@ class UpdateProfileActivity : AppCompatActivity() {
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
-            val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                // Display Selected date in TextView
-                _binding?.tilUpdProfTanggalLahir?.editText?.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month+1) + "/" + year)
-            }, year, month, day)
+            val dpd = DatePickerDialog(
+                this,
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    // Display Selected date in TextView
+                    _binding?.tilUpdProfTanggalLahir?.editText?.setText(
+                        String.format(
+                            "%02d",
+                            dayOfMonth
+                        ) + "/" + String.format("%02d", month + 1) + "/" + year
+                    )
+                },
+                year,
+                month,
+                day
+            )
             dpd.datePicker.maxDate = System.currentTimeMillis()
             dpd.show()
         }
@@ -89,22 +100,21 @@ class UpdateProfileActivity : AppCompatActivity() {
                 binding.tilUpdProfNama.error = null
             }
 
-            if(tanggalLahir.isEmpty()){
+            if (tanggalLahir.isEmpty()) {
                 binding.tilUpdProfTanggalLahir.error = "Tanggal lahir harus diisi"
                 error = true
-            } else{
+            } else {
                 binding.tilUpdProfTanggalLahir.error = null
             }
 
-            if(nomorTelepon.length == 12){
+            if (nomorTelepon.length == 12) {
                 binding.tilUpdProfNomorTelepon.error = null
-            } else{
+            } else {
                 binding.tilUpdProfNomorTelepon.error = "Nomor telepon harus 12 digit"
                 error = true
             }
 
             CoroutineScope(Dispatchers.IO).launch {
-
                 // all input is valid
                 if (!error) {
                     // do update user
@@ -117,21 +127,14 @@ class UpdateProfileActivity : AppCompatActivity() {
                     )
 
                     // go back to previous activity
-                    // send data to previous activity
-//                    val intent = Intent(this@UpdateActivity, HomeActivity::class.java)
-//                    intent.putExtra("fragment", "profile")
-                    setResult(RESULT_OK)
                     finish()
-//                    val intent = Intent(this@UpdateActivity, HomeActivity::class.java)
-//                    intent.putExtra("fragment", "profile")
-//                    startActivity(intent)
-//                    finish()
                 } else {
-                    Snackbar.make(binding.root, "Update profil gagal. Cek ulang bagian yang ditandai.", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root,
+                        "Update profil gagal. Cek ulang bagian yang ditandai.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
-
-
-
             }
         }
     }
@@ -141,12 +144,4 @@ class UpdateProfileActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
-
-    // on back pressed
-//    override fun onBackPressed() {
-//        val intent = Intent(this, HomeActivity::class.java)
-//        intent.putExtra("fragment", "profile")
-//        startActivity(intent)
-//        finish()
-//    }
 }

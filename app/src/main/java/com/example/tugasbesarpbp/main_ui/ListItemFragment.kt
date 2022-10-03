@@ -64,8 +64,7 @@ class ListItemFragment : Fragment() {
             val intent = Intent(activity, CRUDKostActivity::class.java)
             intent.putExtra("action", CRUDKostActivity.CREATE)
             intent.putExtra("id", 0)
-//            startActivity(intent)
-            (activity as HomeActivity).resultLauncher.launch(intent)
+            startActivity(intent)
         }
 
         btnSearch.setOnClickListener {
@@ -73,7 +72,7 @@ class ListItemFragment : Fragment() {
             this.loadData()
         }
 
-        this.loadData()
+//        this.loadData()
         setupRecyclerView()
     }
 
@@ -82,14 +81,6 @@ class ListItemFragment : Fragment() {
             override fun onClick(kost: Kost){
                 intentEdit(kost.id, CRUDKostActivity.READ)
             }
-
-//            override fun onUpdate(kost: Kost){
-////                intentEdit(kost.id, Constant.TYPE_UPDATE)
-//            }
-//
-//            override fun onDelete(kost: Kost){
-////                deleteDialog(kost)
-//            }
         })
         rvItemKost.apply{
             layoutManager = LinearLayoutManager(context)
@@ -97,26 +88,12 @@ class ListItemFragment : Fragment() {
         }
     }
 
-//    private fun deleteDialog(kost: Kost){
-//        val alertDialog = AlertDialog.Builder((activity as HomeActivity))
-//        alertDialog.apply {
-//            setTitle("Confirmation")
-//            setMessage("Are You Sure to delete this data From ${kost.id}?")
-//            setNegativeButton("Cancel", DialogInterface.OnClickListener
-//            { dialogInterface, i ->
-//                dialogInterface.dismiss()
-//            })
-//            setPositiveButton("Delete", DialogInterface.OnClickListener
-//            { dialogInterface, i ->
-//                dialogInterface.dismiss()
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    kostDao.deleteKost(kost.id)
-//                    loadData()
-//                }
-//            })
-//        }
-//        alertDialog.show()
-//    }
+    override fun onStart() {
+        super.onStart()
+
+        // refresh data
+        this.loadData()
+    }
 
     private fun loadData() {
         val query = searchInput.editText?.text.toString()
@@ -132,9 +109,6 @@ class ListItemFragment : Fragment() {
         val intent = Intent(activity, CRUDKostActivity::class.java)
         intent.putExtra("id", kostId)
         intent.putExtra("action", intentType)
-//        startActivity(intent)
-        (activity as HomeActivity).resultLauncher.launch(intent)
-        // tutup activity home
-//        (activity as HomeActivity).finish()
+        startActivity(intent)
     }
 }

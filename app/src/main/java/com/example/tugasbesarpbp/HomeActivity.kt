@@ -27,7 +27,8 @@ class HomeActivity : AppCompatActivity() {
 
         // Menu di bawah (bottom navigation/navigation bar)
         btmMenu = findViewById(R.id.bottomNavigationView)
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         btmMenu.setupWithNavController(navHostFragment.navController)
         btmMenu.selectedItemId = R.id.homeFragment
 
@@ -67,38 +68,12 @@ class HomeActivity : AppCompatActivity() {
             R.id.btnLogOut -> {
                 this.signOut()
             }
-
-//            R.id.btnCreate -> {
-//                val intent = Intent(this, CreateActivity::class.java)
-//                intent.putExtra("action", CreateActivity.CREATE)
-//                intent.putExtra("id", 0)
-//                startActivity(intent)
-//                finish()
-//            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     fun getSession(): SharedPreferences {
         return spSession
-    }
-
-    fun goToActivity(activity: Class<*>) {
-        val intent = Intent(this, activity)
-        startActivity(intent)
-    }
-
-    fun changeMenu(fragment: String) {
-        val menu: Int = when(fragment) {
-            "home" -> R.id.homeFragment
-            "profile" -> R.id.profileFragment
-            else -> R.id.homeFragment
-        }
-        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
-        btmMenu.selectedItemId = menu
-        // refresh
-        val navController = navHostFragment.navController
-        navController.navigate(menu)
     }
 
     fun signOut() {
@@ -122,47 +97,18 @@ class HomeActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-//            val fragment = data?.extras?.getString("fragment")
-//            fragment?.let {
-//                when (it) {
-//                    "item" -> btmMenu.selectedItemId = R.id.listItemFragment
-//                    "profile" -> btmMenu.selectedItemId = R.id.profileFragment
-//                }
-//            }
-            // refresh current fragment
-            val navController = navHostFragment.navController
-            navController.navigate(btmMenu.selectedItemId)
-//            println("_________________________ result: $fragment")
-        }
-    }
-
     override fun onBackPressed() {
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-//        val currentFragment = navHostFragment.childFragmentManager.fragments[0]
-//        if (currentFragment is HomeFragment) {
-            // confirm
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Keluar")
-            builder.setMessage("Apakah Anda yakin ingin keluar dari aplikasi ini?")
-            builder.setPositiveButton("Yes") { dialog, which ->
-                finish()
-            }
-            builder.setNegativeButton("No") { dialog, which ->
-                // do nothing
-            }
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-//        } else {
-//            super.onBackPressed()
-//        }
+        // confirm
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Keluar")
+        builder.setMessage("Apakah Anda yakin ingin keluar dari aplikasi ini?")
+        builder.setPositiveButton("Yes") { dialog, which ->
+            finish()
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // do nothing
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
-
-    // change fragment
-//    fun changeFragment(dest: Int, args: Bundle? = null) {
-//        navHostFragment.navController.navigate(dest, args)
-//    }
 }
