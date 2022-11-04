@@ -4,6 +4,7 @@
     package="com.example.tugasbesarpbp">
     <!-- internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -17,12 +18,19 @@
         tools:replace="android:icon"
         tools:targetApi="31">
         <activity
+            android:name=".CameraActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".EditViewActivity"
             android:exported="false" />
         <activity
             android:name=".CreateActivity"
-            android:parentActivityName=".HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".FTOScreenActivity"
             android:exported="true"
@@ -39,13 +47,14 @@
             android:label="@string/app_name" />
         <activity
             android:name=".UpdateActivity"
-            android:parentActivityName=".HomeActivity"
             android:exported="false"
-            android:label="Update Profile" />
+            android:label="Update Profile"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:theme="@style/Theme.TugasBesarPBP.NoActionBar" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
@@ -53,6 +62,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <receiver android:name=".NotificationReceiver" />
     </application>
 
