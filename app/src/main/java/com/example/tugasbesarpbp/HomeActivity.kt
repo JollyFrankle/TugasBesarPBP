@@ -1,11 +1,13 @@
 package com.example.tugasbesarpbp
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,15 +18,19 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var spSession: SharedPreferences
+    private lateinit var btmMenu: NavigationBarView
+    lateinit var navHostFragment: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         // Menu di bawah (bottom navigation/navigation bar)
-        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        btmMenu = findViewById(R.id.bottomNavigationView)
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         btmMenu.setupWithNavController(navHostFragment.navController)
+        btmMenu.selectedItemId = R.id.homeFragment
 
         //
         val fragment = intent.extras?.getString("fragment")
@@ -40,6 +46,9 @@ class HomeActivity : AppCompatActivity() {
 
         // set navigation bar item selected color
         btmMenu.itemActiveIndicatorColor = getColorStateList(R.color.bs_white)
+
+        // hide action bar
+        supportActionBar?.hide()
     }
 
     // set title bar
@@ -59,14 +68,6 @@ class HomeActivity : AppCompatActivity() {
             R.id.btnLogOut -> {
                 this.signOut()
             }
-
-//            R.id.btnCreate -> {
-//                val intent = Intent(this, CreateActivity::class.java)
-//                intent.putExtra("action", CreateActivity.CREATE)
-//                intent.putExtra("id", 0)
-//                startActivity(intent)
-//                finish()
-//            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -83,30 +84,11 @@ class HomeActivity : AppCompatActivity() {
         return spSession
     }
 
-    fun goToActivity(activity: Class<*>) {
-        val intent = Intent(this, activity)
-        startActivity(intent)
-    }
-
-    fun changeMenu(fragment: String) {
-        val menu: Int = when(fragment) {
-            "home" -> R.id.homeFragment
-            "profile" -> R.id.profileFragment
-            else -> R.id.homeFragment
-        }
-        val btmMenu: NavigationBarView = findViewById(R.id.bottomNavigationView)
-        btmMenu.selectedItemId = menu
-        // refresh
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(menu)
-    }
-
     fun signOut() {
         // confirm
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Sign out")
-        builder.setMessage("Anda akan keluar dari aplikasi ini dan kredensial Anda akan dihapus.\r\nApakah Anda yakin?")
+        builder.setMessage("Anda akan keluar dari aplikasi ini dan username serta password akan dilupakan oleh sistem.\r\nApakah Anda yakin?")
         builder.setPositiveButton("Yes") { dialog, which ->
             // clear session
             spSession.edit().clear().apply()
@@ -114,6 +96,21 @@ class HomeActivity : AppCompatActivity() {
             // go to login
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // do nothing
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    override fun onBackPressed() {
+        // confirm
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Keluar")
+        builder.setMessage("Apakah Anda yakin ingin keluar dari aplikasi ini?")
+        builder.setPositiveButton("Yes") { dialog, which ->
             finish()
         }
         builder.setNegativeButton("No") { dialog, which ->

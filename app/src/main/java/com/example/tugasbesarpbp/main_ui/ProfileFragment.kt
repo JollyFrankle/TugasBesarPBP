@@ -1,16 +1,14 @@
 package com.example.tugasbesarpbp.main_ui
 
-import android.annotation.SuppressLint
-import android.hardware.Camera
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import com.example.tugasbesarpbp.*
+import com.example.tugasbesarpbp.HomeActivity
+import com.example.tugasbesarpbp.UpdateProfileActivity
 import com.example.tugasbesarpbp.databinding.FragmentProfileBinding
 import com.example.tugasbesarpbp.room.MainDB
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +36,22 @@ class ProfileFragment : Fragment() {
 
         // set actionbar title
         (activity as HomeActivity).setActionBarTitle("Profile Management")
+
+        // on click listener for profileBtnEdit
+        binding.profileBtnEdit.setOnClickListener {
+            val intent = Intent(activity, UpdateProfileActivity::class.java)
+            startActivity(intent)
+//            (activity as HomeActivity).resultLauncher.launch(intent)
+        }
+
+        binding.btnFloatSignOut.setOnClickListener {
+            (activity as HomeActivity).signOut()
+        }
+    }
+
+    // onStart --> ketika fragment ini muncul atau di tampilkan (mis. ketika kita kembali dari fragment/activity lain)
+    override fun onStart() {
+        super.onStart()
 
         // get session
         val session = (activity as HomeActivity).getSession()

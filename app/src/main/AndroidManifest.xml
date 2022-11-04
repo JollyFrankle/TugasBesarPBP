@@ -18,26 +18,14 @@
         tools:replace="android:icon"
         tools:targetApi="31">
         <activity
-            android:name=".CameraActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".EditViewActivity"
+            android:name=".CRUDKostActivity"
             android:exported="false" />
-        <activity
-            android:name=".CreateActivity"
-            android:exported="false"
-            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".FTOScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.TugasBesarPBP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,7 +34,7 @@
             android:exported="false"
             android:label="@string/app_name" />
         <activity
-            android:name=".UpdateActivity"
+            android:name=".UpdateProfileActivity"
             android:exported="false"
             android:label="Update Profile"
             android:parentActivityName=".HomeActivity" />

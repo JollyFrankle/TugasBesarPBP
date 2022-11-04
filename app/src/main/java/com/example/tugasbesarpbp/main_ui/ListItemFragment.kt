@@ -1,26 +1,21 @@
 package com.example.tugasbesarpbp.main_ui
 
-import android.app.Notification
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.*
-import com.example.tugasbesarpbp.room.Constant
 import com.example.tugasbesarpbp.room.MainDB
 import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.room.kost.KostDao
 import com.example.tugasbesarpbp.rv_adapters.RVItemKostAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,6 +27,8 @@ class ListItemFragment : Fragment() {
     private lateinit var rvItemKost: RecyclerView
     private lateinit var kostDao: KostDao
     private lateinit var btnAdd: FloatingActionButton
+    private lateinit var btnSearch: Button
+    private lateinit var searchInput: TextInputLayout
 
     private val CHANNEL_ID_1 = "channel_notification_01"
     private val notificationId3 = 103
@@ -52,66 +49,56 @@ class ListItemFragment : Fragment() {
 
         rvItemKost = view.findViewById(R.id.rvItemKostContainer)
         btnAdd = view.findViewById(R.id.btnFloatAdd)
+        btnSearch = view.findViewById(R.id.btnSearch)
+        searchInput = view.findViewById(R.id.tilSearch)
+
+        // arguments
+        arguments.let {
+            searchInput.editText?.setText(it?.getString("search", ""))
+        }
 
         // set actionbar title
         (activity as HomeActivity).setActionBarTitle("Daftar Kost")
 
         btnAdd.setOnClickListener {
-            val intent = Intent(activity, CreateActivity::class.java)
-            intent.putExtra("action", CreateActivity.CREATE)
+            val intent = Intent(activity, CRUDKostActivity::class.java)
+            intent.putExtra("action", CRUDKostActivity.CREATE)
             intent.putExtra("id", 0)
             startActivity(intent)
         }
 
-        this.loadData()
+        btnSearch.setOnClickListener {
+            // refresh data
+            this.loadData()
+        }
+
+//        this.loadData()
         setupRecyclerView()
     }
 
     fun setupRecyclerView(){
         kostAdapter = RVItemKostAdapter(arrayListOf(), object: RVItemKostAdapter.OnAdapterListener{
             override fun onClick(kost: Kost){
-                intentEdit(kost.id, CreateActivity.READ)
-            }
-
-            override fun onUpdate(kost: Kost){
-//                intentEdit(kost.id, Constant.TYPE_UPDATE)
-            }
-
-            override fun onDelete(kost: Kost){
-//                deleteDialog(kost)
+                intentEdit(kost.id, CRUDKostActivity.READ)
             }
         })
         rvItemKost.apply{
             layoutManager = LinearLayoutManager(context)
             adapter = kostAdapter
         }
-        println(kostAdapter.getItemCount().toString() + "------------------------------------------------------------------------------")
     }
 
-    private fun deleteDialog(kost: Kost){
-        val alertDialog = AlertDialog.Builder((activity as HomeActivity))
-        alertDialog.apply {
-            setTitle("Confirmation")
-            setMessage("Are You Sure to delete this data From ${kost.id}?")
-            setNegativeButton("Cancel", DialogInterface.OnClickListener
-            { dialogInterface, i ->
-                dialogInterface.dismiss()
-            })
-            setPositiveButton("Delete", DialogInterface.OnClickListener
-            { dialogInterface, i ->
-                dialogInterface.dismiss()
-                CoroutineScope(Dispatchers.IO).launch {
-                    kostDao.deleteKost(kost.id)
-                    loadData()
-                }
-            })
-        }
-        alertDialog.show()
+    override fun onStart() {
+        super.onStart()
+
+        // refresh data
+        this.loadData()
     }
 
-    fun loadData() {
+    private fun loadData() {
+        val query = searchInput.editText?.text.toString()
         CoroutineScope(Dispatchers.IO).launch {
-            val data = kostDao.getKost()
+            val data = kostDao.getKost(query)
             withContext(Dispatchers.Main){
                 kostAdapter.setData(data as ArrayList<Kost>)
             }
@@ -119,7 +106,7 @@ class ListItemFragment : Fragment() {
     }
 
     private fun intentEdit(kostId: Int, intentType: Int){
-        val intent = Intent(activity, CreateActivity::class.java)
+        val intent = Intent(activity, CRUDKostActivity::class.java)
         intent.putExtra("id", kostId)
         intent.putExtra("action", intentType)
         startActivity(intent)

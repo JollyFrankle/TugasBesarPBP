@@ -9,13 +9,13 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.tugasbesarpbp.databinding.ActivityCreateBinding
 import com.example.tugasbesarpbp.room.MainDB
 import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.room.kost.KostDao
@@ -25,9 +25,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CreateActivity : AppCompatActivity() {
+class CRUDKostActivity : AppCompatActivity() {
 
-    private var binding: ActivityCreateBinding? = null
+//    private var binding: ActivityCreateBinding? = null
 
     private lateinit var btnTambah: Button
     private lateinit var btnEdit: Button
@@ -35,7 +35,11 @@ class CreateActivity : AppCompatActivity() {
     private lateinit var tilTambahNama: TextInputLayout
     private lateinit var tilTambahFasilitas: TextInputLayout
     private lateinit var tilTambahHarga: TextInputLayout
+    private var id: Int = 0
+    private var action: Int = CREATE
+    private lateinit var kostDao: KostDao
 
+    private lateinit var menu: Menu
 
     private lateinit var builderManager: NotificationManagerCompat
     private val CHANNEL_ID_1 = "channel_notification_01"
@@ -61,11 +65,14 @@ class CreateActivity : AppCompatActivity() {
 
         createNotificationChannel()
 
-        setTitle("Data Kost")
+        title = "Data Kost"
+
+        // enable back button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // get action from intent
-        var action = intent.getIntExtra("action", 3)
-        val id = intent.getIntExtra("id", 1)
+        action = intent.getIntExtra("action", CREATE)
+        id = intent.getIntExtra("id", 0)
 
         btnTambah = findViewById(R.id.btnTambah)
         btnEdit = findViewById(R.id.btnEdit)
@@ -76,40 +83,17 @@ class CreateActivity : AppCompatActivity() {
 //        val tilNama = binding.tilTambahNama.editText?.text.toString()
 
         val db by lazy { MainDB(this) }
-        val kostDao = db.KostDao()
-        sendNotification3()
+        kostDao = db.KostDao()
 
-        this.setInputElements(action, id, kostDao);
+        // Set status dari input dan tombol2 yg bisa diklik berdasarkan CREATE, READ, atau UPDATE:
+        this.setInputElements()
 
         btnEdit.setOnClickListener {
-            if(action == EDIT) {
-                action = READ
-            } else {
-                action = EDIT
-            }
-            setInputElements(action, id, kostDao)
+            editData()
         }
 
         btnDelete.setOnClickListener {
-            // confirm alert
-            val dialog = AlertDialog.Builder(this)
-            dialog.setTitle("Konfirmasi")
-            dialog.setMessage("Apakah anda yakin ingin menghapus data ini?")
-            dialog.setPositiveButton("Ya") { dialog, which ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    kostDao.deleteKost(id)
-                    withContext(Dispatchers.Main) {
-                        val intent = Intent(this@CreateActivity, HomeActivity::class.java)
-                        intent.putExtra("fragment", "list")
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-            }
-            dialog.setNegativeButton("Tidak") { dialog, which ->
-                dialog.dismiss()
-            }
-            dialog.show()
+            deleteData()
         }
 
         btnTambah.setOnClickListener {
@@ -148,7 +132,9 @@ class CreateActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 if(error == 0) {
                     if (action == CREATE) {
-                        kostDao.addKost(Kost(0, nama, fasilitas, harga))
+                        // Dapatkan last insert id (Long, diubah ke Int)
+                        id = kostDao.addKost(Kost(0, nama, fasilitas, harga)).toInt()
+
                         sendNotification1()
                         sendNotification2()
                         progressDone = 100
@@ -157,21 +143,82 @@ class CreateActivity : AppCompatActivity() {
                         kostDao.updateKost(Kost(id, nama, fasilitas, harga))
                     }
 
-                    val intent = Intent(this@CreateActivity, HomeActivity::class.java)
-                    intent.putExtra("fragment", "list")
-                    startActivity(intent)
+//                    val intent = Intent(this@CreateActivity, HomeActivity::class.java)
+//                    intent.putExtra("fragment", "list")
+//                    startActivity(intent)
+//                    finish()
+                    setResult(RESULT_OK)
                     finish()
                 } else {
                     // do nothing
                 }
-//                Log.d("MASUK DB", "DAO")
-//                val kost: Kost = Kost(0, tilTambahNama.editText?.text.toString(), tilTambahAlamat.editText?.text.toString(), tilTambahFasilitas.editText?.text.toString())
-//                kostDao.addKost(kost)
             }
         }
     }
 
-    private fun setInputElements(action: Int, id: Int, kostDao: KostDao) {
+    // on navigation back button pressed
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    // options menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_crud_kost, menu)
+        this.menu = menu!!
+        this.setEditDeleteBtn()
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    // options menu item selected
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_edit -> {
+                editData()
+            }
+            R.id.action_delete -> {
+                deleteData()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    // edit action
+    private fun editData() {
+        if(action == EDIT) {
+            action = READ
+        } else {
+            action = EDIT
+        }
+        setInputElements()
+    }
+
+    // delete action
+    private fun deleteData() {
+        // confirm alert
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("Konfirmasi")
+        dialog.setMessage("Apakah anda yakin ingin menghapus data ini?")
+        dialog.setPositiveButton("Ya") { dialog, which ->
+            CoroutineScope(Dispatchers.IO).launch {
+                kostDao.deleteKost(id)
+                withContext(Dispatchers.Main) {
+//                    val intent = Intent(this@CreateActivity, HomeActivity::class.java)
+//                    intent.putExtra("fragment", "list")
+//                    startActivity(intent)
+//                    finish()
+                    setResult(RESULT_OK)
+                    finish()
+                }
+            }
+        }
+        dialog.setNegativeButton("Tidak") { dialog, which ->
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun setInputElements() {
         if(action == EDIT || action == READ) {
             CoroutineScope(Dispatchers.IO).launch {
                 val kost = kostDao.getKostById(id)
@@ -188,6 +235,9 @@ class CreateActivity : AppCompatActivity() {
         }
 
         if(action == CREATE) {
+            // Send notification 3
+            sendNotification3()
+
             btnEdit.isEnabled = false
             btnDelete.isEnabled = false
         } else {
@@ -220,6 +270,16 @@ class CreateActivity : AppCompatActivity() {
         }
     }
 
+    private fun setEditDeleteBtn() {
+        if(action == CREATE) {
+            menu.findItem(R.id.action_edit).isVisible = false
+            menu.findItem(R.id.action_delete).isVisible = false
+        } else {
+            menu.findItem(R.id.action_edit).isVisible = true
+            menu.findItem(R.id.action_delete).isVisible = true
+        }
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Notification Title"
@@ -243,16 +303,20 @@ class CreateActivity : AppCompatActivity() {
         val intent: Intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent : PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val broadcastIntent: Intent = Intent(this, NotificationReceiver::class.java)
-        broadcastIntent.putExtra("toastMessage", tilTambahNama.toString())
+
+        // Handle notification click
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+        // File "NotificationReceiver.kt" menerima parameter "action" --> ke mana activity yang dituju, kemudian "data" --> data apa yang akan dikirimkan
+        // Kasus ini: action = "show_kost" agar bisa melihat detail kost, kemudian data = id kost yang akan ditampilkan
+         val broadcastIntent = Intent(this, NotificationReceiver::class.java)
+        broadcastIntent.putExtra("action", "show_kost")
+        broadcastIntent.putExtra("data", id)
         val actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
             .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
             .setContentTitle(tilTambahNama.editText?.text.toString())
-                // setContentText untuk menampilkan text dibawah title dengan singkat
-//            .setContentText("Kost baru ditambahkan dengan harga Rp."+ tilTambahHarga.editText?.text.toString())
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setColor(Color.BLUE)
             .setAutoCancel(true)
@@ -262,7 +326,7 @@ class CreateActivity : AppCompatActivity() {
                 .addLine("Harga : " + tilTambahHarga.editText?.text.toString())
                 .addLine("Fasilitas : " + tilTambahFasilitas.editText?.text.toString()))
             .setContentIntent(pendingIntent)
-            .addAction(R.mipmap.ic_launcher, "Toast", actionIntent)
+            .addAction(R.mipmap.ic_launcher, "Lihat Selengkapnya", actionIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(this)){
@@ -275,7 +339,7 @@ class CreateActivity : AppCompatActivity() {
             .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText("Kost " + tilTambahNama.editText?.text.toString() +
-                        " ditambahkan kedalam aplikasi JogjaKita dengan harga yang sangat terjangkau yakni mulai dari Rp." + tilTambahHarga.editText?.text.toString() + " dengan fasilitas yang cukup memadai yakni" + tilTambahFasilitas.editText?.text.toString()))
+                        " ditambahkan kedalam aplikasi JogjaKita dengan harga yang sangat terjangkau yakni mulai dari Rp. " + tilTambahHarga.editText?.text.toString() + " dengan fasilitas yang cukup memadai yakni " + tilTambahFasilitas.editText?.text.toString()))
             .setPriority(NotificationCompat.PRIORITY_LOW)
 
         with(NotificationManagerCompat.from(this)){
@@ -286,13 +350,13 @@ class CreateActivity : AppCompatActivity() {
     private fun sendNotification3() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
             .setContentTitle("Create Kost")
-            .setContentText("Create in progress")
+            .setContentText("Creation in progress")
             .setSmallIcon(R.drawable.ic_home_24)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         val PROGRESS_MAX = 100
         val PROGRESS_CURRENT = 0
         with(NotificationManagerCompat.from(this)) {
-            builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+            builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, true)
             notify(notificationId3, builder.build())
             if(progressDone == 100){
                 builder.setContentText("Kost created")

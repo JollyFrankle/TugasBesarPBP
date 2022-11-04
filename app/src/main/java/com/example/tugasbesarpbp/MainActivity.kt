@@ -1,6 +1,5 @@
 package com.example.tugasbesarpbp
 
-import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -16,12 +15,14 @@ import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import com.example.tugasbesarpbp.auth_ui.LoginFragment
 import com.example.tugasbesarpbp.databinding.ActivityMainBinding
+import com.example.tugasbesarpbp.databinding.HomeFragViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: HomeFragViewModel by viewModels()
     private lateinit var spSession: SharedPreferences
 
     private val CHANNEL_ID = "channel_notification_01"
@@ -121,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             .addAction(R.mipmap.ic_launcher, "Log in", actionIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        val pictureBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background)
+        val pictureBitmap = BitmapFactory.decodeResource(resources, R.drawable.img16x9welcome)
         // Big picture style
         val bigPictureStyle = NotificationCompat.BigPictureStyle(builder)
             .bigPicture(pictureBitmap)
