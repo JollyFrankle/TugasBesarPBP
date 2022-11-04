@@ -25,8 +25,11 @@ class CameraActivity : AppCompatActivity() {
             val camera_view = findViewById<View>(R.id.FLCamera) as FrameLayout
             camera_view.addView(mCameraView)
         }
-        @SuppressLint("MissingInflatedId", "LocalSuppress") val imageClose =
-            findViewById<View>(R.id.imgClose) as ImageButton
-        imageClose.setOnClickListener{view: View? -> System.exit(0)}
+
+        val btnClose = findViewById<ImageButton>(R.id.imgClose)
+        btnClose.setOnClickListener {
+            mCamera?.release()
+            finish()
+        }
     }
 }

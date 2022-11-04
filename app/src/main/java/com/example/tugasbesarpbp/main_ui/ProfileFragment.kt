@@ -1,12 +1,15 @@
 package com.example.tugasbesarpbp.main_ui
 
 import android.content.Intent
+import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.tugasbesarpbp.CameraActivity
+import com.example.tugasbesarpbp.CameraView
 import com.example.tugasbesarpbp.HomeActivity
 import com.example.tugasbesarpbp.UpdateProfileActivity
 import com.example.tugasbesarpbp.databinding.FragmentProfileBinding
@@ -69,14 +72,16 @@ class ProfileFragment : Fragment() {
 
         // on click listener for profileBtnEdit
         binding.profileBtnEdit.setOnClickListener {
-            (activity as HomeActivity).goToActivity(UpdateActivity::class.java)
+            val intent = Intent(activity as HomeActivity, UpdateProfileActivity::class.java)
+            startActivity(intent)
         }
 
         binding.btnFloatSignOut.setOnClickListener {
             (activity as HomeActivity).signOut()
         }
         binding.profileImage.setOnClickListener {
-            (activity as HomeActivity).goToActivity(CameraActivity::class.java)
+            val intent = Intent(activity as HomeActivity, CameraActivity::class.java)
+            startActivity(intent)
         }
     }
 }

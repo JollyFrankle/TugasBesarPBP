@@ -13,10 +13,11 @@
         android:id="@+id/FLCamera" />
 
     <ImageButton
+        android:id="@+id/imgClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imgClose"
-        android:layout_gravity="center|bottom"
-        android:background="@drawable/ic_baseline_close" />
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="24dp"
+        app:srcCompat="@drawable/ic_baseline_close" />
 
 </FrameLayout>

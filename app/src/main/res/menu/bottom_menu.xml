@@ -4,6 +4,12 @@
         android:title="Home"
         android:icon="@drawable/ic_home_24"
         android:id="@+id/homeFragment"/>
+
+    <item
+        android:title="Maps"
+        android:icon="@drawable/ic_baseline_map_24"
+        android:id="@+id/mapsFragment"/>
+
     <item
         android:title="Search"
         android:icon="@drawable/ic_search_24"

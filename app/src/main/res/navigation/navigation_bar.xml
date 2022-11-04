@@ -11,6 +11,11 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.tugasbesarpbp.main_ui.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
+    <fragment
         android:id="@+id/listItemFragment"
         android:name="com.example.tugasbesarpbp.main_ui.ListItemFragment"
         android:label="fragment_list_item"

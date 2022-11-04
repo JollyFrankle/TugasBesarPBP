@@ -17,7 +17,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.example.tugasbesarpbp.auth_ui.LoginFragment
 import com.example.tugasbesarpbp.databinding.ActivityMainBinding
-import com.example.tugasbesarpbp.databinding.HomeFragViewModel
+import com.example.tugasbesarpbp.other.HomeFragViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         // Siapkan intent untuk membuka aplikasi ke bagian login, auto isi username dan password
         val broadcastIntent = Intent(this, NotificationReceiver::class.java)
         val bundle = Bundle()
-        bundle.putString("username", username)
+        bundle.putString("goToFragment", "profile")
         bundle.putString("password", password)
         broadcastIntent.putExtra("action", "main_activity")
         broadcastIntent.putExtra("data", bundle)

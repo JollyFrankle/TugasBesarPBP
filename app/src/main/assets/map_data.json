@@ -1,0 +1,35 @@
+{
+  "results": [
+    {
+      "geometry": {
+        "location": {
+          "lat": -7.77669186283723,
+          "lng": 110.3748536263298
+        }
+      },
+      "name": "Kost Homestay \"Citra\"",
+      "vicinity": "Jl. Cik Di Tiro No.37c, Terban, Kec. Gondokusuman, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55223"
+    },
+    {
+      "geometry": {
+        "location": {
+          "lat": -7.775426220650566,
+          "lng": 110.37133653072019
+        }
+      },
+      "name": "Kos2an bu Darsih",
+      "vicinity": "Jl. Pasiraman No.2, Terban, Kec. Gondokusuman, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55223"
+    },
+    {
+      "geometry": {
+        "location": {
+          "lat": -7.779314685223646,
+          "lng": 110.37385022846162
+        }
+      },
+      "name": "Kost Putri Supadi Residence",
+      "vicinity": "Terban, GK V 320, Gondokusuman, Terban Gondokusuman Terban Gondokusuman, Terban, Kec. Gondokusuman, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55223"
+    }
+  ],
+  "status": "OK"
+}

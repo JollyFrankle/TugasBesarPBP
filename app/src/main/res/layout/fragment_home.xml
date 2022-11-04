@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.tugasbesarpbp.databinding.HomeFragViewModel" />
+            type="com.example.tugasbesarpbp.other.HomeFragViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout4"

@@ -1,14 +1,8 @@
-package com.example.tugasbesarpbp.databinding
+package com.example.tugasbesarpbp.other
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.tugasbesarpbp.room.MainDB
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class HomeFragViewModel: ViewModel() {
     val currentWilayah: LiveData<String>

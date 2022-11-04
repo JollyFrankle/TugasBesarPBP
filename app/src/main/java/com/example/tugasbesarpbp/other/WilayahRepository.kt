@@ -1,7 +1,6 @@
-package com.example.tugasbesarpbp.databinding
+package com.example.tugasbesarpbp.other
 
 import androidx.lifecycle.MutableLiveData
-import com.example.tugasbesarpbp.room.MainDB
 
 object WilayahRepository {
     private val wilayahJogja: List<String> = listOf(
