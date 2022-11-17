@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         createNotificationChannel()
 
-        // queue
+        // Volley Queue
         queue = Volley.newRequestQueue(this)
 
         // get fragment from intent

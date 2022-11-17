@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.MainActivity
 import com.example.tugasbesarpbp.R
@@ -131,11 +132,15 @@ class LoginFragment : Fragment() {
         val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.LOGIN_URL, {
             val jsonObject = JSONObject(it)
             val token = jsonObject.getString("access_token")
+            val id = jsonObject.getJSONObject("user").getLong("id")
 
             // save to shared preferences
-            val editor = spSession.edit()
-            editor.putString("token", token)
-            editor.apply()
+            spSession.edit()
+                .putString("token", token)
+                .putLong("id", id)
+                .putString("username", username)
+                .putString("password", password)
+                .apply()
 
             (activity as MainActivity).goToHome()
         }, {

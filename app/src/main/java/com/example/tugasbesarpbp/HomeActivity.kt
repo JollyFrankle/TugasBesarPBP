@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.google.android.material.navigation.NavigationBarView
 import java.util.*
 
@@ -20,6 +22,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var spSession: SharedPreferences
     private lateinit var btmMenu: NavigationBarView
     lateinit var navHostFragment: NavHostFragment
+
+    var queue: RequestQueue? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,9 @@ class HomeActivity : AppCompatActivity() {
 
         // Session identifier
         spSession = getSharedPreferences("session", MODE_PRIVATE)
+
+        // Volley Queue
+        queue = Volley.newRequestQueue(this)
 
         // set navigation bar item selected color
         btmMenu.itemActiveIndicatorColor = getColorStateList(R.color.bs_white)
