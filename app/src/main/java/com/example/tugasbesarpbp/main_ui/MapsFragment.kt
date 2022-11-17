@@ -44,7 +44,7 @@ class MapsFragment : Fragment() {
 
 //        Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
         // agar peta bisa dibuat dari internet, bisa juga sih pake yg di atas ^^^
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID)
+        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
 
         // setup maps
         binding.map.setMultiTouchControls(true)
@@ -60,6 +60,7 @@ class MapsFragment : Fragment() {
 
     private fun getLocationMarker() {
         try {
+            // read from JSON
             val stream = requireActivity().assets.open("map_data.json")
             val size = stream.available()
             val buffer = ByteArray(size)
@@ -67,6 +68,7 @@ class MapsFragment : Fragment() {
             stream.read(buffer)
             stream.close()
 
+            // convert to string
             val strContent = String(buffer, StandardCharsets.UTF_8)
             try {
                 val jsonObject = JSONObject(strContent)
