@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp.main_ui
 
+import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
@@ -8,15 +9,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.CameraActivity
 import com.example.tugasbesarpbp.CameraView
 import com.example.tugasbesarpbp.HomeActivity
 import com.example.tugasbesarpbp.UpdateProfileActivity
+import com.example.tugasbesarpbp.api.UserApi
+import com.example.tugasbesarpbp.api_models.User
 import com.example.tugasbesarpbp.databinding.FragmentProfileBinding
 import com.example.tugasbesarpbp.room.MainDB
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class ProfileFragment : Fragment() {
     // use view binding
@@ -56,19 +65,20 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        getUserDetails()
         // get session
-        val session = (activity as HomeActivity).getSession()
-        val db by lazy { MainDB(activity as HomeActivity) }
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = db.UserDao().getUserById(session.getInt("id", 0))
-            if(user != null){
-                binding.tvDisplayName.text = user.nama
-                binding.tvVPUsername.text = user.username
-                binding.tvVPEmail.text = user.email
-                binding.tvVPTanggalLahir.text = user.tanggalLahir
-                binding.tvVPNomorTelepon.text = user.nomorTelepon
-            }
-        }
+//        val session = requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+//        val db by lazy { MainDB(activity as HomeActivity) }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val user = db.UserDao().getUserById(session.getInt("id", 0))
+//            if(user != null){
+//                binding.tvDisplayName.text = user.nama
+//                binding.tvVPUsername.text = user.username
+//                binding.tvVPEmail.text = user.email
+//                binding.tvVPTanggalLahir.text = user.tanggalLahir
+//                binding.tvVPNomorTelepon.text = user.nomorTelepon
+//            }
+//        }
 
         // on click listener for profileBtnEdit
         binding.profileBtnEdit.setOnClickListener {
@@ -83,5 +93,48 @@ class ProfileFragment : Fragment() {
             val intent = Intent(activity as HomeActivity, CameraActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun getUserDetails() {
+        // Dapatkan session untuk mengambil token dan id user
+        val session = requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+        val stringRequest: StringRequest = object: StringRequest(Method.GET, UserApi.GET_URL + session.getLong("id", 0), {
+            val gson = Gson()
+
+            // Dapatkan data user dari response [struktur: response = { "data": { ... } }]
+            val jsonRespose = JSONObject(it)
+            val user = gson.fromJson(jsonRespose.getJSONObject("data").toString(), User::class.java)
+            binding.tvDisplayName.text = user.nama
+            binding.tvVPUsername.text = user.username
+            binding.tvVPEmail.text = user.email
+            binding.tvVPTanggalLahir.text = user.tanggalLahir
+            binding.tvVPNomorTelepon.text = user.nomorTelepon
+        }, {
+            // Kalau ada error
+            var respObj: JSONObject? = null
+            try {
+                respObj = JSONObject(String(it.networkResponse.data))
+                AlertDialog.Builder(requireActivity())
+                    .setTitle("Terjadi Kesalahan!")
+                    .setMessage(respObj.toString(4))
+                    .setPositiveButton("OK", null)
+                    .show()
+            } catch (e: Exception) {
+                AlertDialog.Builder(requireActivity())
+                    .setTitle("Error " + it.networkResponse.statusCode)
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                // Dapatkan token dari session dan tambahkan ke header
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer " + session.getString("token", "")
+                return headers
+            }
+        }
+
+        // Tambahkan request ke queue
+        (activity as HomeActivity).queue!!.add(stringRequest)
     }
 }
