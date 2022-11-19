@@ -12,18 +12,29 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.android.volley.AuthFailureError
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.example.tugasbesarpbp.api.KostApi
 import com.example.tugasbesarpbp.room.MainDB
-import com.example.tugasbesarpbp.room.kost.Kost
 import com.example.tugasbesarpbp.room.kost.KostDao
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.nio.charset.StandardCharsets
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.example.tugasbesarpbp.api_models.Kost
+import com.google.gson.Gson
 
 class CRUDKostActivity : AppCompatActivity() {
 
@@ -35,9 +46,11 @@ class CRUDKostActivity : AppCompatActivity() {
     private lateinit var tilTambahNama: TextInputLayout
     private lateinit var tilTambahFasilitas: TextInputLayout
     private lateinit var tilTambahHarga: TextInputLayout
-    private var id: Int = 0
+//    private var layoutLoading: LinearLayout? = null
+    private var id: Long? = null
     private var action: Int = CREATE
     private lateinit var kostDao: KostDao
+    private var queue:RequestQueue? = null
 
     private lateinit var menu: Menu
 
@@ -72,8 +85,9 @@ class CRUDKostActivity : AppCompatActivity() {
 
         // get action from intent
         action = intent.getIntExtra("action", CREATE)
-        id = intent.getIntExtra("id", 0)
+        id = intent.getLongExtra("id", 0)
 
+        queue = Volley.newRequestQueue(this)
         btnTambah = findViewById(R.id.btnTambah)
         btnEdit = findViewById(R.id.btnEdit)
         btnDelete = findViewById(R.id.btnDelete)
@@ -129,28 +143,11 @@ class CRUDKostActivity : AppCompatActivity() {
                 tilTambahHarga.error = null
             }
 
-            CoroutineScope(Dispatchers.IO).launch {
-                if(error == 0) {
-                    if (action == CREATE) {
-                        // Dapatkan last insert id (Long, diubah ke Int)
-                        id = kostDao.addKost(Kost(0, nama, fasilitas, harga)).toInt()
-
-                        sendNotification1()
-                        sendNotification2()
-                        progressDone = 100
-                        sendNotification3()
-                    } else if (action == EDIT) {
-                        kostDao.updateKost(Kost(id, nama, fasilitas, harga))
-                    }
-
-//                    val intent = Intent(this@CreateActivity, HomeActivity::class.java)
-//                    intent.putExtra("fragment", "list")
-//                    startActivity(intent)
-//                    finish()
-                    setResult(RESULT_OK)
-                    finish()
-                } else {
-                    // do nothing
+            if(error == 0){
+                if(action == CREATE){
+                    createKost()
+                } else if(action == EDIT){
+                    updateKost(id!!.toLong())
                 }
             }
         }
@@ -174,10 +171,10 @@ class CRUDKostActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.action_edit -> {
-                editData()
+                updateKost(id!!.toLong())
             }
             R.id.action_delete -> {
-                deleteData()
+                deleteKost(id!!.toLong())
             }
         }
         return super.onOptionsItemSelected(item)
@@ -200,17 +197,9 @@ class CRUDKostActivity : AppCompatActivity() {
         dialog.setTitle("Konfirmasi")
         dialog.setMessage("Apakah anda yakin ingin menghapus data ini?")
         dialog.setPositiveButton("Ya") { dialog, which ->
-            CoroutineScope(Dispatchers.IO).launch {
-                kostDao.deleteKost(id)
-                withContext(Dispatchers.Main) {
-//                    val intent = Intent(this@CreateActivity, HomeActivity::class.java)
-//                    intent.putExtra("fragment", "list")
-//                    startActivity(intent)
-//                    finish()
-                    setResult(RESULT_OK)
-                    finish()
-                }
-            }
+            deleteKost(id!!.toLong())
+            setResult(RESULT_OK)
+            finish()
         }
         dialog.setNegativeButton("Tidak") { dialog, which ->
             dialog.dismiss()
@@ -220,18 +209,8 @@ class CRUDKostActivity : AppCompatActivity() {
 
     private fun setInputElements() {
         if(action == EDIT || action == READ) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val kost = kostDao.getKostById(id)
-
-                withContext(Dispatchers.Main) {
-                    tilTambahNama.editText?.setText(kost.namaKost)
-                    tilTambahFasilitas.editText?.setText(kost.fasilitas)
-                    tilTambahHarga.editText?.setText(kost.harga.toString())
-
-                    // set btnTambah text
-                    btnTambah.text = "Update"
-                }
-            }
+            btnTambah.text = "Update"
+            getKostById(id!!.toLong())
         }
 
         if(action == CREATE) {
@@ -365,4 +344,262 @@ class CRUDKostActivity : AppCompatActivity() {
             }
         }
     }
+
+    // DIBAWAH INI ADALAH CREATE UPDATE UNTUK KEPERLUAN API
+
+    private fun getKostById(id: Long){
+        setLoading(true)
+        val stringRequest: StringRequest = object :
+            StringRequest(Method.GET, KostApi.GET_BY_ID_URL + id, Response.Listener { response ->
+                val gson = Gson()
+                val jsonObject = JSONObject(response)
+                var kost : Kost = gson.fromJson(
+                    jsonObject.getJSONObject("data").toString(), Kost::class.java
+                )
+
+                tilTambahNama.editText?.setText(kost.namaKost)
+                tilTambahHarga.editText?.setText(""+kost.harga)
+                tilTambahFasilitas.editText?.setText(kost.fasilitas)
+//                setExposedDropDownMenu()
+
+                Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil!", Toast.LENGTH_SHORT).show()
+                setLoading(false)
+            }, Response.ErrorListener { error ->
+                setLoading(false)
+
+                try{
+                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                    val errors = JSONObject(responseBody)
+                    Toast.makeText(
+                        this@CRUDKostActivity,
+                        errors.getString("message"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch(e: Exception){
+                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                }
+            }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>{
+                val headers = HashMap<String, String>()
+                headers["Accept"] = "application/json"
+                return headers
+            }
+        }
+        queue!!.add(stringRequest)
+    }
+
+    private fun createKost(){
+        setLoading(true)
+        val kost = Kost(
+            tilTambahNama.editText?.text.toString(),
+            tilTambahFasilitas.editText?.text.toString(),
+            tilTambahHarga.editText?.text.toString().toDouble()
+        )
+
+        val stringRequest: StringRequest =
+            object: StringRequest(Method.POST, KostApi.ADD_URL, Response.Listener { response ->
+                val gson = Gson()
+                var kost = gson.fromJson(response, Kost::class.java)
+
+                if(kost != null)
+                    Toast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+
+                val returnIntent = Intent()
+                setResult(RESULT_OK, returnIntent)
+                finish()
+
+                setLoading(true)
+            }, Response.ErrorListener { error ->
+                setLoading(false)
+
+                try{
+                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                    val errors = JSONObject(responseBody)
+                    Toast.makeText(
+                        this@CRUDKostActivity,
+                        errors.getString("message"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch(e: Exception){
+                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                }
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>{
+                    val headers = HashMap<String, String>()
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+
+                @Throws(AuthFailureError::class)
+                override fun getBody(): ByteArray {
+                    val gson = Gson()
+                    val requestBody = gson.toJson(kost)
+                    return requestBody.toByteArray(StandardCharsets.UTF_8)
+                }
+
+                override fun getBodyContentType(): String{
+                    return "application/json"
+                }
+            }
+        queue!!.add(stringRequest)
+        allKost()
+    }
+
+    private fun updateKost(id: Long){
+        setLoading(true)
+
+        val kost = Kost(
+            tilTambahNama.editText?.text.toString(),
+            tilTambahFasilitas.editText?.text.toString(),
+            tilTambahHarga.editText?.text.toString().toDouble()
+        )
+
+        val stringRequest: StringRequest =
+            object: StringRequest(Method.PUT, KostApi.UPDATE_URL + id, Response.Listener { response ->
+                val gson = Gson()
+                val jsonObject = JSONObject(response)
+                var kost : Kost = gson.fromJson(
+                    jsonObject.getJSONObject("data").toString(), Kost::class.java
+                )
+
+                if(kost != null)
+                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diubah", Toast.LENGTH_SHORT).show()
+
+                val returnIntent = Intent()
+                setResult(RESULT_OK, returnIntent)
+                finish()
+
+                setLoading(false)
+            }, Response.ErrorListener { error ->
+                setLoading(false)
+
+                try{
+                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                    val errors = JSONObject(responseBody)
+                    Toast.makeText(
+                        this@CRUDKostActivity,
+                        errors.getString("message"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch(e: Exception){
+                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                }
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>{
+                    val headers = HashMap<String, String>()
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+
+                @Throws(AuthFailureError::class)
+                override fun getBody(): ByteArray {
+                    val gson = Gson()
+                    val requestBody = gson.toJson(kost)
+                    return requestBody.toByteArray(StandardCharsets.UTF_8)
+                }
+
+                override fun getBodyContentType(): String{
+                    return "application/json"
+                }
+            }
+        queue!!.add(stringRequest)
+    }
+
+    private fun setLoading(isLoading: Boolean){
+        if(isLoading){
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+//            layoutLoading!!.visibility = View.VISIBLE
+        } else{
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//            layoutLoading!!.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun allKost(){
+//        srMahasiswa!!.isRefreshing = true
+        val stringRequest: StringRequest =
+            object: StringRequest(Method.GET, KostApi.GET_ALL_URL, Response.Listener { response ->
+                val gson = Gson()
+                val jsonObject = JSONObject(response)
+                var kost : Array<Kost> = gson.fromJson(
+                    jsonObject.getJSONArray("data").toString(), Array<Kost>::class.java
+                )
+
+//                adapter!!.setMahasiswaList(mahasiswa)
+//                adapter!!.filter.filter(svMahasiswa!!.query)
+//                srMahasiswa!!.isRefreshing = false
+
+                if(!kost.isEmpty())
+                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil All Mahasiswa", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(this@CRUDKostActivity, "Data kosong", Toast.LENGTH_SHORT).show()
+            }, Response.ErrorListener { error ->
+//                srMahasiswa!!.isRefreshing = false
+
+                try{
+                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                    val errors = JSONObject(responseBody)
+                    Toast.makeText(
+                        this@CRUDKostActivity,
+                        errors.getString("message"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch(e: Exception){
+                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                }
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>{
+                    val headers = HashMap<String, String>()
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+            }
+        queue!!.add(stringRequest)
+    }
+
+    fun deleteKost(id: Long){
+        setLoading(true)
+        val stringRequest: StringRequest =
+            object: StringRequest(Method.DELETE, KostApi.DELETE_URL + id , Response.Listener { response ->
+                setLoading(false)
+
+                val gson = Gson()
+                var kost = gson.fromJson(response, Kost::class.java)
+
+                if(kost != null)
+                    Toast.makeText(this@CRUDKostActivity, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
+
+                allKost()
+            }, Response.ErrorListener { error ->
+                setLoading(false)
+
+                try{
+                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                    val errors = JSONObject(responseBody)
+                    Toast.makeText(
+                        this@CRUDKostActivity,
+                        errors.getString("message"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch(e: Exception){
+                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                }
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>{
+                    val headers = HashMap<String, String>()
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+            }
+        queue!!.add(stringRequest)
+    }
+
 }

@@ -18,5 +18,5 @@ interface KostDao {
     fun getKost(query: String): List<Kost>
 
     @Query("SELECT * FROM Kost WHERE id = :id")
-    fun getKostById(id: Int): Kost
+    fun getKostById(id: Long?): Kost
 }

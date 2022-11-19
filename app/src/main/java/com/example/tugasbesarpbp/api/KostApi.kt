@@ -6,7 +6,7 @@ class KostApi {
 
         val GET_ALL_URL = BASE_URL + "kost/"
         val GET_BY_ID_URL = BASE_URL + "kost/"
-        val ADD_URL = BASE_URL + "kost/"
+        val ADD_URL = BASE_URL + "kost"
         val UPDATE_URL = BASE_URL + "kost/"
         val DELETE_URL = BASE_URL + "kost/"
     }

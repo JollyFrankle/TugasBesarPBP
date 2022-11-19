@@ -1,10 +1,6 @@
 package com.example.tugasbesarpbp.rv_adapters
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.R
-import com.example.tugasbesarpbp.room.kost.Kost
+import com.example.tugasbesarpbp.api_models.Kost
 import com.google.android.material.card.MaterialCardView
-import java.net.URL
 import java.util.*
 
-class RVItemKostAdapter(private val data: ArrayList<Kost>, private val listener: OnAdapterListener) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
+class RVItemKostAdapter(private var kostList: ArrayList<Kost>, private val listener: OnAdapterListener) : RecyclerView.Adapter<RVItemKostAdapter.viewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -27,26 +22,24 @@ class RVItemKostAdapter(private val data: ArrayList<Kost>, private val listener:
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return kostList.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(list: ArrayList<Kost>){
-        data.clear()
-        data.addAll(list)
+        kostList.clear()
+        kostList.addAll(list)
         notifyDataSetChanged()
     }
 
+    fun setKostList(kostList: Array<Kost>){
+        this.kostList = kostList.toList() as ArrayList<Kost>
+    }
+
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
-        val currentItem = data[position]
+        val currentItem = kostList[position]
         holder.namaEl.text = currentItem.namaKost
-//        holder.tipeEl.text = currentItem.tipe
         holder.hargaEl.text = "Rp " + "%,.0f".format(Locale("id", "ID"), currentItem.harga)
-//         loop through fasilitas
-//        var fasilitas = ""
-//        for (i in currentItem.fasilitas!!) {
-//            fasilitas += i + " - "
-//        }
         holder.fasilitasEl.text = currentItem.fasilitas
 
         holder.cardClicked.setOnClickListener {
