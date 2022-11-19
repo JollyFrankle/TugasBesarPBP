@@ -157,8 +157,15 @@ class LoginFragment : Fragment() {
                         .show()
                 }
             } catch (e: Exception) {
+                val response = it.networkResponse
+                var dialogContent = ""
+                if(response != null) {
+                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
+                } else {
+                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
+                }
                 AlertDialog.Builder(requireActivity())
-                    .setTitle("Error " + it.networkResponse.statusCode)
+                    .setMessage(dialogContent)
                     .setPositiveButton("OK", null)
                     .show()
             }

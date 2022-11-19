@@ -98,6 +98,9 @@ class ProfileFragment : Fragment() {
     private fun getUserDetails() {
         // Dapatkan session untuk mengambil token dan id user
         val session = requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+
+        // set loading screen
+        setLoadingScreen(true)
         val stringRequest: StringRequest = object: StringRequest(Method.GET, UserApi.GET_URL + session.getLong("id", 0), {
             val gson = Gson()
 
@@ -109,6 +112,7 @@ class ProfileFragment : Fragment() {
             binding.tvVPEmail.text = user.email
             binding.tvVPTanggalLahir.text = user.tanggalLahir
             binding.tvVPNomorTelepon.text = user.nomorTelepon
+            setLoadingScreen(false)
         }, {
             // Kalau ada error
             var respObj: JSONObject? = null
@@ -120,8 +124,15 @@ class ProfileFragment : Fragment() {
                     .setPositiveButton("OK", null)
                     .show()
             } catch (e: Exception) {
+                val response = it.networkResponse
+                var dialogContent = ""
+                if(response != null) {
+                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
+                } else {
+                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
+                }
                 AlertDialog.Builder(requireActivity())
-                    .setTitle("Error " + it.networkResponse.statusCode)
+                    .setMessage(dialogContent)
                     .setPositiveButton("OK", null)
                     .show()
             }
@@ -136,5 +147,23 @@ class ProfileFragment : Fragment() {
 
         // Tambahkan request ke queue
         (activity as HomeActivity).queue!!.add(stringRequest)
+    }
+
+    private fun setLoadingScreen(state: Boolean) {
+        if (state) {
+            binding.layoutLoader.layoutLoader.visibility = View.VISIBLE
+            binding.layoutLoader.layoutLoader.alpha = 1f
+
+            // set flag to disable click
+            binding.layoutLoader.layoutLoader.isClickable = true
+        } else {
+//            binding.layoutLoader.visibility = View.GONE
+            // fade out
+            binding.layoutLoader.layoutLoader.animate().alpha(0f).setDuration(250).withEndAction {
+                binding.layoutLoader.layoutLoader.visibility = View.GONE
+            }
+            // set flag to enable click
+            binding.layoutLoader.layoutLoader.isClickable = false
+        }
     }
 }

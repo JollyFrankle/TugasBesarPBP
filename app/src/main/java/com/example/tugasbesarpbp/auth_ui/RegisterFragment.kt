@@ -75,57 +75,57 @@ class RegisterFragment : Fragment() {
 
 //            CoroutineScope(Dispatchers.IO).launch {
 //                withContext(Dispatchers.Main) {
-                    if (password.length < 8) {
-                        // check if password is less than 8 characters
-                        binding.tilRegisPassword.error = "Password must be at least 8 characters"
-                        error = true
-                    } else if (password != passwordConfirm) {
-                        // check if password and confirm password is same
-                        binding.tilRegisPassword.error = "Password tidak sama"
-                        binding.tilRegisPasswordConfirm.error = "Password tidak sama"
-                        error = true
-                    } else {
-                        binding.tilRegisPassword.error = null
-                        binding.tilRegisPasswordConfirm.error = null
-                    }
+            if (password.length < 8) {
+                // check if password is less than 8 characters
+                binding.tilRegisPassword.error = "Password must be at least 8 characters"
+                error = true
+            } else if (password != passwordConfirm) {
+                // check if password and confirm password is same
+                binding.tilRegisPassword.error = "Password tidak sama"
+                binding.tilRegisPasswordConfirm.error = "Password tidak sama"
+                error = true
+            } else {
+                binding.tilRegisPassword.error = null
+                binding.tilRegisPasswordConfirm.error = null
+            }
 
-                    // check if email format is valid using regex
-                    if (!email.matches(Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"))) {
-                        binding.tilRegisEmail.error = "Email tidak valid"
-                        error = true
-                    } else {
-                        binding.tilRegisEmail.error = null
-                    }
+            // check if email format is valid using regex
+            if (!email.matches(Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"))) {
+                binding.tilRegisEmail.error = "Email tidak valid"
+                error = true
+            } else {
+                binding.tilRegisEmail.error = null
+            }
 
-                    // check if name is empty
-                    if (username.isEmpty()) {
-                        binding.tilRegisUsername.error = "Username tidak boleh kosong"
-                        error = true
-                    } else {
-                        binding.tilRegisUsername.error = null
-                    }
+            // check if name is empty
+            if (username.isEmpty()) {
+                binding.tilRegisUsername.error = "Username tidak boleh kosong"
+                error = true
+            } else {
+                binding.tilRegisUsername.error = null
+            }
 
-                    // check if username is empty
-                    if (name.isEmpty()) {
-                        binding.tilRegisNama.error = "Nama tidak boleh kosong"
-                        error = true
-                    } else {
-                        binding.tilRegisNama.error = null
-                    }
+            // check if username is empty
+            if (name.isEmpty()) {
+                binding.tilRegisNama.error = "Nama tidak boleh kosong"
+                error = true
+            } else {
+                binding.tilRegisNama.error = null
+            }
 
-                    if(tanggalLahir.isEmpty()){
-                        binding.tilRegisTanggalLahir.error = "Tanggal lahir harus diisi"
-                        error = true
-                    } else{
-                        binding.tilRegisTanggalLahir.error = null
-                    }
+            if(tanggalLahir.isEmpty()){
+                binding.tilRegisTanggalLahir.error = "Tanggal lahir harus diisi"
+                error = true
+            } else{
+                binding.tilRegisTanggalLahir.error = null
+            }
 
-                    if(nomorTelepon.length == 12){
-                        binding.tilRegisNomorTelepon.error = null
-                    } else{
-                        binding.tilRegisNomorTelepon.error = "Nomor telepon harus 12 digit"
-                        error = true
-                    }
+            if(nomorTelepon.length == 12){
+                binding.tilRegisNomorTelepon.error = null
+            } else{
+                binding.tilRegisNomorTelepon.error = "Nomor telepon harus 12 digit"
+                error = true
+            }
 
 //                    if (!error) {
 //                        // check if username is already taken
@@ -194,12 +194,6 @@ class RegisterFragment : Fragment() {
 
         val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.REGISTER_URL, {
             val jsonObject = JSONObject(it)
-            AlertDialog.Builder(requireContext())
-                .setMessage(jsonObject.toString(4))
-                .setPositiveButton("OK") { dialog, which ->
-                    (activity as MainActivity).changeFragment(LoginFragment())
-                }
-                .show()
 
             // send notification
             (activity as MainActivity).sendRegisterNotification(user.nama, user.username, user.password!!)
@@ -240,8 +234,15 @@ class RegisterFragment : Fragment() {
                         .show()
                 }
             } catch (e: Exception) {
+                val response = it.networkResponse
+                var dialogContent = ""
+                if(response != null) {
+                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
+                } else {
+                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
+                }
                 AlertDialog.Builder(requireActivity())
-                    .setTitle("Error " + it.networkResponse.statusCode)
+                    .setMessage(dialogContent)
                     .setPositiveButton("OK", null)
                     .show()
             }

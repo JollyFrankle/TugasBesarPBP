@@ -6,6 +6,7 @@ class UserApi {
 
         val LOGIN_URL = BASE_URL + "login"
         val REGISTER_URL = BASE_URL + "register"
+        var LOGOUT_URL = BASE_URL + "logout"
 
         val GET_URL = BASE_URL + "user/"
         val UPDATE_URL = BASE_URL + "user/"

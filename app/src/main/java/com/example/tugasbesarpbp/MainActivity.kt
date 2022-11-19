@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_notifications_24)
-            .setContentTitle("Halo, $name! 👋👋")
+            .setContentTitle("Halo, ${name}! 👋👋")
             .setContentText("Selamat bergabung di JogjaKost! Silakan login.")
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setAutoCancel(true)
@@ -136,6 +136,7 @@ class MainActivity : AppCompatActivity() {
             .setContentIntent(pendingIntent)
             .setColor(Color.BLUE)
             .addAction(R.mipmap.ic_launcher, "Log in", actionIntent)
+            .setContentIntent(null)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val pictureBitmap = BitmapFactory.decodeResource(resources, R.drawable.img16x9welcome)
