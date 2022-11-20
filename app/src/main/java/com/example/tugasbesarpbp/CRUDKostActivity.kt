@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.view.isVisible
 import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -64,6 +66,9 @@ class CRUDKostActivity : AppCompatActivity() {
 
     private var progressDone = 0
 
+    private lateinit var token: String
+    private var userId: Long = 0
+
     companion object {
         const val CREATE = 1
         const val EDIT = 2
@@ -80,12 +85,20 @@ class CRUDKostActivity : AppCompatActivity() {
 
         title = "Data Kost"
 
+        // get token
+        this.getSharedPreferences("session", Context.MODE_PRIVATE).let {
+            token = it.getString("token", "")!!
+            userId = it.getLong("id", 0)
+        }
+
         // enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // get action from intent
-        action = intent.getIntExtra("action", CREATE)
-        id = intent.getLongExtra("id", 0)
+        intent.let {
+            action = it.getIntExtra("action", CREATE)
+            id = it.getLongExtra("id", 0)
+        }
 
         queue = Volley.newRequestQueue(this)
         btnTambah = findViewById(R.id.btnTambah)
@@ -96,8 +109,8 @@ class CRUDKostActivity : AppCompatActivity() {
         tilTambahHarga = findViewById(R.id.tilTambahHarga)
 //        val tilNama = binding.tilTambahNama.editText?.text.toString()
 
-        val db by lazy { MainDB(this) }
-        kostDao = db.KostDao()
+//        val db by lazy { MainDB(this) }
+//        kostDao = db.KostDao()
 
         // Set status dari input dan tombol2 yg bisa diklik berdasarkan CREATE, READ, atau UPDATE:
         this.setInputElements()
@@ -147,7 +160,7 @@ class CRUDKostActivity : AppCompatActivity() {
                 if(action == CREATE){
                     createKost()
                 } else if(action == EDIT){
-                    updateKost(id!!.toLong())
+                    updateKost(id!!)
                 }
             }
         }
@@ -163,7 +176,7 @@ class CRUDKostActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_crud_kost, menu)
         this.menu = menu!!
-        this.setEditDeleteBtn()
+        this.setEditDeleteBtn(action == CREATE)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -171,10 +184,10 @@ class CRUDKostActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.action_edit -> {
-                updateKost(id!!.toLong())
+                editData()
             }
             R.id.action_delete -> {
-                deleteKost(id!!.toLong())
+                deleteData()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -197,7 +210,7 @@ class CRUDKostActivity : AppCompatActivity() {
         dialog.setTitle("Konfirmasi")
         dialog.setMessage("Apakah anda yakin ingin menghapus data ini?")
         dialog.setPositiveButton("Ya") { dialog, which ->
-            deleteKost(id!!.toLong())
+            deleteKost(id!!)
             setResult(RESULT_OK)
             finish()
         }
@@ -210,7 +223,7 @@ class CRUDKostActivity : AppCompatActivity() {
     private fun setInputElements() {
         if(action == EDIT || action == READ) {
             btnTambah.text = "Update"
-            getKostById(id!!.toLong())
+            getKostById(id!!)
         }
 
         if(action == CREATE) {
@@ -249,14 +262,16 @@ class CRUDKostActivity : AppCompatActivity() {
         }
     }
 
-    private fun setEditDeleteBtn() {
-        if(action == CREATE) {
-            menu.findItem(R.id.action_edit).isVisible = false
-            menu.findItem(R.id.action_delete).isVisible = false
-        } else {
-            menu.findItem(R.id.action_edit).isVisible = true
-            menu.findItem(R.id.action_delete).isVisible = true
-        }
+    private fun setEditDeleteBtn(visibility: Boolean) {
+//        if(action == CREATE) {
+        menu.findItem(R.id.action_edit).isVisible = visibility
+        menu.findItem(R.id.action_delete).isVisible = visibility
+        btnEdit.isVisible = visibility
+        btnDelete.isVisible = visibility
+//        } else {
+//            menu.findItem(R.id.action_edit).isVisible = true
+//            menu.findItem(R.id.action_delete).isVisible = true
+//        }
     }
 
     private fun createNotificationChannel() {
@@ -347,42 +362,50 @@ class CRUDKostActivity : AppCompatActivity() {
 
     // DIBAWAH INI ADALAH CREATE UPDATE UNTUK KEPERLUAN API
 
-    private fun getKostById(id: Long){
+    private fun getKostById(id: Long) {
         setLoading(true)
-        val stringRequest: StringRequest = object :
-            StringRequest(Method.GET, KostApi.GET_BY_ID_URL + id, Response.Listener { response ->
-                val gson = Gson()
-                val jsonObject = JSONObject(response)
-                var kost : Kost = gson.fromJson(
-                    jsonObject.getJSONObject("data").toString(), Kost::class.java
-                )
+        val stringRequest: StringRequest = object : StringRequest(Method.GET, KostApi.GET_BY_ID_URL + id, Response.Listener { response ->
+            val gson = Gson()
+            val jsonObject = JSONObject(response)
+            var kost : Kost = gson.fromJson(
+                jsonObject.getJSONObject("data").toString(), Kost::class.java
+            )
 
-                tilTambahNama.editText?.setText(kost.namaKost)
-                tilTambahHarga.editText?.setText(""+kost.harga)
-                tilTambahFasilitas.editText?.setText(kost.fasilitas)
+            tilTambahNama.editText?.setText(kost.namaKost)
+            tilTambahHarga.editText?.setText(kost.harga.toString())
+            tilTambahFasilitas.editText?.setText(kost.fasilitas)
 //                setExposedDropDownMenu()
 
-                Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil!", Toast.LENGTH_SHORT).show()
-                setLoading(false)
-            }, Response.ErrorListener { error ->
-                setLoading(false)
+            if(kost.idPemilik != userId) {
+                action = READ
+                this.setEditDeleteBtn(false)
+            } else {
+                this.setEditDeleteBtn(true)
+            }
 
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
+            // Takutnya ngespam ini vvv
+//            Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil!", Toast.LENGTH_SHORT).show()
+            setLoading(false)
+        }, Response.ErrorListener { error ->
+            setLoading(false)
+
+            try{
+                val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                val errors = JSONObject(responseBody)
+                Toast.makeText(
+                    this@CRUDKostActivity,
+                    errors.getString("message"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch(e: Exception){
+                Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>{
                 val headers = HashMap<String, String>()
                 headers["Accept"] = "application/json"
+                headers["Authorization"] = "Bearer " + token
                 return headers
             }
         }
@@ -392,9 +415,10 @@ class CRUDKostActivity : AppCompatActivity() {
     private fun createKost(){
         setLoading(true)
         val kost = Kost(
-            tilTambahNama.editText?.text.toString(),
-            tilTambahFasilitas.editText?.text.toString(),
-            tilTambahHarga.editText?.text.toString().toDouble()
+            namaKost = tilTambahNama.editText?.text.toString(),
+            fasilitas = tilTambahFasilitas.editText?.text.toString(),
+            harga = tilTambahHarga.editText?.text.toString().toDouble(),
+            idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
         )
 
         val stringRequest: StringRequest =
@@ -429,6 +453,7 @@ class CRUDKostActivity : AppCompatActivity() {
                 override fun getHeaders(): Map<String, String>{
                     val headers = HashMap<String, String>()
                     headers["Accept"] = "application/json"
+                    headers["Authorization"] = "Bearer " + token
                     return headers
                 }
 
@@ -451,9 +476,10 @@ class CRUDKostActivity : AppCompatActivity() {
         setLoading(true)
 
         val kost = Kost(
-            tilTambahNama.editText?.text.toString(),
-            tilTambahFasilitas.editText?.text.toString(),
-            tilTambahHarga.editText?.text.toString().toDouble()
+            namaKost = tilTambahNama.editText?.text.toString(),
+            fasilitas = tilTambahFasilitas.editText?.text.toString(),
+            harga = tilTambahHarga.editText?.text.toString().toDouble(),
+            idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
         )
 
         val stringRequest: StringRequest =
@@ -491,6 +517,7 @@ class CRUDKostActivity : AppCompatActivity() {
                 override fun getHeaders(): Map<String, String>{
                     val headers = HashMap<String, String>()
                     headers["Accept"] = "application/json"
+                    headers["Authorization"] = "Bearer " + token
                     return headers
                 }
 
@@ -558,6 +585,7 @@ class CRUDKostActivity : AppCompatActivity() {
                 override fun getHeaders(): Map<String, String>{
                     val headers = HashMap<String, String>()
                     headers["Accept"] = "application/json"
+                    headers["Authorization"] = "Bearer " + token
                     return headers
                 }
             }
@@ -596,6 +624,7 @@ class CRUDKostActivity : AppCompatActivity() {
                 override fun getHeaders(): Map<String, String>{
                     val headers = HashMap<String, String>()
                     headers["Accept"] = "application/json"
+                    headers["Authorization"] = "Bearer " + token
                     return headers
                 }
             }

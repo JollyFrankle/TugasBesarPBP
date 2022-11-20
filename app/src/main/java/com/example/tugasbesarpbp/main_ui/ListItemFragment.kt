@@ -1,15 +1,18 @@
 package com.example.tugasbesarpbp.main_ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -24,13 +27,9 @@ import com.example.tugasbesarpbp.rv_adapters.RVItemKostAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
-import java.util.ArrayList
+import kotlin.properties.Delegates
 
 class ListItemFragment : Fragment() {
     lateinit var kostAdapter: RVItemKostAdapter
@@ -39,10 +38,11 @@ class ListItemFragment : Fragment() {
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var btnSearch: Button
     private lateinit var searchInput: TextInputLayout
+    private lateinit var srItemKost: SwipeRefreshLayout
     private var queue: RequestQueue? = null
 
-    private val CHANNEL_ID_1 = "channel_notification_01"
-    private val notificationId3 = 103
+    private lateinit var token: String
+    private var userId: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +63,8 @@ class ListItemFragment : Fragment() {
         btnAdd = view.findViewById(R.id.btnFloatAdd)
         btnSearch = view.findViewById(R.id.btnSearch)
         searchInput = view.findViewById(R.id.tilSearch)
+        srItemKost = view.findViewById(R.id.srItemKost)
+
         // arguments
         arguments.let {
             searchInput.editText?.setText(it?.getString("search", ""))
@@ -78,17 +80,29 @@ class ListItemFragment : Fragment() {
             startActivity(intent)
         }
 
-//        btnSearch.setOnClickListener {
+        srItemKost.isRefreshing = true
+        srItemKost.setOnRefreshListener {
+            allKost()
+        }
+
+        // get token
+        (activity as HomeActivity).getSharedPreferences("session", Context.MODE_PRIVATE).let {
+            token = it.getString("token", "")!!
+            userId = it.getLong("id", 0)
+        }
+
+        btnSearch.setOnClickListener {
 //            // refresh data
 //            this.loadData()
-//        }
+            allKost()
+        }
 
 //        this.loadData()
         setupRecyclerView()
     }
 
     fun setupRecyclerView(){
-        kostAdapter = RVItemKostAdapter(arrayListOf(), object: RVItemKostAdapter.OnAdapterListener{
+        kostAdapter = RVItemKostAdapter(arrayListOf(), userId, object: RVItemKostAdapter.OnAdapterListener{
             override fun onClick(kost: Kost){
                 intentEdit(kost.id, CRUDKostActivity.READ)
             }
@@ -100,52 +114,57 @@ class ListItemFragment : Fragment() {
     }
 
     private fun allKost(){
-//        srMahasiswa!!.isRefreshing = true
-        val stringRequest: StringRequest =
-            object: StringRequest(Method.GET, KostApi.GET_ALL_URL, Response.Listener { response ->
-                val gson = Gson()
-                val jsonObject = JSONObject(response)
-                var kost : Array<Kost> = gson.fromJson(
-                    jsonObject.getJSONArray("data").toString(), Array<Kost>::class.java
-                )
+        srItemKost.isRefreshing = true
+        val searchQuery = searchInput.editText?.text.toString()
+        val url = String.format(KostApi.GET_ALL_URL + "?search=%s", searchQuery)
+        val stringRequest: StringRequest = object: StringRequest(Method.GET, url, Response.Listener { response ->
+            val gson = Gson()
+            val jsonObject = JSONObject(response)
+            val kost = gson.fromJson(
+                jsonObject.getJSONArray("data").toString(), Array<Kost>::class.java
+            )
 
-                kostAdapter.setKostList(kost)
+            kostAdapter.setData(kost.toCollection(ArrayList<Kost>()))
 
-                if(!kost.isEmpty())
-                    Toast.makeText(activity as HomeActivity, "Data seluruh Kost berhasil diambil", Toast.LENGTH_SHORT).show()
-                else
-                    Toast.makeText(activity as HomeActivity, "Data kosong", Toast.LENGTH_SHORT).show()
-            }, Response.ErrorListener { error ->
-//                srMahasiswa!!.isRefreshing = false
-
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        activity as CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(activity as HomeActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>{
-                    val headers = HashMap<String, String>()
-                    headers["Accept"] = "application/json"
-                    return headers
-                }
+//                if(!kost.isEmpty())
+//                    Toast.makeText(activity as HomeActivity, "Data seluruh Kost berhasil diambil", Toast.LENGTH_SHORT).show()
+//                else
+//                    Toast.makeText(activity as HomeActivity, "Data kosong", Toast.LENGTH_SHORT).show()
+            srItemKost.isRefreshing = false
+        }, Response.ErrorListener { error ->
+            srItemKost.isRefreshing = false
+            try{
+                val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
+                val errors = JSONObject(responseBody)
+                Toast.makeText(
+                    activity as HomeActivity,
+                    errors.getString("message"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch(e: Exception){
+                AlertDialog.Builder(activity as HomeActivity)
+                    .setTitle("Error")
+                    .setMessage("Error: " + e.message)
+                    .setPositiveButton("OK", null)
+                    .show()
             }
+        }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>{
+                val headers = HashMap<String, String>()
+                headers["Accept"] = "application/json"
+                headers["Authorization"] = "Bearer " + token
+                return headers
+            }
+        }
         queue!!.add(stringRequest)
     }
 
     override fun onStart() {
         super.onStart()
-        allKost()
 
         // refresh data
-//        this.loadData()
+        this.allKost()
     }
 
 //    private fun loadData() {

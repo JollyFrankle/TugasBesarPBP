@@ -101,7 +101,7 @@ class ProfileFragment : Fragment() {
 
         // set loading screen
         setLoadingScreen(true)
-        val stringRequest: StringRequest = object: StringRequest(Method.GET, UserApi.GET_URL + session.getLong("id", 0), {
+        val stringRequest: StringRequest = object: StringRequest(Method.GET, UserApi.GET_URL, {
             val gson = Gson()
 
             // Dapatkan data user dari response [struktur: response = { "data": { ... } }]
