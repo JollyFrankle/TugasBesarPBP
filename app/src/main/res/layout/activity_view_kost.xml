@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewKostActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".rv_adapters.RVItemKostAdapter"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp"
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardView"
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgRVKostImage"
+                    android:layout_width="378dp"
+                    android:layout_height="205dp"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:background="#800D6EFD"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@drawable/desain_kos_kosan_estetik" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="379dp"
+                    android:layout_height="352dp"
+                    android:minHeight="150dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imgRVKostImage"
+                    app:layout_constraintVertical_bias="1.0">
+
+                    <TextView
+                        android:id="@+id/txtRVKost2"
+                        android:layout_width="74dp"
+                        android:layout_height="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Sisa 3 Kamar!"
+                        android:textAlignment="textStart"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/bs_red"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:layout_editor_absoluteX="278dp"
+                        tools:layout_editor_absoluteY="328dp" />
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="98dp"
+                        android:layout_height="39dp"
+                        android:text="Pesan"
+                        tools:layout_editor_absoluteX="265dp"
+                        tools:layout_editor_absoluteY="289dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVPengelola"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Pengelola"
+                        android:textColor="@color/bs_gray"
+                        android:textSize="12sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="132dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVKec"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Depok Sleman"
+                        android:textColor="@color/bs_gray"
+                        android:textSize="12sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="105dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVAlamat"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Jl. Barbasari No.43, Janti, Caturtunggal, Kec..."
+                        android:textAlignment="textStart"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="16sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="85dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVNego"
+                        android:layout_width="85dp"
+                        android:layout_height="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Bisa Negosiasi"
+                        android:textColor="@color/bs_gray"
+                        android:textSize="12sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="328dp" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/ bulan"
+                        android:textColor="@color/bs_gray"
+                        android:textSize="14sp"
+                        tools:layout_editor_absoluteX="122dp"
+                        tools:layout_editor_absoluteY="310dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVKost"
+                        android:layout_width="123dp"
+                        android:layout_height="18dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Mulai dari"
+                        android:textAlignment="textStart"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="16sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="283dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVItemKostTipe"
+                        style="@style/TextAppearance.MaterialComponents.Button"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:text="Kost Putri"
+                        android:textColor="@color/bs_blue"
+                        android:textSize="12sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="36dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVItemKostNama"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Kost Exclusive Prambanan"
+                        android:textAlignment="textStart"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="16sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVItemKostFasilitas"
+                        android:layout_width="347dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Fasilitas Kost"
+                        android:textColor="@color/bs_gray"
+                        android:textSize="12sp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="190dp" />
+
+                    <TextView
+                        android:id="@+id/txtRVItemKostPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:text="Rp 250.000"
+                        android:textColor="@color/bs_blue"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="16dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--design view kost-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
