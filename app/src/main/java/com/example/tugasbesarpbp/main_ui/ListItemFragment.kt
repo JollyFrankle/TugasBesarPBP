@@ -19,8 +19,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.*
-import com.example.tugasbesarpbp.api.KostApi
-import com.example.tugasbesarpbp.api_models.Kost
+import com.example.tugasbesarpbp.api.http.KostApi
+import com.example.tugasbesarpbp.api.models.Kost
 import com.example.tugasbesarpbp.room.MainDB
 import com.example.tugasbesarpbp.room.kost.KostDao
 import com.example.tugasbesarpbp.rv_adapters.RVItemKostAdapter
@@ -29,7 +29,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
-import kotlin.properties.Delegates
 
 class ListItemFragment : Fragment() {
     lateinit var kostAdapter: RVItemKostAdapter
@@ -92,12 +91,11 @@ class ListItemFragment : Fragment() {
         }
 
         btnSearch.setOnClickListener {
-//            // refresh data
-//            this.loadData()
+            // refresh data
             allKost()
         }
 
-//        this.loadData()
+        // load data
         setupRecyclerView()
     }
 
@@ -115,49 +113,16 @@ class ListItemFragment : Fragment() {
 
     private fun allKost(){
         srItemKost.isRefreshing = true
-        val searchQuery = searchInput.editText?.text.toString()
-        val url = String.format(KostApi.GET_ALL_URL + "?search=%s", searchQuery)
-        val stringRequest: StringRequest = object: StringRequest(Method.GET, url, Response.Listener { response ->
+        val search = searchInput.editText?.text.toString()
+        KostApi.getAllKosts(requireActivity(), search, { response ->
             val gson = Gson()
             val jsonObject = JSONObject(response)
             val kost = gson.fromJson(
                 jsonObject.getJSONArray("data").toString(), Array<Kost>::class.java
             )
-
-            kostAdapter.setData(kost.toCollection(ArrayList<Kost>()))
-
-//                if(!kost.isEmpty())
-//                    Toast.makeText(activity as HomeActivity, "Data seluruh Kost berhasil diambil", Toast.LENGTH_SHORT).show()
-//                else
-//                    Toast.makeText(activity as HomeActivity, "Data kosong", Toast.LENGTH_SHORT).show()
+            kostAdapter.setData(kost.toCollection(ArrayList()))
             srItemKost.isRefreshing = false
-        }, Response.ErrorListener { error ->
-            srItemKost.isRefreshing = false
-            try{
-                val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                val errors = JSONObject(responseBody)
-                Toast.makeText(
-                    activity as HomeActivity,
-                    errors.getString("message"),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } catch(e: Exception){
-                AlertDialog.Builder(activity as HomeActivity)
-                    .setTitle("Error")
-                    .setMessage("Error: " + e.message)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        }) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String>{
-                val headers = HashMap<String, String>()
-                headers["Accept"] = "application/json"
-                headers["Authorization"] = "Bearer " + token
-                return headers
-            }
-        }
-        queue!!.add(stringRequest)
+        })
     }
 
     override fun onStart() {
@@ -166,16 +131,6 @@ class ListItemFragment : Fragment() {
         // refresh data
         this.allKost()
     }
-
-//    private fun loadData() {
-//        val query = searchInput.editText?.text.toString()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val data = kostDao.getKost(query)
-//            withContext(Dispatchers.Main){
-//                kostAdapter.setData(data as ArrayList<Kost>)
-//            }
-//        }
-//    }
 
     private fun intentEdit(kostId: Long?, intentType: Int){
         val intent = Intent(activity, CRUDKostActivity::class.java)

@@ -1,4 +1,4 @@
-package com.example.tugasbesarpbp.api_models
+package com.example.tugasbesarpbp.api.models
 
 class User(
     var nama: String,

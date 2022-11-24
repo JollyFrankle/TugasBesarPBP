@@ -10,16 +10,12 @@ import androidx.appcompat.app.AlertDialog
 import com.android.volley.AuthFailureError
 import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.MainActivity
-import com.example.tugasbesarpbp.api.UserApi
+import com.example.tugasbesarpbp.api.http.UserApi
+import com.example.tugasbesarpbp.api.models.User
 import com.example.tugasbesarpbp.databinding.FragmentRegisterBinding
-import com.example.tugasbesarpbp.room.user.User
 import com.example.tugasbesarpbp.room.MainDB
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -127,147 +123,73 @@ class RegisterFragment : Fragment() {
                 error = true
             }
 
-//                    if (!error) {
-//                        // check if username is already taken
-//                        if (userDao.getUserByUsernameOrEmail(username, email) != null) {
-//                            binding.tilRegisUsername.error =
-//                                "Username atau email sudah terdaftar"
-//                            binding.tilRegisEmail.error = "Username atau email sudah terdaftar"
-//                            error = true
-//                        } else {
-//                            binding.tilRegisUsername.error = null
-//                            binding.tilRegisEmail.error = null
-//                        }
-//                    }
+            // all input is valid
+            if(!error) {
+                val user = User(
+                    username = username,
+                    email = email,
+                    password = password,
+                    nama = name,
+                    tanggalLahir = tanggalLahir,
+                    nomorTelepon = nomorTelepon
+                )
 
-                    // all input is valid
-                    if(!error) {
-                        val user = com.example.tugasbesarpbp.api_models.User(
-                            username = username,
-                            email = email,
-                            password = password,
-                            nama = name,
-                            tanggalLahir = tanggalLahir,
-                            nomorTelepon = nomorTelepon
-                        )
+                binding.btnRegister.isEnabled = false
+                UserApi.register(requireActivity(), user, {
+                    val jsonObject = JSONObject(it)
 
-                        this.register(user)
-//                        val user = User(0, name, username, password, email, tanggalLahir, nomorTelepon)
-//                        userDao.addUser(user)
+                    // send notification
+                    (activity as MainActivity).sendRegisterNotification(user.nama, user.username, user.password!!)
 
-//                        Snackbar.make(view, "Register berhasil!", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", Snackbar.LENGTH_SHORT).show()
 
-//                        val loginFragment: Fragment = LoginFragment()
-//                        // add username and password to bundle --> TIDAK LAGI DIGUNAKAN: Username & password akan muncul kalau user click di notifikasi (implementasi di bawah)
-////                        val bundle = Bundle()
-////                        bundle.putString("username", username)
-////                        bundle.putString("password", password)
-////                        loginFragment.arguments = bundle
-//
-//                        // change fragment to login fragment
-//                        (activity as MainActivity).changeFragment(loginFragment)
-
-                        // Passing: name akan ditampilkan di notifikasi, username dan password akan ditampilkan di login fragment apabila user men-click "Log in" di notifikasi
-//                        (activity as MainActivity).sendRegisterNotification(name, username, password)
-
-//                        Snackbar.make(view, "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", Snackbar.LENGTH_SHORT).show()
+                    // change fragment to login fragment
+                    val loginFragment: Fragment = LoginFragment()
+                    (activity as MainActivity).changeFragment(loginFragment)
+                }, {
+                    if(it.statusCode.toString().startsWith("4")) {
+                        AlertDialog.Builder(requireActivity())
+                            .setTitle("Terjadi Kesalahan!")
+                            .setMessage(it.jsonData.getString("message"))
+                            .setPositiveButton("OK", null)
+                            .show()
+                        // for each errors
+                        val errors = it.jsonData.getJSONObject("errors")
+                        for (key in errors.keys()) {
+                            val error = errors.getJSONArray(key)
+                            when (key) {
+                                "username" -> binding.tilRegisUsername.error = error.getString(0)
+                                "email" -> binding.tilRegisEmail.error = error.getString(0)
+                                "password" -> binding.tilRegisPassword.error = error.getString(0)
+                                "nama" -> binding.tilRegisNama.error = error.getString(0)
+                                "tanggalLahir" -> binding.tilRegisTanggalLahir.error = error.getString(0)
+                                "nomorTelepon" -> binding.tilRegisNomorTelepon.error = error.getString(0)
+                            }
+                        }
                     } else {
-                        Snackbar.make(
-                            view,
-                            "Register gagal. Cek ulang bagian yang ditandai.",
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        AlertDialog.Builder(requireActivity())
+                            .setTitle("Terjadi Kesalahan!")
+                            .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
+                            .setPositiveButton("OK", null)
+                            .show()
                     }
-//                }
-//            }
+
+
+                    // enable button
+                    binding.btnRegister.isEnabled = true
+                })
+            } else {
+                Snackbar.make(
+                    view,
+                    "Register gagal. Cek ulang bagian yang ditandai.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
 
         // btnRegisMoveToLogin on click
         binding.btnRegisMoveToLogin.setOnClickListener {
             (activity as MainActivity).changeFragment(LoginFragment())
         }
-    }
-
-    private fun register(user: com.example.tugasbesarpbp.api_models.User) {
-        // disable button
-        binding.btnRegister.isEnabled = false
-
-        val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.REGISTER_URL, {
-            val jsonObject = JSONObject(it)
-
-            // send notification
-            (activity as MainActivity).sendRegisterNotification(user.nama, user.username, user.password!!)
-
-            Snackbar.make(requireView(), "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", Snackbar.LENGTH_SHORT).show()
-
-            // change fragment to login fragment
-            val loginFragment: Fragment = LoginFragment()
-            (activity as MainActivity).changeFragment(loginFragment)
-        }, {
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                if(it.networkResponse.statusCode.toString().startsWith("4")) {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage(respObj.getString("message"))
-                        .setPositiveButton("OK", null)
-                        .show()
-                    // for each errors
-                    val errors = respObj.getJSONObject("errors")
-                    for (key in errors.keys()) {
-                        val error = errors.getJSONArray(key)
-                        when (key) {
-                            "username" -> binding.tilRegisUsername.error = error.getString(0)
-                            "email" -> binding.tilRegisEmail.error = error.getString(0)
-                            "password" -> binding.tilRegisPassword.error = error.getString(0)
-                            "nama" -> binding.tilRegisNama.error = error.getString(0)
-                            "tanggalLahir" -> binding.tilRegisTanggalLahir.error = error.getString(0)
-                            "nomorTelepon" -> binding.tilRegisNomorTelepon.error = error.getString(0)
-                        }
-                    }
-                } else {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.networkResponse.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val response = it.networkResponse
-                var dialogContent = ""
-                if(response != null) {
-                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
-                } else {
-                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
-                }
-                AlertDialog.Builder(requireActivity())
-                    .setMessage(dialogContent)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-
-            // enable button
-            binding.btnRegister.isEnabled = true
-        }) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Accept"] = "application/json"
-                return headers
-            }
-
-            @Throws(AuthFailureError::class)
-            override fun getBody(): ByteArray {
-                val gson = Gson()
-                val json = gson.toJson(user)
-                return json.toByteArray(StandardCharsets.UTF_8)
-            }
-
-            override fun getBodyContentType(): String {
-                return "application/json"
-            }
-        }
-        (activity as MainActivity).queue!!.add(stringRequest)
     }
 }
