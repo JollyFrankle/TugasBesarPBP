@@ -148,7 +148,7 @@ class QRCodeActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show()
     }
 
     private fun pickImageCamera(){
@@ -168,12 +168,12 @@ class QRCodeActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ){
             result ->
-        if(result.resultCode == Activity.RESULT_OK){
+        if(result.resultCode == Activity.RESULT_OK) {
             val data = result.data
             Log.d(TAG, "cameraActivityResultLauncher: imageUri: $imageUri")
 
             binding.imageTv.setImageURI(imageUri)
-            Log.d("Ini scanning image masuk detect", "Scanning image")
+            Timber.tag("Ini scanning image masuk detect").d("Scanning image")
             detectResultFromImage()
         }
     }

@@ -37,6 +37,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.api_models.Kost
 import com.google.gson.Gson
+import com.shashank.sony.fancytoastlib.FancyToast
 import timber.log.Timber
 
 class CRUDKostActivity : AppCompatActivity() {
@@ -133,7 +134,7 @@ class CRUDKostActivity : AppCompatActivity() {
             try {
                 harga = tilTambahHarga.editText?.text.toString().toDouble()
             } catch (e: Exception) {
-                Log.d("ERROR", e.message.toString())
+                Timber.tag("ERROR").d(e.message.toString())
             }
 
             var error = 0
@@ -347,13 +348,15 @@ class CRUDKostActivity : AppCompatActivity() {
             try{
                 val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
                 val errors = JSONObject(responseBody)
-                Toast.makeText(
-                    this@CRUDKostActivity,
-                    errors.getString("message"),
-                    Toast.LENGTH_SHORT
-                ).show()
+                FancyToast.makeText(this@CRUDKostActivity, errors.getString("message"), FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+//                Toast.makeText(
+//                    this@CRUDKostActivity,
+//                    errors.getString("message"),
+//                    Toast.LENGTH_SHORT
+//                ).show()
             } catch(e: Exception){
-                Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(this@CRUDKostActivity, e.message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
             }
         }) {
             @Throws(AuthFailureError::class)
@@ -381,9 +384,11 @@ class CRUDKostActivity : AppCompatActivity() {
                 val gson = Gson()
                 var kost = gson.fromJson(response, Kost::class.java)
 
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-                Timber.tag("Add").d("Data Kost berhasil ditambahkan [!]")
+                if(kost != null){
+//                    Toast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                    Timber.tag("Add").d("Data Kost berhasil ditambahkan [!]")
+                }
 
                 val returnIntent = Intent()
                 setResult(RESULT_OK, returnIntent)
@@ -396,13 +401,15 @@ class CRUDKostActivity : AppCompatActivity() {
                 try{
                     val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
                     val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    FancyToast.makeText(this@CRUDKostActivity, errors.getString("message"), FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+//                    Toast.makeText(
+//                        this@CRUDKostActivity,
+//                        errors.getString("message"),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, e.message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+//                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
             }) {
                 @Throws(AuthFailureError::class)
@@ -446,9 +453,10 @@ class CRUDKostActivity : AppCompatActivity() {
                     jsonObject.getJSONObject("data").toString(), Kost::class.java
                 )
 
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diubah", Toast.LENGTH_SHORT).show()
-                Timber.tag("Update").d("Data Kost berhasil diubah [!]")
+                if(kost != null){
+                    FancyToast.makeText(this@CRUDKostActivity, "Data berhasil diubah", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                    Timber.tag("Update").d("Data Kost berhasil diubah [!]")
+                }
 
                 val returnIntent = Intent()
                 setResult(RESULT_OK, returnIntent)
@@ -461,13 +469,15 @@ class CRUDKostActivity : AppCompatActivity() {
                 try{
                     val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
                     val errors = JSONObject(responseBody)
-                    Toast.makeText(
+                    FancyToast.makeText(
                         this@CRUDKostActivity,
                         errors.getString("message"),
-                        Toast.LENGTH_SHORT
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
                     ).show()
                 } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, e.message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
                 }
             }) {
                 @Throws(AuthFailureError::class)
@@ -521,11 +531,11 @@ class CRUDKostActivity : AppCompatActivity() {
 
                 if(!kost.isEmpty())
                 {
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil All Mahasiswa", Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, "Data berhasil diambil All Mahasiswa", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
                     Timber.tag("Show").d("Data Kost berhasil tertampil [!]")
                 }
                 else {
-                    Toast.makeText(this@CRUDKostActivity, "Data kosong", Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, "Data kosong", FancyToast.LENGTH_SHORT, FancyToast.WARNING, false).show()
                     Timber.tag("Error").e("Data Kost masih kosong [!]")
                 }
             }, Response.ErrorListener { error ->
@@ -534,13 +544,15 @@ class CRUDKostActivity : AppCompatActivity() {
                 try{
                     val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
                     val errors = JSONObject(responseBody)
-                    Toast.makeText(
+                    FancyToast.makeText(
                         this@CRUDKostActivity,
                         errors.getString("message"),
-                        Toast.LENGTH_SHORT
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
                     ).show()
                 } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, e.message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
                 }
             }) {
                 @Throws(AuthFailureError::class)
@@ -563,10 +575,10 @@ class CRUDKostActivity : AppCompatActivity() {
                 val gson = Gson()
                 var kost = gson.fromJson(response, Kost::class.java)
 
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
-                Timber.d("Data Kost berhasil dihapus [!]")
-                Timber.tag("Delete").d("Data Kost berhasil dihapus [!]")
+                if(kost != null){
+                    FancyToast.makeText(this@CRUDKostActivity, "Data berhasil dihapus", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                    Timber.tag("Delete").d("Data Kost berhasil dihapus [!]")
+                }
                 allKost()
             }, Response.ErrorListener { error ->
                 setLoading(false)
@@ -574,13 +586,15 @@ class CRUDKostActivity : AppCompatActivity() {
                 try{
                     val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
                     val errors = JSONObject(responseBody)
-                    Toast.makeText(
+                    FancyToast.makeText(
                         this@CRUDKostActivity,
                         errors.getString("message"),
-                        Toast.LENGTH_SHORT
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
                     ).show()
                 } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(this@CRUDKostActivity, e.message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
                 }
             }) {
                 @Throws(AuthFailureError::class)
