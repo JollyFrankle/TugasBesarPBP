@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.api.models.Kost
 import com.example.tugasbesarpbp.databinding.ActivityCreateBinding
 import com.google.gson.Gson
+import timber.log.Timber
 
 class CRUDKostActivity : AppCompatActivity() {
 
@@ -74,6 +75,7 @@ class CRUDKostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         builderManager = NotificationManagerCompat.from(this)
+        Timber.plant(Timber.DebugTree())
 
         createNotificationChannel()
 
@@ -350,53 +352,6 @@ class CRUDKostActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendNotification1(){
-        val intent: Intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
-        // Handle notification click
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        // File "NotificationReceiver.kt" menerima parameter "action" --> ke mana activity yang dituju, kemudian "data" --> data apa yang akan dikirimkan
-        // Kasus ini: action = "show_kost" agar bisa melihat detail kost, kemudian data = id kost yang akan ditampilkan
-         val broadcastIntent = Intent(this, NotificationReceiver::class.java)
-        broadcastIntent.putExtra("action", "show_kost")
-        broadcastIntent.putExtra("data", id)
-        val actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
-            .setContentTitle(binding.tilTambahNama.editText?.text.toString())
-            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setColor(Color.BLUE)
-            .setAutoCancel(true)
-            .setOnlyAlertOnce(true)
-            .setStyle(NotificationCompat.InboxStyle()
-                .addLine("Kost : " + binding.tilTambahNama.editText?.text.toString())
-                .addLine("Harga : " + binding.tilTambahHarga.editText?.text.toString())
-                .addLine("Fasilitas : " + binding.tilTambahFasilitas.editText?.text.toString()))
-            .setContentIntent(pendingIntent)
-            .addAction(R.mipmap.ic_launcher, "Lihat Selengkapnya", actionIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        with(NotificationManagerCompat.from(this)){
-            notify(notificationId1, builder.build())
-        }
-    }
-
-    private fun sendNotification2(){
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Kost " + binding.tilTambahNama.editText?.text.toString() + " ditambahkan kedalam aplikasi JogjaKita dengan harga yang sangat terjangkau yakni mulai dari Rp. " + binding.tilTambahHarga.editText?.text.toString() + " dengan fasilitas yang cukup memadai yakni " + binding.tilTambahFasilitas.editText?.text.toString()))
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-
-        with(NotificationManagerCompat.from(this)){
-            notify(notificationId2, builder.build())
-        }
-    }
-
     private fun sendNotification3() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
             .setContentTitle("Create Kost")
@@ -485,6 +440,7 @@ class CRUDKostActivity : AppCompatActivity() {
 
                 if(kost != null)
                     Toast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                Timber.tag("Add").d("Data Kost berhasil ditambahkan [!]")
 
                 val returnIntent = Intent()
                 setResult(RESULT_OK, returnIntent)
@@ -550,6 +506,7 @@ class CRUDKostActivity : AppCompatActivity() {
 
                 if(kost != null)
                     Toast.makeText(this@CRUDKostActivity, "Data berhasil diubah", Toast.LENGTH_SHORT).show()
+                Timber.tag("Update").d("Data Kost berhasil diubah [!]")
 
                 val returnIntent = Intent()
                 setResult(RESULT_OK, returnIntent)
@@ -628,9 +585,14 @@ class CRUDKostActivity : AppCompatActivity() {
 //                srMahasiswa!!.isRefreshing = false
 
                 if(!kost.isEmpty())
+                {
                     Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil All Mahasiswa", Toast.LENGTH_SHORT).show()
-                else
+                    Timber.tag("Show").d("Data Kost berhasil tertampil [!]")
+                }
+                else {
                     Toast.makeText(this@CRUDKostActivity, "Data kosong", Toast.LENGTH_SHORT).show()
+                    Timber.tag("Error").e("Data Kost masih kosong [!]")
+                }
             }, Response.ErrorListener { error ->
 //                srMahasiswa!!.isRefreshing = false
 
@@ -668,7 +630,8 @@ class CRUDKostActivity : AppCompatActivity() {
 
                 if(kost != null)
                     Toast.makeText(this@CRUDKostActivity, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
-
+                Timber.d("Data Kost berhasil dihapus [!]")
+                Timber.tag("Delete").d("Data Kost berhasil dihapus [!]")
                 allKost()
             }, Response.ErrorListener { error ->
                 setLoadingScreen(false)

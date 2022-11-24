@@ -1,5 +1,6 @@
 package com.example.tugasbesarpbp.main_ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.tugasbesarpbp.HomeActivity
+import com.example.tugasbesarpbp.QRCodeActivity
 import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.databinding.FragmentHomeBinding
 import com.example.tugasbesarpbp.other.HomeFragViewModel
@@ -53,6 +55,7 @@ class HomeFragment : Fragment() {
 
         // button search on click
         val btnSearch = view.findViewById<Button>(R.id.btnHomeSearch)
+        val QRCode = view.findViewById<Button>(R.id.btnQRCode)
         btnSearch.setOnClickListener {
             // go to list item fragment with arguments
             val fragment = R.id.listItemFragment
@@ -62,6 +65,10 @@ class HomeFragment : Fragment() {
             (activity as HomeActivity).navHostFragment.navController.navigate(fragment, bundle)
 
 //            (activity as HomeActivity).navHostFragment.navController.navi
+        }
+        QRCode.setOnClickListener{
+            val intent = Intent(this@HomeFragment.requireContext(), QRCodeActivity::class.java)
+            startActivity(intent)
         }
     }
 }
