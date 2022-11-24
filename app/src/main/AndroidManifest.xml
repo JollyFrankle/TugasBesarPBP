@@ -15,9 +15,16 @@
         android:roundIcon="@drawable/ic_launcher_background"
         android:supportsRtl="true"
         android:theme="@style/Theme.TugasBesarPBP"
+        android:usesCleartextTraffic="true"
         tools:replace="android:icon"
-        tools:targetApi="31"
-        android:usesCleartextTraffic="true">
+        tools:targetApi="31">
+        <activity
+            android:name=".ViewKostActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".CRUDKostApi"
             android:exported="false">

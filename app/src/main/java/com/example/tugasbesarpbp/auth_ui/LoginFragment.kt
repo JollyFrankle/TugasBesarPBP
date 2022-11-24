@@ -9,18 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.MainActivity
 import com.example.tugasbesarpbp.R
-import com.example.tugasbesarpbp.api.UserApi
-import com.example.tugasbesarpbp.room.user.User
-import com.example.tugasbesarpbp.room.MainDB
+import com.example.tugasbesarpbp.api.http.UserApi
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class LoginFragment : Fragment() {
@@ -89,33 +83,38 @@ class LoginFragment : Fragment() {
 
             // check username and password (Volley)
             if(username.isNotBlank() && password.isNotEmpty()) {
-                login(username, password)
+                btnLogin.isEnabled = false
+                UserApi.cekLogin(requireActivity(), username, password, {
+                    val jsonObject = JSONObject(it)
+                    val token = jsonObject.getString("access_token")
+                    val id = jsonObject.getJSONObject("user").getLong("id")
+
+                    // save to shared preferences
+                    spSession.edit()
+                        .putString("token", token)
+                        .putLong("id", id)
+                        .putString("username", username)
+                        .putString("password", password)
+                        .apply()
+
+                    (activity as MainActivity).goToHome()
+                }, {
+                    if(it.statusCode == 401) {
+                        Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
+                    } else {
+                        AlertDialog.Builder(requireActivity())
+                            .setTitle("Terjadi Kesalahan!")
+                            .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+
+                    // set login button enabled
+                    btnLogin.isEnabled = true
+                })
             } else {
                 Snackbar.make(view, "Username dan password harus diisi!", Snackbar.LENGTH_SHORT).show()
             }
-            // Check username and password
-//            val mainDB by lazy { MainDB((activity as MainActivity)) }
-
-            // CoroutineScope untuk menjalankan fungsi async
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val user: User? = mainDB.UserDao().getUserByCred(username, password)
-//
-//                if (user != null) {
-//                    // login success
-//                    // save session
-//                    spSession.edit()
-//                        .putInt("id", user.id)
-//                        .putString("username", user.username)
-//                        .putString("password", user.password)
-//                        .apply()
-//
-//                    // go to home activity
-//                    (activity as MainActivity).goToHome()
-//                } else {
-//                    // login failed
-//                    Snackbar.make(view, "Login failed", Snackbar.LENGTH_SHORT).show()
-//                }
-//            }
         }
 
         // btnLoginMoveToRegis on click
@@ -123,63 +122,5 @@ class LoginFragment : Fragment() {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
-    }
-
-    private fun login(username: String, password: String) {
-        // set login button disabled
-        btnLogin.isEnabled = false
-
-        val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.LOGIN_URL, {
-            val jsonObject = JSONObject(it)
-            val token = jsonObject.getString("access_token")
-            val id = jsonObject.getJSONObject("user").getLong("id")
-
-            // save to shared preferences
-            spSession.edit()
-                .putString("token", token)
-                .putLong("id", id)
-                .putString("username", username)
-                .putString("password", password)
-                .apply()
-
-            (activity as MainActivity).goToHome()
-        }, {
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                if(it.networkResponse.statusCode == 401) {
-                    Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
-                } else {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.networkResponse.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val response = it.networkResponse
-                var dialogContent = ""
-                if(response != null) {
-                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
-                } else {
-                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
-                }
-                AlertDialog.Builder(requireActivity())
-                    .setMessage(dialogContent)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-
-            // set login button enabled
-            btnLogin.isEnabled = true
-        }) {
-            override fun getParams(): MutableMap<String, String> {
-                val params = HashMap<String, String>()
-                params["username"] = username
-                params["password"] = password
-                return params
-            }
-        }
-        (activity as MainActivity).queue!!.add(stringRequest)
     }
 }

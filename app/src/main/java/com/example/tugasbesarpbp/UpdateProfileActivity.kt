@@ -10,16 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.tugasbesarpbp.api.UserApi
+import com.example.tugasbesarpbp.api.http.UserApi
+import com.example.tugasbesarpbp.api.models.User
 import com.example.tugasbesarpbp.databinding.ActivityUpdateBinding
-import com.example.tugasbesarpbp.room.MainDB
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import com.example.tugasbesarpbp.room.user.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -46,24 +41,22 @@ class UpdateProfileActivity : AppCompatActivity() {
         queue = Volley.newRequestQueue(this)
 
         // Load data
-        getUserDetails()
+        setLoadingScreen(true)
+        UserApi.getProfile(this, {
+            val gson = Gson()
 
-//        val db by lazy { MainDB(this) }
-//        val userDao = db.UserDao()
-
-        // load data
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val user: User? = db.UserDao().getUserById(spSession.getInt("id", 0))
-//            if (user != null) {
-//                withContext(Dispatchers.Main) {
-//                    binding.tilUpdProfNama.editText?.setText(user.nama)
-//                    binding.tilUpdProfUsername.editText?.setText(user.username)
-//                    binding.tilUpdProfEmail.editText?.setText(user.email)
-//                    binding.tilUpdProfTanggalLahir.editText?.setText(user.tanggalLahir)
-//                    binding.tilUpdProfNomorTelepon.editText?.setText(user.nomorTelepon)
-//                }
-//            }
-//        }
+            // Dapatkan data user dari response [struktur: response = { "data": { ... } }]
+            val jsonRespose = JSONObject(it)
+            val user = gson.fromJson(jsonRespose.getJSONObject("data").toString(), User::class.java)
+            binding.tilUpdProfNama.editText?.setText(user.nama)
+            binding.tilUpdProfUsername.editText?.setText(user.username)
+            binding.tilUpdProfEmail.editText?.setText(user.email)
+            binding.tilUpdProfTanggalLahir.editText?.setText(user.tanggalLahir)
+            binding.tilUpdProfNomorTelepon.editText?.setText(user.nomorTelepon)
+            setLoadingScreen(false)
+        }, {
+            setLoadingScreen(false)
+        })
 
         binding.btnPickDate.setOnClickListener {
             val c = Calendar.getInstance()
@@ -125,18 +118,44 @@ class UpdateProfileActivity : AppCompatActivity() {
 //            CoroutineScope(Dispatchers.IO).launch {
 //                // all input is valid
             if (!error) {
-                updateUser()
-//                    // do update user
-//                    userDao.updateUser(
-//                        spSession.getInt("id", 0),
-//                        name,
-//                        email,
-//                        tanggalLahir,
-//                        nomorTelepon
-//                    )
-//
-//                    // go back to previous activity
-//                    finish()
+                val user = User(
+                    nama = binding.tilUpdProfNama.editText?.text.toString(),
+                    username = binding.tilUpdProfUsername.editText?.text.toString(),
+                    email = binding.tilUpdProfEmail.editText?.text.toString(),
+                    tanggalLahir = binding.tilUpdProfTanggalLahir.editText?.text.toString(),
+                    nomorTelepon = binding.tilUpdProfNomorTelepon.editText?.text.toString()
+                )
+
+                setLoadingScreen(true)
+                UserApi.updateProfile(this, user, {
+                    finish()
+                }, {
+                    if(it.statusCode.toString().startsWith("4")) {
+                        AlertDialog.Builder(this)
+                            .setTitle("Terjadi Kesalahan!")
+                            .setMessage(it.jsonData.getString("message"))
+                            .setPositiveButton("OK", null)
+                            .show()
+                        // for each errors
+                        val errors = it.jsonData.getJSONObject("errors")
+                        for (key in errors.keys()) {
+                            val error = errors.getJSONArray(key)
+                            when (key) {
+                                "username" -> binding.tilUpdProfUsername.error = error[0].toString()
+                                "email" -> binding.tilUpdProfEmail.error = error[0].toString()
+                                "tanggalLahir" -> binding.tilUpdProfTanggalLahir.error = error[0].toString()
+                                "nomorTelepon" -> binding.tilUpdProfNomorTelepon.error = error[0].toString()
+                            }
+                        }
+                    } else {
+                        AlertDialog.Builder(this)
+                            .setTitle("Terjadi Kesalahan!")
+                            .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                    setLoadingScreen(false)
+                })
             } else {
                 Snackbar.make(
                     binding.root,
@@ -152,139 +171,6 @@ class UpdateProfileActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    private fun getUserDetails() {
-        // Dapatkan session untuk mengambil token dan id user
-        val session = this.getSharedPreferences("session", Context.MODE_PRIVATE)
-
-        // set loading screen
-        setLoadingScreen(true)
-        val stringRequest: StringRequest = object: StringRequest(Method.GET, UserApi.GET_URL, {
-            val gson = Gson()
-
-            // Dapatkan data user dari response [struktur: response = { "data": { ... } }]
-            val jsonRespose = JSONObject(it)
-            val user = gson.fromJson(jsonRespose.getJSONObject("data").toString(), com.example.tugasbesarpbp.api_models.User::class.java)
-            binding.tilUpdProfNama.editText?.setText(user.nama)
-            binding.tilUpdProfUsername.editText?.setText(user.username)
-            binding.tilUpdProfEmail.editText?.setText(user.email)
-            binding.tilUpdProfTanggalLahir.editText?.setText(user.tanggalLahir)
-            binding.tilUpdProfNomorTelepon.editText?.setText(user.nomorTelepon)
-            setLoadingScreen(false)
-        }, {
-            // Kalau ada error
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                AlertDialog.Builder(this)
-                    .setTitle("Terjadi Kesalahan!")
-                    .setMessage(respObj.toString(4))
-                    .setPositiveButton("OK", null)
-                    .show()
-            } catch (e: Exception) {
-                AlertDialog.Builder(this)
-                    .setTitle("Error " + it.networkResponse.statusCode)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        }) {
-            override fun getHeaders(): MutableMap<String, String> {
-                // Dapatkan token dari session dan tambahkan ke header
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + session.getString("token", "")
-                return headers
-            }
-        }
-
-        // Tambahkan request ke queue
-        this.queue!!.add(stringRequest)
-    }
-
-    private fun updateUser() {
-        // Dapatkan session untuk mengambil token dan id user
-        val session = this.getSharedPreferences("session", Context.MODE_PRIVATE)
-
-        // set loading screen
-        setLoadingScreen(true)
-        val stringRequest: StringRequest = object: StringRequest(Method.PUT, UserApi.UPDATE_URL, {
-            finish()
-        }, {
-            // Kalau ada error
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                if(it.networkResponse.statusCode.toString().startsWith("4")) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage(respObj.getString("message"))
-                        .setPositiveButton("OK", null)
-                        .show()
-                    // for each errors
-                    val errors = respObj.getJSONObject("errors")
-                    for (key in errors.keys()) {
-                        val error = errors.getJSONArray(key)
-                        when (key) {
-                            "username" -> binding.tilUpdProfUsername.error = error[0].toString()
-                            "email" -> binding.tilUpdProfEmail.error = error[0].toString()
-                            "tanggalLahir" -> binding.tilUpdProfTanggalLahir.error = error[0].toString()
-                            "nomorTelepon" -> binding.tilUpdProfNomorTelepon.error = error[0].toString()
-                        }
-                    }
-                } else {
-                    AlertDialog.Builder(this)
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.networkResponse.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val response = it.networkResponse
-                var dialogContent = ""
-                if(response != null) {
-                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
-                } else {
-                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
-                }
-                AlertDialog.Builder(this)
-                    .setMessage(dialogContent)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-            setLoadingScreen(false)
-        }) {
-            override fun getHeaders(): MutableMap<String, String> {
-                // Dapatkan token dari session dan tambahkan ke header
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + session.getString("token", "")
-                return headers
-            }
-
-            override fun getBody(): ByteArray {
-                // Dapatkan data user dari form
-                val user = com.example.tugasbesarpbp.api_models.User(
-                    nama = binding.tilUpdProfNama.editText?.text.toString(),
-                    username = binding.tilUpdProfUsername.editText?.text.toString(),
-                    email = binding.tilUpdProfEmail.editText?.text.toString(),
-                    tanggalLahir = binding.tilUpdProfTanggalLahir.editText?.text.toString(),
-                    nomorTelepon = binding.tilUpdProfNomorTelepon.editText?.text.toString()
-                )
-
-                // Ubah data user ke JSON
-                val gson = Gson()
-                val json = gson.toJson(user)
-
-                // Return JSON
-                return json.toByteArray(StandardCharsets.UTF_8)
-            }
-
-            override fun getBodyContentType(): String {
-                return "application/json"
-            }
-        }
-
-        // Tambahkan request ke queue
-        this.queue!!.add(stringRequest)
     }
 
     private fun setLoadingScreen(state: Boolean) {

@@ -11,24 +11,15 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
-import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.tugasbesarpbp.api.UserApi
 import com.example.tugasbesarpbp.auth_ui.LoginFragment
 import com.example.tugasbesarpbp.databinding.ActivityMainBinding
 import com.example.tugasbesarpbp.other.HomeFragViewModel
-import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import org.json.JSONObject
-import java.nio.charset.StandardCharsets
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -75,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
-            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
             .replace(R.id.frameLayout, fragment)
             .commit()
     }
@@ -115,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Siapkan intent untuk membuka aplikasi ke bagian login, auto isi username dan password
         val broadcastIntent = Intent(this, NotificationReceiver::class.java)

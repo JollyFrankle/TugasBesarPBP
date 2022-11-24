@@ -1,8 +1,6 @@
 package com.example.tugasbesarpbp.rv_adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugasbesarpbp.R
-import com.example.tugasbesarpbp.api_models.Kost
+import com.example.tugasbesarpbp.api.models.Kost
 import com.google.android.material.card.MaterialCardView
 import java.util.*
 
@@ -41,6 +39,7 @@ class RVItemKostAdapter(private var kostList: ArrayList<Kost>, private val userI
         holder.namaEl.text = currentItem.namaKost
         holder.hargaEl.text = "Rp " + "%,.0f".format(locale, currentItem.harga)
         holder.fasilitasEl.text = currentItem.fasilitas
+        holder.tipeEl.text = "Kost ${currentItem.tipe}"
 
         holder.cardClicked.setOnClickListener {
             listener.onClick(currentItem)
@@ -52,7 +51,7 @@ class RVItemKostAdapter(private var kostList: ArrayList<Kost>, private val userI
             holder.badgeMilikAnda.visibility = View.VISIBLE
         }
 
-        println("ID Pemilik: ${currentItem.idPemilik}, ID User: ${userId}")
+        println("ID Pemilik: ${currentItem.idPemilik}, ID User: $userId")
     }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

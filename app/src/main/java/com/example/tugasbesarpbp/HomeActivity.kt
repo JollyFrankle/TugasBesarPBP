@@ -1,30 +1,21 @@
 package com.example.tugasbesarpbp
 
-import android.app.Activity
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.tugasbesarpbp.api.UserApi
-import com.example.tugasbesarpbp.auth_ui.LoginFragment
+import com.example.tugasbesarpbp.api.http.UserApi
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import org.json.JSONObject
-import java.nio.charset.StandardCharsets
-import java.util.*
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var spSession: SharedPreferences
@@ -32,6 +23,7 @@ class HomeActivity : AppCompatActivity() {
     lateinit var navHostFragment: NavHostFragment
 
     var queue: RequestQueue? = null
+    private lateinit var loader: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +55,9 @@ class HomeActivity : AppCompatActivity() {
 
         // hide action bar
         supportActionBar?.hide()
+
+        // loader
+        loader = findViewById<View>(R.id.layoutLoader).findViewById(R.id.layoutLoader)
     }
 
     // set title bar
@@ -98,13 +93,39 @@ class HomeActivity : AppCompatActivity() {
         return spSession
     }
 
+    fun setLoadingScreen(state: Boolean){
+        if (state) {
+            // fade in
+            loader.alpha = 0f
+            loader.visibility = View.VISIBLE
+            loader.animate().alpha(1f).duration = 250
+
+            // set flag to disable click
+            loader.isClickable = true
+        } else {
+            // fade out
+            loader.animate().alpha(0f).setDuration(250).withEndAction {
+                loader.visibility = View.GONE
+            }
+            // set flag to enable click
+            loader.isClickable = false
+        }
+    }
+
     fun signOut() {
         // confirm
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Sign out")
         builder.setMessage("Anda akan keluar dari aplikasi ini dan username serta password akan dilupakan oleh sistem.\r\nApakah Anda yakin?")
         builder.setPositiveButton("Yes") { dialog, which ->
-            logOutWeb()
+            UserApi.logout(this, {
+                spSession.edit().clear().apply()
+
+                // go to login
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            })
             // clear session
 //            spSession.edit().clear().apply()
 //
@@ -128,64 +149,12 @@ class HomeActivity : AppCompatActivity() {
         builder.setPositiveButton("Yes") { dialog, which ->
             finish()
         }
-        builder.setNegativeButton("No", null)
+        builder.setNegativeButton("No") { dialog, which ->
+            // open ViewKost
+            val intent = Intent(this, ViewKostActivity::class.java)
+            startActivity(intent)
+        }
         val dialog: AlertDialog = builder.create()
         dialog.show()
-    }
-
-    private fun logOutWeb() {
-        val token = spSession.getString("token", null)
-        val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.LOGOUT_URL, {
-//            val jsonObject = JSONObject(it)
-
-            spSession.edit().clear().apply()
-
-            // go to login
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-
-            // change fragment to login fragment
-            finish()
-        }, {
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                if(it.networkResponse.statusCode.toString().startsWith("4")) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage(respObj.getString("message"))
-                        .setPositiveButton("OK", null)
-                        .show()
-                    // for each errors
-                } else {
-                    AlertDialog.Builder(this)
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.networkResponse.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val response = it.networkResponse
-                var dialogContent = ""
-                if(response != null) {
-                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
-                } else {
-                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
-                }
-                AlertDialog.Builder(this)
-                    .setMessage(dialogContent)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        }) {
-            override fun getHeaders(): MutableMap<String, String> {
-                // Dapatkan token dari session dan tambahkan ke header
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + token
-                return headers
-            }
-        }
-        queue!!.add(stringRequest)
     }
 }

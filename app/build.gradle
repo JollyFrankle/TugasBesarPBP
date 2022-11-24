@@ -76,9 +76,16 @@ dependencies {
     // Swipe Refresh Layout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    // Voller
+    // Volley
     implementation 'com.android.volley:volley:1.2.1'
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.9'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
+    // PhotoView --> untuk zoom image
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }
