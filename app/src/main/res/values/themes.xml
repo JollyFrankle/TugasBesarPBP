@@ -28,8 +28,16 @@
     </style>
 
     <style name="Theme.TugasBesarPBP.Splash" parent="Theme.TugasBesarPBP.NoActionBar">
-<!--        <item name="android:windowBackground">@drawable/tugu_yogya</item>-->
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentTransitions">true</item>
         <item name="android:statusBarColor">@color/color_primary</item>
-        <item name="android:windowBackground">@color/color_primary</item>
+<!--        <item name="android:windowBackground">@color/color_primary</item>-->
+    </style>
+
+<!--    Translucent Status Bar -->
+    <style name="Theme.TugasBesarPBP.TranslucentStatusBar" parent="Theme.TugasBesarPBP.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 </resources>

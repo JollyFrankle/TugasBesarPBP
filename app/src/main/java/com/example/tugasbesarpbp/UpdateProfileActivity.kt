@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
@@ -13,8 +14,8 @@ import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.api.http.UserApi
 import com.example.tugasbesarpbp.api.models.User
 import com.example.tugasbesarpbp.databinding.ActivityUpdateBinding
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.shashank.sony.fancytoastlib.FancyToast
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -128,14 +129,11 @@ class UpdateProfileActivity : AppCompatActivity() {
 
                 setLoadingScreen(true)
                 UserApi.updateProfile(this, user, {
+                    FancyToast.makeText(this, "Berhasil mengubah profil", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
                     finish()
                 }, {
                     if(it.statusCode.toString().startsWith("4")) {
-                        AlertDialog.Builder(this)
-                            .setTitle("Terjadi Kesalahan!")
-                            .setMessage(it.jsonData.getString("message"))
-                            .setPositiveButton("OK", null)
-                            .show()
+                        FancyToast.makeText(this, "Terjadi kesalahan. Silakan periksa kembali input.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
                         // for each errors
                         val errors = it.jsonData.getJSONObject("errors")
                         for (key in errors.keys()) {
@@ -157,11 +155,7 @@ class UpdateProfileActivity : AppCompatActivity() {
                     setLoadingScreen(false)
                 })
             } else {
-                Snackbar.make(
-                    binding.root,
-                    "Update profil gagal. Cek ulang bagian yang ditandai.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                FancyToast.makeText(this, "Terjadi kesalahan. Silakan periksa kembali input.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
             }
 //            }
         }

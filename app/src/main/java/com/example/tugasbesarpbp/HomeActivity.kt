@@ -12,8 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.api.http.UserApi
 import com.google.android.material.navigation.NavigationBarView
 
@@ -22,7 +20,6 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var btmMenu: NavigationBarView
     lateinit var navHostFragment: NavHostFragment
 
-    var queue: RequestQueue? = null
     private lateinit var loader: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +43,6 @@ class HomeActivity : AppCompatActivity() {
 
         // Session identifier
         spSession = getSharedPreferences("session", MODE_PRIVATE)
-
-        // Volley Queue
-        queue = Volley.newRequestQueue(this)
 
         // set navigation bar item selected color
         btmMenu.itemActiveIndicatorColor = getColorStateList(R.color.bs_white)
@@ -148,11 +142,6 @@ class HomeActivity : AppCompatActivity() {
         builder.setMessage("Apakah Anda yakin ingin keluar dari aplikasi ini?")
         builder.setPositiveButton("Yes") { dialog, which ->
             finish()
-        }
-        builder.setNegativeButton("No") { dialog, which ->
-            // open ViewKost
-            val intent = Intent(this, ViewKostActivity::class.java)
-            startActivity(intent)
         }
         val dialog: AlertDialog = builder.create()
         dialog.show()

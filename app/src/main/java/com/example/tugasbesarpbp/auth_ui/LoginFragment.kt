@@ -9,12 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.MainActivity
 import com.example.tugasbesarpbp.R
 import com.example.tugasbesarpbp.api.http.UserApi
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.shashank.sony.fancytoastlib.FancyToast
 import org.json.JSONObject
 
 class LoginFragment : Fragment() {
@@ -100,7 +99,7 @@ class LoginFragment : Fragment() {
                     (activity as MainActivity).goToHome()
                 }, {
                     if(it.statusCode == 401) {
-                        Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
+                        FancyToast.makeText(requireContext(), "Username atau password salah", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
                     } else {
                         AlertDialog.Builder(requireActivity())
                             .setTitle("Terjadi Kesalahan!")
@@ -113,7 +112,7 @@ class LoginFragment : Fragment() {
                     btnLogin.isEnabled = true
                 })
             } else {
-                Snackbar.make(view, "Username dan password harus diisi!", Snackbar.LENGTH_SHORT).show()
+                FancyToast.makeText(requireContext(), "Username atau password tidak boleh kosong", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
             }
         }
 

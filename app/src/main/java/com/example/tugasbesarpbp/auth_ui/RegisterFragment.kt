@@ -7,26 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import com.android.volley.AuthFailureError
-import com.android.volley.toolbox.StringRequest
 import com.example.tugasbesarpbp.MainActivity
 import com.example.tugasbesarpbp.api.http.UserApi
 import com.example.tugasbesarpbp.api.models.User
 import com.example.tugasbesarpbp.databinding.FragmentRegisterBinding
 import com.example.tugasbesarpbp.room.MainDB
-import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
+import com.shashank.sony.fancytoastlib.FancyToast
 import org.json.JSONObject
-import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Calendar
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,7 +133,7 @@ class RegisterFragment : Fragment() {
                     // send notification
                     (activity as MainActivity).sendRegisterNotification(user.nama, user.username, user.password!!)
 
-                    Snackbar.make(requireView(), "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", Snackbar.LENGTH_SHORT).show()
+                    FancyToast.makeText(requireContext(), "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
 
                     // change fragment to login fragment
                     val loginFragment: Fragment = LoginFragment()
@@ -179,11 +171,7 @@ class RegisterFragment : Fragment() {
                     binding.btnRegister.isEnabled = true
                 })
             } else {
-                Snackbar.make(
-                    view,
-                    "Register gagal. Cek ulang bagian yang ditandai.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                FancyToast.makeText(requireContext(), "Silakan perbaiki input yang salah.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
             }
         }
 

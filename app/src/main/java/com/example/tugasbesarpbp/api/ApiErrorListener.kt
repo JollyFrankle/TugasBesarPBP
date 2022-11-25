@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.android.volley.Response
 import com.example.tugasbesarpbp.MainActivity
+import com.shashank.sony.fancytoastlib.FancyToast
 import org.json.JSONObject
+import timber.log.Timber
 
 class ApiErrorListener(val jsonData: JSONObject, val statusCode: Int) {
     companion object {
@@ -20,14 +22,10 @@ class ApiErrorListener(val jsonData: JSONObject, val statusCode: Int) {
 
                     if (it.networkResponse.statusCode == 401) {
                         // Kalau token expired
-                        Toast.makeText(
-                            context,
-                            "Token expired, silahkan login kembali",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        FancyToast.makeText(context, "Token expired, silahkan login kembali", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
+
                         // Hapus session
-                        val spSession =
-                            context.getSharedPreferences("session", Context.MODE_PRIVATE)
+                        val spSession = context.getSharedPreferences("session", Context.MODE_PRIVATE)
                         spSession.edit().clear().apply()
                         // Kembali ke halaman login
                         context.startActivity(Intent(context, MainActivity::class.java))
@@ -45,6 +43,7 @@ class ApiErrorListener(val jsonData: JSONObject, val statusCode: Int) {
                         dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
                     } else {
                         dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
+                        myCallback(ApiErrorListener(JSONObject(), 0))
                     }
                     AlertDialog.Builder(context)
                         .setMessage(dialogContent)
