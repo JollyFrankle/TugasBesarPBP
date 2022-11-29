@@ -137,6 +137,13 @@ class CRUDKostActivity : AppCompatActivity() {
                 binding.tilTambahHarga.error = null
             }
 
+            if(binding.actvTambahTipeKost.text.toString().isEmpty()) {
+                binding.actvTambahTipeKost.error = "Tipe Kost tidak boleh kosong!"
+                error++
+            } else {
+                binding.actvTambahTipeKost.error = null
+            }
+
             if(error == 0){
                 val kost = Kost(
                     namaKost = binding.tilTambahNama.editText?.text.toString(),
