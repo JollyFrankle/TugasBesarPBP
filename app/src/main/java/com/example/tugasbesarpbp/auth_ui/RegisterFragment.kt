@@ -71,57 +71,57 @@ class RegisterFragment : Fragment() {
 
 //            CoroutineScope(Dispatchers.IO).launch {
 //                withContext(Dispatchers.Main) {
-            if (password.length < 8) {
-                // check if password is less than 8 characters
-                binding.tilRegisPassword.error = "Password must be at least 8 characters"
-                error = true
-            } else if (password != passwordConfirm) {
-                // check if password and confirm password is same
-                binding.tilRegisPassword.error = "Password tidak sama"
-                binding.tilRegisPasswordConfirm.error = "Password tidak sama"
-                error = true
-            } else {
-                binding.tilRegisPassword.error = null
-                binding.tilRegisPasswordConfirm.error = null
-            }
-
-            // check if email format is valid using regex
-            if (!email.matches(Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"))) {
-                binding.tilRegisEmail.error = "Email tidak valid"
-                error = true
-            } else {
-                binding.tilRegisEmail.error = null
-            }
-
-            // check if name is empty
-            if (username.isEmpty()) {
-                binding.tilRegisUsername.error = "Username tidak boleh kosong"
-                error = true
-            } else {
-                binding.tilRegisUsername.error = null
-            }
-
-            // check if username is empty
-            if (name.isEmpty()) {
-                binding.tilRegisNama.error = "Nama tidak boleh kosong"
-                error = true
-            } else {
-                binding.tilRegisNama.error = null
-            }
-
-            if(tanggalLahir.isEmpty()){
-                binding.tilRegisTanggalLahir.error = "Tanggal lahir harus diisi"
-                error = true
-            } else{
-                binding.tilRegisTanggalLahir.error = null
-            }
-
-            if(nomorTelepon.length == 12){
-                binding.tilRegisNomorTelepon.error = null
-            } else{
-                binding.tilRegisNomorTelepon.error = "Nomor telepon harus 12 digit"
-                error = true
-            }
+//            if (password.length < 8) {
+//                // check if password is less than 8 characters
+//                binding.tilRegisPassword.error = "Password must be at least 8 characters"
+//                error = true
+//            } else if (password != passwordConfirm) {
+//                // check if password and confirm password is same
+//                binding.tilRegisPassword.error = "Password tidak sama"
+//                binding.tilRegisPasswordConfirm.error = "Password tidak sama"
+//                error = true
+//            } else {
+//                binding.tilRegisPassword.error = null
+//                binding.tilRegisPasswordConfirm.error = null
+//            }
+//
+//            // check if email format is valid using regex
+//            if (!email.matches(Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"))) {
+//                binding.tilRegisEmail.error = "Email tidak valid"
+//                error = true
+//            } else {
+//                binding.tilRegisEmail.error = null
+//            }
+//
+//            // check if name is empty
+//            if (username.isEmpty()) {
+//                binding.tilRegisUsername.error = "Username tidak boleh kosong"
+//                error = true
+//            } else {
+//                binding.tilRegisUsername.error = null
+//            }
+//
+//            // check if username is empty
+//            if (name.isEmpty()) {
+//                binding.tilRegisNama.error = "Nama tidak boleh kosong"
+//                error = true
+//            } else {
+//                binding.tilRegisNama.error = null
+//            }
+//
+//            if(tanggalLahir.isEmpty()){
+//                binding.tilRegisTanggalLahir.error = "Tanggal lahir harus diisi"
+//                error = true
+//            } else{
+//                binding.tilRegisTanggalLahir.error = null
+//            }
+//
+//            if(nomorTelepon.length == 12){
+//                binding.tilRegisNomorTelepon.error = null
+//            } else{
+//                binding.tilRegisNomorTelepon.error = "Nomor telepon harus 12 digit"
+//                error = true
+//            }
 
             // all input is valid
             if(!error) {
@@ -133,6 +133,14 @@ class RegisterFragment : Fragment() {
                     tanggalLahir = tanggalLahir,
                     nomorTelepon = nomorTelepon
                 )
+
+                binding.tilRegisNama.error = null
+                binding.tilRegisUsername.error = null
+                binding.tilRegisEmail.error = null
+                binding.tilRegisPassword.error = null
+                binding.tilRegisPasswordConfirm.error = null
+                binding.tilRegisTanggalLahir.error = null
+                binding.tilRegisNomorTelepon.error = null
 
                 binding.btnRegister.isEnabled = false
                 UserApi.register(requireActivity(), user, {

@@ -68,7 +68,7 @@
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.TugasBesarPBP.NoActionBar" />
         <activity
             android:name=".CameraActivity"

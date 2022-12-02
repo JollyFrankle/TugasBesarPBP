@@ -82,39 +82,39 @@ class LoginFragment : Fragment() {
             val password = tilPassword.editText?.text.toString()
 
             // check username and password (Volley)
-            if(username.isNotBlank() && password.isNotEmpty()) {
-                btnLogin.isEnabled = false
-                UserApi.cekLogin(requireActivity(), username, password, {
-                    val jsonObject = JSONObject(it)
-                    val token = jsonObject.getString("access_token")
-                    val id = jsonObject.getJSONObject("user").getLong("id")
+//            if(username.isNotBlank() && password.isNotEmpty()) {
+            btnLogin.isEnabled = false
+            UserApi.cekLogin(requireActivity(), username, password, {
+                val jsonObject = JSONObject(it)
+                val token = jsonObject.getString("access_token")
+                val id = jsonObject.getJSONObject("user").getLong("id")
 
-                    // save to shared preferences
-                    spSession.edit()
-                        .putString("token", token)
-                        .putLong("id", id)
-                        .putString("username", username)
-                        .putString("password", password)
-                        .apply()
+                // save to shared preferences
+                spSession.edit()
+                    .putString("token", token)
+                    .putLong("id", id)
+                    .putString("username", username)
+                    .putString("password", password)
+                    .apply()
 
-                    (activity as MainActivity).goToHome()
-                }, {
-                    if(it.statusCode == 401) {
-                        Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
-                    } else {
-                        AlertDialog.Builder(requireActivity())
-                            .setTitle("Terjadi Kesalahan!")
-                            .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
-                            .setPositiveButton("OK", null)
-                            .show()
-                    }
+                (activity as MainActivity).goToHome()
+            }, {
+                if(it.statusCode == 401) {
+                    Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
+                } else {
+                    AlertDialog.Builder(requireActivity())
+                        .setTitle("Terjadi Kesalahan!")
+                        .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
+                        .setPositiveButton("OK", null)
+                        .show()
+                }
 
-                    // set login button enabled
-                    btnLogin.isEnabled = true
-                })
-            } else {
-                Snackbar.make(view, "Username dan password harus diisi!", Snackbar.LENGTH_SHORT).show()
-            }
+                // set login button enabled
+                btnLogin.isEnabled = true
+            })
+//            } else {
+//                Snackbar.make(view, "Username dan password harus diisi!", Snackbar.LENGTH_SHORT).show()
+//            }
         }
 
         // btnLoginMoveToRegis on click

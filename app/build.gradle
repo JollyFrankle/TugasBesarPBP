@@ -102,4 +102,12 @@ dependencies {
     implementation 'com.github.kenglxn.qrgen:android:2.6.0'
     implementation 'com.github.librepdf:openpdf:1.3.29'
     implementation 'io.github.shashank02051997:FancyToast:2.0.2'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test:runner:1.5.1'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
