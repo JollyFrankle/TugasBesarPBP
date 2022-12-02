@@ -1,68 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QRCodeActivity">
-
-    <LinearLayout
+    >
+    <ScrollView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="match_parent"
+        tools:context=".QRCodeActivity">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/qr_code_scanner_with_google_ml_kit"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_margin="15dp"
-            style="@style/TextAppearance.AppCompat.Headline" />
+            android:orientation="vertical" >
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:orientation="horizontal">-->
+            <!--        <LinearLayout-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_marginTop="10dp"-->
+            <!--            android:orientation="horizontal">-->
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:id="@+id/cameraBtn"-->
-<!--                android:text="Kamera"-->
-<!--                android:layout_marginEnd="5dp"-->
-<!--                android:layout_weight="1" />-->
+            <!--            <com.google.android.material.button.MaterialButton-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:id="@+id/cameraBtn"-->
+            <!--                android:text="Kamera"-->
+            <!--                android:layout_marginEnd="5dp"-->
+            <!--                android:layout_weight="1" />-->
 
-<!--        </LinearLayout>-->
+            <!--        </LinearLayout>-->
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageTv"
-            android:src="@drawable/ic_baseline_notifications_24"
-            android:adjustViewBounds="true" />
+            <ImageView
+                android:id="@+id/imageTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/img16x9welcome"
+                />
 
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/scanBtn"-->
-<!--            android:text="Scan Result" />-->
+            <!--        <com.google.android.material.button.MaterialButton-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:id="@+id/scanBtn"-->
+            <!--            android:text="Scan Result" />-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:text="Result : " />
+            <Button
+                android:id="@+id/btnBukaKamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:text="Buka Kamera" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/resultView"
-            android:textAlignment="viewStart" />
+            <TextView
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hasil:"
+                android:textAlignment="center"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/resultView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
+                android:textAlignment="viewStart" />
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/layoutLoader"
+        layout="@layout/loader_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

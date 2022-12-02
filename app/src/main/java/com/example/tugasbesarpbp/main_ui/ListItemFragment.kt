@@ -7,16 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.tugasbesarpbp.*
 import com.example.tugasbesarpbp.api.http.KostApi
@@ -28,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import org.json.JSONObject
-import java.nio.charset.StandardCharsets
+import timber.log.Timber
 
 class ListItemFragment : Fragment() {
     lateinit var kostAdapter: RVItemKostAdapter
@@ -102,7 +97,8 @@ class ListItemFragment : Fragment() {
     fun setupRecyclerView(){
         kostAdapter = RVItemKostAdapter(arrayListOf(), userId, object: RVItemKostAdapter.OnAdapterListener{
             override fun onClick(kost: Kost){
-                intentEdit(kost.id, CRUDKostActivity.READ)
+//                intentEdit(kost.id, CRUDKostActivity.READ)
+                intentView(kost.id!!)
             }
         })
         rvItemKost.apply{
@@ -122,6 +118,11 @@ class ListItemFragment : Fragment() {
             )
             kostAdapter.setData(kost.toCollection(ArrayList()))
             srItemKost.isRefreshing = false
+
+            Timber.tag("Show").d("Data Kost berhasil tertampil [!]")
+        }, {
+            Timber.tag("Show").d("Data Kost gagal tertampil [!]")
+            srItemKost.isRefreshing = false
         })
     }
 
@@ -136,6 +137,12 @@ class ListItemFragment : Fragment() {
         val intent = Intent(activity, CRUDKostActivity::class.java)
         intent.putExtra("id", kostId)
         intent.putExtra("action", intentType)
+        startActivity(intent)
+    }
+
+    private fun intentView(kostId: Long) {
+        val intent = Intent(activity, ViewKostActivity::class.java)
+        intent.putExtra("id", kostId)
         startActivity(intent)
     }
 }

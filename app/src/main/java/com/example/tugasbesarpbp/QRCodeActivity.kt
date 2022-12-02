@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.tugasbesarpbp.databinding.ActivityQrcodeBinding
@@ -27,6 +28,7 @@ import timber.log.Timber
 class QRCodeActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityQrcodeBinding
+    private lateinit var loader: ConstraintLayout
 
     companion object{
         private const val CAMERA_REQUEST_CODE = 100
@@ -58,6 +60,16 @@ class QRCodeActivity : AppCompatActivity() {
         barcodeScannerOption = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).build()
         barcodeScanner = BarcodeScanning.getClient(barcodeScannerOption!!)
+
+        loader = binding.layoutLoader.layoutLoader
+
+        binding.btnBukaKamera.setOnClickListener {
+            if (!checkCameraPermissions()){
+                requestCameraPermission()
+            }else{
+                pickImageCamera()
+            }
+        }
 
         if(checkCameraPermissions()){
             pickImageCamera()
@@ -93,25 +105,25 @@ class QRCodeActivity : AppCompatActivity() {
 //    }
 
     private fun checkCameraPermissions() :Boolean{
-        val resultcamera = (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-        val resultstorage = (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-
-        return resultcamera && resultstorage
+        return (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+//        val resultstorage = (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+//
+//        return resultcamera && resultstorage
     }
 
     private fun requestCameraPermission(){
         ActivityCompat.requestPermissions(this, cameraPermissions, CAMERA_REQUEST_CODE)
     }
 
-    private fun checkStoragePermission(): Boolean{
-        val result = (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+//    private fun checkStoragePermission(): Boolean{
+//        val result = (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+//
+//        return result
+//    }
 
-        return result
-    }
-
-    private fun requestStoragePermission(){
-        ActivityCompat.requestPermissions(this, storagePermissions, CAMERA_REQUEST_CODE)
-    }
+//    private fun requestStoragePermission(){
+//        ActivityCompat.requestPermissions(this, storagePermissions, CAMERA_REQUEST_CODE)
+//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -176,6 +188,8 @@ class QRCodeActivity : AppCompatActivity() {
             binding.imageTv.setImageURI(imageUri)
             Timber.tag("Ini scanning image masuk detect").d("Scanning image")
             detectResultFromImage()
+        } else {
+            setLoadingScreen(false)
         }
     }
 
@@ -204,6 +218,7 @@ class QRCodeActivity : AppCompatActivity() {
 
     private fun detectResultFromImage(){
         try {
+            setLoadingScreen(true)
             val inputImage = InputImage.fromFilePath(this, imageUri!!)
             Timber.tag("OTW").d("OTW Scanning Image")
             val barcodeResult = barcodeScanner?.process(inputImage)
@@ -223,7 +238,9 @@ class QRCodeActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun extractbarcodeQrCodeInfo(barcodes: List<Barcode>) {
-        for (barcode in barcodes) {
+        if(barcodes.isEmpty()) {
+            showToast("No barcode found")
+        } else for (barcode in barcodes) {
             val bound = barcode.boundingBox
             val corners = barcode.cornerPoints
             val rawValue = barcode.rawValue
@@ -286,9 +303,40 @@ class QRCodeActivity : AppCompatActivity() {
                             "\nPhone : $phone" + "\n\nrawValue :$rawValue"
                 }
                 else -> {
-                    binding.resultView.text = "rawValue: $rawValue"
+                    if(barcode.rawValue!!.startsWith("app.jogjakost.qr.kost")) {
+                        // get 2nd line from rawValue
+                        val id: String = barcode.rawValue!!.split("\n")[1].trim()
+                        val idLong: Long = id.toLong()
+
+                        Timber.d("extractbarcodeQrCodeInfo: id: $id")
+                        FancyToast.makeText(this, "Membuka kost dengan ID #$id", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                        val intent = Intent(this, ViewKostActivity::class.java)
+                        intent.putExtra("id", idLong)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             }
+        }
+        setLoadingScreen(false)
+    }
+
+    private fun setLoadingScreen(state: Boolean){
+        if (state) {
+            // fade in
+            loader.alpha = 0f
+            loader.visibility = View.VISIBLE
+            loader.animate().alpha(1f).duration = 250
+
+            // set flag to disable click
+            loader.isClickable = true
+        } else {
+            // fade out
+            loader.animate().alpha(0f).setDuration(250).withEndAction {
+                loader.visibility = View.GONE
+            }
+            // set flag to enable click
+            loader.isClickable = false
         }
     }
 }

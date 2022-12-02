@@ -78,6 +78,8 @@ class ProfileFragment : Fragment() {
             binding.tvVPNomorTelepon.text = user.nomorTelepon
 
             (activity as HomeActivity).setLoadingScreen(false)
+        }, {
+            (activity as HomeActivity).setLoadingScreen(false)
         })
     }
 }
