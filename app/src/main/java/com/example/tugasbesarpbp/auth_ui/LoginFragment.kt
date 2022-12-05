@@ -90,8 +90,13 @@ class LoginFragment : Fragment() {
             // check username and password (Volley)
             if(username.isNotBlank() && password.isNotEmpty()) {
                 login(username, password)
-            } else {
+                Snackbar.make(view, "Anda Berhasil Login !!!", Snackbar.LENGTH_SHORT).show()
+            } else if(username.isEmpty() && password.isEmpty()){
                 Snackbar.make(view, "Username dan password harus diisi!", Snackbar.LENGTH_SHORT).show()
+            }else if(username.isNotBlank() && password.isEmpty()){
+                Snackbar.make(view, "Password harus di isi !!!", Snackbar.LENGTH_SHORT).show()
+            }else if (username.isEmpty() && password.isNotEmpty()){
+                Snackbar.make(view, "Username harus di isi !!!", Snackbar.LENGTH_SHORT).show()
             }
             // Check username and password
 //            val mainDB by lazy { MainDB((activity as MainActivity)) }
