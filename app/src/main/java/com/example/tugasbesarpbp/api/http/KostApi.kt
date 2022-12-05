@@ -43,7 +43,7 @@ class KostApi {
 
         fun createKost(context: Context, kost: Kost, responseListener: Response.Listener<String>, errorResponse: (result: ApiErrorListener) -> Unit = { ApiErrorListener.defaultErrorListener(context) }) {
             val queue = Volley.newRequestQueue(context)
-            val token = context.getSharedPreferences("session", Context.MODE_PRIVATE).getString("token", "")!!
+            val token = context.getSharedPreferences("session", Context.MODE_PRIVATE).getString("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTNkMTg0ZTE0MzkzMmUxYjA1MjNkNzJjOGZjZDk3NjVmMDA0ZWFhYWMxNzkyNmFmNjhiODgwNWMzNjU4ZTAwNGZmOTRhZmQyMGYwYzlhZTEiLCJpYXQiOjE2Njk2ODc4MDguNjIxMzE5LCJuYmYiOjE2Njk2ODc4MDguNjIxMzIxLCJleHAiOjE3MDEyMjM4MDguNjAxODcxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.TUp3BWm-V88oaCaqDPk79J9B3TWllD7Wey33-kiQUkfj4txJ5Hi2G-xLJPamDVCZOj6f8J4Rd-XQ_G16UrLVF-jsFf6S321WIEheu-ae1gjhorsRE16tgzgDz3e7I9uDsmeKe-aZnaCtZjfO3gKdA1ejMQGrLSXRVxnfghiQc5stA4TiBBbVW9EecVky7P2ev4gPWncL4Yy7XQkShcnxXHoYpsIl73-DpcncLtr_LXyPX82rFqOawH5SPGwA3UeahHeCzosmRtPbP7JZm6L9WBAnyCRCWPBZ7MyGIE5iFAD8mEmHdj2u865evTCsN1GqESoYvy_xtJhIzfx7GTUtnbU39BjdBTDuPhWLZBjuhixCcz_wvZy-kmw_9aYvr3f6oLTkOKROjzvRGmwuAGrTizo54bFwZJwVF71i8Ke_z1-rDUBUtr7XGyNy-vWN8A7aR0l8W9d0kxn8fwblSI4rGsh3cg8NeBtbIkeYG6KlUkh_zUJK3lh0nUoC97qcQWfT6Yb4EV8siQtTxUm0APX7fseJM1qX8XQcmAfaHWZGxgHVW-mK0jhs3ObdvtG3SZrqF6ugVwzzLp5cRCSIQ_5QXx8tPSo78lT1mhbojN0IWSEihvtwzz7Os5XatiXu03QI-TQegT2nUlTxIrlEr5Iexiq5362R0iQU9YMvnjff8RE")!!
 
             val stringRequest: StringRequest = object : StringRequest(
                 Method.POST,

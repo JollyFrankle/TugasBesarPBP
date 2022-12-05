@@ -148,11 +148,7 @@ class RegisterFragment : Fragment() {
                     (activity as MainActivity).changeFragment(loginFragment)
                 }, {
                     if(it.statusCode.toString().startsWith("4")) {
-                        AlertDialog.Builder(requireActivity())
-                            .setTitle("Terjadi Kesalahan!")
-                            .setMessage(it.jsonData.getString("message"))
-                            .setPositiveButton("OK", null)
-                            .show()
+                        FancyToast.makeText(requireContext(), it.jsonData.getString("message"), FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
                         // for each errors
                         val errors = it.jsonData.getJSONObject("errors")
                         for (key in errors.keys()) {

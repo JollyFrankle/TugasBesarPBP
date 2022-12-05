@@ -77,6 +77,12 @@ class CRUDKostActivity : AppCompatActivity() {
             userId = it.getLong("id", 0)
         }
 
+        // if this is run in test mode, then use mock token
+        if(token.isBlank()) {
+            token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTNkMTg0ZTE0MzkzMmUxYjA1MjNkNzJjOGZjZDk3NjVmMDA0ZWFhYWMxNzkyNmFmNjhiODgwNWMzNjU4ZTAwNGZmOTRhZmQyMGYwYzlhZTEiLCJpYXQiOjE2Njk2ODc4MDguNjIxMzE5LCJuYmYiOjE2Njk2ODc4MDguNjIxMzIxLCJleHAiOjE3MDEyMjM4MDguNjAxODcxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.TUp3BWm-V88oaCaqDPk79J9B3TWllD7Wey33-kiQUkfj4txJ5Hi2G-xLJPamDVCZOj6f8J4Rd-XQ_G16UrLVF-jsFf6S321WIEheu-ae1gjhorsRE16tgzgDz3e7I9uDsmeKe-aZnaCtZjfO3gKdA1ejMQGrLSXRVxnfghiQc5stA4TiBBbVW9EecVky7P2ev4gPWncL4Yy7XQkShcnxXHoYpsIl73-DpcncLtr_LXyPX82rFqOawH5SPGwA3UeahHeCzosmRtPbP7JZm6L9WBAnyCRCWPBZ7MyGIE5iFAD8mEmHdj2u865evTCsN1GqESoYvy_xtJhIzfx7GTUtnbU39BjdBTDuPhWLZBjuhixCcz_wvZy-kmw_9aYvr3f6oLTkOKROjzvRGmwuAGrTizo54bFwZJwVF71i8Ke_z1-rDUBUtr7XGyNy-vWN8A7aR0l8W9d0kxn8fwblSI4rGsh3cg8NeBtbIkeYG6KlUkh_zUJK3lh0nUoC97qcQWfT6Yb4EV8siQtTxUm0APX7fseJM1qX8XQcmAfaHWZGxgHVW-mK0jhs3ObdvtG3SZrqF6ugVwzzLp5cRCSIQ_5QXx8tPSo78lT1mhbojN0IWSEihvtwzz7Os5XatiXu03QI-TQegT2nUlTxIrlEr5Iexiq5362R0iQU9YMvnjff8RE"
+            userId = 1
+        }
+
         // enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -115,44 +121,50 @@ class CRUDKostActivity : AppCompatActivity() {
             }
 
             var error = 0
-
-            if(nama.isEmpty()) {
-                binding.tilTambahNama.error = "Nama tidak boleh kosong!"
-                error++
-            } else {
-                binding.tilTambahNama.error = null
-            }
-
-            if(fasilitas.isEmpty()) {
-                binding.tilTambahFasilitas.error = "Fasilitas tidak boleh kosong!"
-                error++
-            } else {
-                binding.tilTambahFasilitas.error = null
-            }
-
-            if(harga <= 0.0) {
-                binding.tilTambahHarga.error = "Harga tidak boleh kosong!"
-                error++
-            } else {
-                binding.tilTambahHarga.error = null
-            }
-
-            if(binding.actvTambahTipeKost.text.toString().isEmpty()) {
-                binding.actvTambahTipeKost.error = "Tipe Kost tidak boleh kosong!"
-                error++
-            } else {
-                binding.actvTambahTipeKost.error = null
-            }
+//
+//            if(nama.isEmpty()) {
+//                binding.tilTambahNama.error = "Nama tidak boleh kosong!"
+//                error++
+//            } else {
+//                binding.tilTambahNama.error = null
+//            }
+//
+//            if(fasilitas.isEmpty()) {
+//                binding.tilTambahFasilitas.error = "Fasilitas tidak boleh kosong!"
+//                error++
+//            } else {
+//                binding.tilTambahFasilitas.error = null
+//            }
+//
+//            if(harga <= 0.0) {
+//                binding.tilTambahHarga.error = "Harga tidak boleh kosong!"
+//                error++
+//            } else {
+//                binding.tilTambahHarga.error = null
+//            }
+//
+//            if(binding.actvTambahTipeKost.text.toString().isEmpty()) {
+//                binding.actvTambahTipeKost.error = "Tipe Kost tidak boleh kosong!"
+//                error++
+//            } else {
+//                binding.actvTambahTipeKost.error = null
+//            }
 
             if(error == 0){
                 val kost = Kost(
-                    namaKost = binding.tilTambahNama.editText?.text.toString(),
-                    fasilitas = binding.tilTambahFasilitas.editText?.text.toString(),
-                    harga = binding.tilTambahHarga.editText?.text.toString().toDouble(),
+                    namaKost = nama,
+                    fasilitas = fasilitas,
+                    harga = harga,
                     tipe = binding.actvTambahTipeKost.text.toString(),
                     alamat = null,
                     idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
                 )
+
+                // reset error
+                binding.tilTambahNama.error = null
+                binding.tilTambahFasilitas.error = null
+                binding.tilTambahHarga.error = null
+                binding.tilTambahTipeKost.error = null
 
                 println(Gson().toJson(kost))
 
@@ -164,6 +176,18 @@ class CRUDKostActivity : AppCompatActivity() {
                         Timber.tag("Add").d("Data Kost berhasil ditambahkan [!]")
                         finish()
                     }, {
+                        if(it.statusCode == 422) {
+                            val errors = it.jsonData.getJSONObject("errors")
+                            for(key in errors.keys()) {
+                                val error = errors.getJSONArray(key)
+                                when(key) {
+                                    "namaKost" -> binding.tilTambahNama.error = error.getString(0)
+                                    "fasilitas" -> binding.tilTambahFasilitas.error = error.getString(0)
+                                    "harga" -> binding.tilTambahHarga.error = error.getString(0)
+                                    "tipe" -> binding.tilTambahTipeKost.error = error.getString(0)
+                                }
+                            }
+                        }
                         setLoadingScreen(false)
                     })
                 } else if(action == EDIT){

@@ -82,23 +82,23 @@ class LoginFragment : Fragment() {
 
             // check username and password (Volley)
 //            if(username.isNotBlank() && password.isNotEmpty()) {
-            btnLogin.isEnabled = false
-            UserApi.cekLogin(requireActivity(), username, password, {
-                val jsonObject = JSONObject(it)
-                val token = jsonObject.getString("access_token")
-                val id = jsonObject.getJSONObject("user").getLong("id")
+                btnLogin.isEnabled = false
+                UserApi.cekLogin(requireActivity(), username, password, {
+                    val jsonObject = JSONObject(it)
+                    val token = jsonObject.getString("access_token")
+                    val id = jsonObject.getJSONObject("user").getLong("id")
 
-                // save to shared preferences
-                spSession.edit()
-                    .putString("token", token)
-                    .putLong("id", id)
-                    .putString("username", username)
-                    .putString("password", password)
-                    .apply()
+                    // save to shared preferences
+                    spSession.edit()
+                        .putString("token", token)
+                        .putLong("id", id)
+                        .putString("username", username)
+                        .putString("password", password)
+                        .apply()
 
                     (activity as MainActivity).goToHome()
                 }, {
-                    if(it.statusCode == 401) {
+                    if(it.statusCode == 422) {
                         FancyToast.makeText(requireContext(), "Username atau password salah", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
                     } else {
                         AlertDialog.Builder(requireActivity())
@@ -111,9 +111,9 @@ class LoginFragment : Fragment() {
                     // set login button enabled
                     btnLogin.isEnabled = true
                 })
-            } else {
-                FancyToast.makeText(requireContext(), "Username atau password tidak boleh kosong", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
-            }
+//            } else {
+//                FancyToast.makeText(requireContext(), "Username atau password tidak boleh kosong", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
+//            }
         }
 
         // btnLoginMoveToRegis on click
