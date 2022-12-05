@@ -2,56 +2,38 @@ package com.example.tugasbesarpbp
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
-import android.widget.Button
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
-import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.example.tugasbesarpbp.api.KostApi
-import com.example.tugasbesarpbp.room.MainDB
-import com.example.tugasbesarpbp.room.kost.KostDao
-import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.tugasbesarpbp.api.http.KostApi
 import org.json.JSONObject
-import java.nio.charset.StandardCharsets
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.tugasbesarpbp.api_models.Kost
+import com.example.tugasbesarpbp.api.models.Kost
+import com.example.tugasbesarpbp.databinding.ActivityCreateBinding
 import com.google.gson.Gson
+import com.shashank.sony.fancytoastlib.FancyToast
+import timber.log.Timber
 
 class CRUDKostActivity : AppCompatActivity() {
 
-//    private var binding: ActivityCreateBinding? = null
+    private lateinit var binding: ActivityCreateBinding
 
-    private lateinit var btnTambah: Button
-    private lateinit var btnEdit: Button
-    private lateinit var btnDelete: Button
-    private lateinit var tilTambahNama: TextInputLayout
-    private lateinit var tilTambahFasilitas: TextInputLayout
-    private lateinit var tilTambahHarga: TextInputLayout
 //    private var layoutLoading: LinearLayout? = null
     private var id: Long? = null
     private var action: Int = CREATE
-    private lateinit var kostDao: KostDao
+//    private lateinit var kostDao: KostDao
     private var queue:RequestQueue? = null
 
     private lateinit var menu: Menu
@@ -69,6 +51,8 @@ class CRUDKostActivity : AppCompatActivity() {
     private lateinit var token: String
     private var userId: Long = 0
 
+    private val TIPE_KOST_LIST = arrayOf("Putra", "Putri", "Campur")
+
     companion object {
         const val CREATE = 1
         const val EDIT = 2
@@ -77,9 +61,11 @@ class CRUDKostActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create)
+        binding = ActivityCreateBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         builderManager = NotificationManagerCompat.from(this)
+        Timber.plant(Timber.DebugTree())
 
         createNotificationChannel()
 
@@ -101,12 +87,7 @@ class CRUDKostActivity : AppCompatActivity() {
         }
 
         queue = Volley.newRequestQueue(this)
-        btnTambah = findViewById(R.id.btnTambah)
-        btnEdit = findViewById(R.id.btnEdit)
-        btnDelete = findViewById(R.id.btnDelete)
-        tilTambahNama = findViewById(R.id.tilTambahNama)
-        tilTambahFasilitas = findViewById(R.id.tilTambahFasilitas)
-        tilTambahHarga = findViewById(R.id.tilTambahHarga)
+
 //        val tilNama = binding.tilTambahNama.editText?.text.toString()
 
 //        val db by lazy { MainDB(this) }
@@ -115,52 +96,85 @@ class CRUDKostActivity : AppCompatActivity() {
         // Set status dari input dan tombol2 yg bisa diklik berdasarkan CREATE, READ, atau UPDATE:
         this.setInputElements()
 
-        btnEdit.setOnClickListener {
+        binding.btnEdit.setOnClickListener {
             editData()
         }
 
-        btnDelete.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             deleteData()
         }
 
-        btnTambah.setOnClickListener {
-            val nama = tilTambahNama.editText?.text.toString()
-            val fasilitas = tilTambahFasilitas.editText?.text.toString()
+        binding.btnTambah.setOnClickListener {
+            val nama = binding.tilTambahNama.editText?.text.toString()
+            val fasilitas = binding.tilTambahFasilitas.editText?.text.toString()
             var harga = 0.0
             try {
-                harga = tilTambahHarga.editText?.text.toString().toDouble()
+                harga = binding.tilTambahHarga.editText?.text.toString().toDouble()
             } catch (e: Exception) {
-                Log.d("ERROR", e.message.toString())
+                Timber.tag("Error").d(e.message.toString())
             }
 
             var error = 0
 
             if(nama.isEmpty()) {
-                tilTambahNama.error = "Nama tidak boleh kosong!"
+                binding.tilTambahNama.error = "Nama tidak boleh kosong!"
                 error++
             } else {
-                tilTambahNama.error = null
+                binding.tilTambahNama.error = null
             }
 
             if(fasilitas.isEmpty()) {
-                tilTambahFasilitas.error = "Fasilitas tidak boleh kosong!"
+                binding.tilTambahFasilitas.error = "Fasilitas tidak boleh kosong!"
                 error++
             } else {
-                tilTambahFasilitas.error = null
+                binding.tilTambahFasilitas.error = null
             }
 
             if(harga <= 0.0) {
-                tilTambahHarga.error = "Harga tidak boleh kosong!"
+                binding.tilTambahHarga.error = "Harga tidak boleh kosong!"
                 error++
             } else {
-                tilTambahHarga.error = null
+                binding.tilTambahHarga.error = null
+            }
+
+            if(binding.actvTambahTipeKost.text.toString().isEmpty()) {
+                binding.actvTambahTipeKost.error = "Tipe Kost tidak boleh kosong!"
+                error++
+            } else {
+                binding.actvTambahTipeKost.error = null
             }
 
             if(error == 0){
+                val kost = Kost(
+                    namaKost = binding.tilTambahNama.editText?.text.toString(),
+                    fasilitas = binding.tilTambahFasilitas.editText?.text.toString(),
+                    harga = binding.tilTambahHarga.editText?.text.toString().toDouble(),
+                    tipe = binding.actvTambahTipeKost.text.toString(),
+                    alamat = null,
+                    idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
+                )
+
+                println(Gson().toJson(kost))
+
+                setLoadingScreen(true)
                 if(action == CREATE){
-                    createKost()
+                    KostApi.createKost(this, kost, {
+                        // Kalau masuk sini, sudah pasti berhasil
+                        FancyToast.makeText(this, "Berhasil menambahkan kost baru.", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                        Timber.tag("Add").d("Data Kost berhasil ditambahkan [!]")
+                        finish()
+                    }, {
+                        setLoadingScreen(false)
+                    })
                 } else if(action == EDIT){
-                    updateKost(id!!)
+                    KostApi.updateKost(this, id!!, kost, {
+                        // Kalau masuk sini, sudah pasti berhasil
+                        FancyToast.makeText(this, "Berhasil mengubah data kost.", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                        Timber.tag("Update").d("Data Kost berhasil diubah [!]")
+                        finish()
+                    }, {
+                        setLoadingScreen(false)
+                    })
                 }
             }
         }
@@ -193,6 +207,14 @@ class CRUDKostActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    // set dropdown
+    private fun setExposedDropDownMenu() {
+        val adapterTipe: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            R.layout.item_list, TIPE_KOST_LIST)
+        binding.actvTambahTipeKost.setAdapter(adapterTipe)
+    }
+
     // edit action
     private fun editData() {
         if(action == EDIT) {
@@ -209,12 +231,21 @@ class CRUDKostActivity : AppCompatActivity() {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle("Konfirmasi")
         dialog.setMessage("Apakah anda yakin ingin menghapus data ini?")
-        dialog.setPositiveButton("Ya") { dialog, which ->
-            deleteKost(id!!)
+        dialog.setPositiveButton("Ya") { _, _ ->
+            setLoadingScreen(true)
+            KostApi.deleteKost(this, id!!, {
+                // Kalau masuk sini, sudah pasti berhasil
+                FancyToast.makeText(this, "Berhasil menghapus data kost.", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                Timber.tag("Delete").d("Data Kost berhasil dihapus [!]")
+                finish()
+            }, {
+                FancyToast.makeText(this, "Gagal menghapus data kost.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+                setLoadingScreen(false)
+            })
             setResult(RESULT_OK)
             finish()
         }
-        dialog.setNegativeButton("Tidak") { dialog, which ->
+        dialog.setNegativeButton("Tidak") { dialog, _ ->
             dialog.dismiss()
         }
         dialog.show()
@@ -222,56 +253,87 @@ class CRUDKostActivity : AppCompatActivity() {
 
     private fun setInputElements() {
         if(action == EDIT || action == READ) {
-            btnTambah.text = "Update"
-            getKostById(id!!)
+            binding.btnTambah.text = "Update"
+
+            // Load data
+            setLoadingScreen(true)
+            KostApi.getKostById(this, id!!, { response ->
+                val gson = Gson()
+                val jsonObject = JSONObject(response)
+                var kost : Kost = gson.fromJson(
+                    jsonObject.getJSONObject("data").toString(), Kost::class.java
+                )
+
+                binding.tilTambahNama.editText?.setText(kost.namaKost)
+                binding.tilTambahHarga.editText?.setText(kost.harga.toString())
+                binding.tilTambahFasilitas.editText?.setText(kost.fasilitas)
+                binding.actvTambahTipeKost.setText(kost.tipe)
+                setExposedDropDownMenu()
+
+                if(kost.idPemilik != userId) {
+                    action = READ
+                    this.setEditDeleteBtn(false)
+                } else {
+                    this.setEditDeleteBtn(true)
+                }
+
+                // Takutnya ngespam ini vvv
+//            Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil!", Toast.LENGTH_SHORT).show()
+                setLoadingScreen(false)
+            }, {
+                FancyToast.makeText(this, "Gagal mengambil data kost.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+                // langsung saja finish activity
+                finish()
+            })
         }
 
         if(action == CREATE) {
             // Send notification 3
             sendNotification3()
 
-            btnEdit.isEnabled = false
-            btnDelete.isEnabled = false
+            setExposedDropDownMenu()
+
+            setLoadingScreen(false)
+
+            binding.btnEdit.isEnabled = false
+            binding.btnDelete.isEnabled = false
         } else {
-            btnEdit.isEnabled = true
-            btnDelete.isEnabled = true
+            binding.btnEdit.isEnabled = true
+            binding.btnDelete.isEnabled = true
         }
 
         if(action == READ) {
-            tilTambahNama.isEnabled = false
-            tilTambahFasilitas.isEnabled = false
-            tilTambahHarga.isEnabled = false
-            btnTambah.isEnabled = false
+            binding.tilTambahNama.isEnabled = false
+            binding.tilTambahFasilitas.isEnabled = false
+            binding.tilTambahHarga.isEnabled = false
+            binding.tilTambahTipeKost.isEnabled = false
+            binding.btnTambah.isEnabled = false
 
             // hide btnTambah
-            btnTambah.alpha = 0f
-            btnTambah.isClickable = false
+            binding.btnTambah.alpha = 0f
+            binding.btnTambah.isClickable = false
         } else {
-            tilTambahNama.isEnabled = true
-            tilTambahFasilitas.isEnabled = true
-            tilTambahHarga.isEnabled = true
-            btnTambah.isEnabled = true
+            binding.tilTambahNama.isEnabled = true
+            binding.tilTambahFasilitas.isEnabled = true
+            binding.tilTambahHarga.isEnabled = true
+            binding.tilTambahTipeKost.isEnabled = true
+            binding.btnTambah.isEnabled = true
 
             // show btnTambah
-            btnTambah.alpha = 1f
-            btnTambah.isClickable = true
+            binding.btnTambah.alpha = 1f
+            binding.btnTambah.isClickable = true
 
             if(action == CREATE) {
-                btnTambah.text = "Create"
+                binding.btnTambah.text = "Create"
             }
         }
     }
 
     private fun setEditDeleteBtn(visibility: Boolean) {
-//        if(action == CREATE) {
         menu.findItem(R.id.action_edit).isVisible = visibility
         menu.findItem(R.id.action_delete).isVisible = visibility
-        btnEdit.isVisible = visibility
-        btnDelete.isVisible = visibility
-//        } else {
-//            menu.findItem(R.id.action_edit).isVisible = true
-//            menu.findItem(R.id.action_delete).isVisible = true
-//        }
+        binding.btnEdit.isVisible = visibility
+        binding.btnDelete.isVisible = visibility
     }
 
     private fun createNotificationChannel() {
@@ -290,54 +352,6 @@ class CRUDKostActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel1)
-        }
-    }
-
-    private fun sendNotification1(){
-        val intent: Intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
-        // Handle notification click
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        // File "NotificationReceiver.kt" menerima parameter "action" --> ke mana activity yang dituju, kemudian "data" --> data apa yang akan dikirimkan
-        // Kasus ini: action = "show_kost" agar bisa melihat detail kost, kemudian data = id kost yang akan ditampilkan
-         val broadcastIntent = Intent(this, NotificationReceiver::class.java)
-        broadcastIntent.putExtra("action", "show_kost")
-        broadcastIntent.putExtra("data", id)
-        val actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
-            .setContentTitle(tilTambahNama.editText?.text.toString())
-            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setColor(Color.BLUE)
-            .setAutoCancel(true)
-            .setOnlyAlertOnce(true)
-            .setStyle(NotificationCompat.InboxStyle()
-                .addLine("Kost : " + tilTambahNama.editText?.text.toString())
-                .addLine("Harga : " + tilTambahHarga.editText?.text.toString())
-                .addLine("Fasilitas : " + tilTambahFasilitas.editText?.text.toString()))
-            .setContentIntent(pendingIntent)
-            .addAction(R.mipmap.ic_launcher, "Lihat Selengkapnya", actionIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        with(NotificationManagerCompat.from(this)){
-            notify(notificationId1, builder.build())
-        }
-    }
-
-    private fun sendNotification2(){
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Kost " + tilTambahNama.editText?.text.toString() +
-                        " ditambahkan kedalam aplikasi JogjaKita dengan harga yang sangat terjangkau yakni mulai dari Rp. " + tilTambahHarga.editText?.text.toString() + " dengan fasilitas yang cukup memadai yakni " + tilTambahFasilitas.editText?.text.toString()))
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-
-        with(NotificationManagerCompat.from(this)){
-            notify(notificationId2, builder.build())
         }
     }
 
@@ -360,275 +374,25 @@ class CRUDKostActivity : AppCompatActivity() {
         }
     }
 
-    // DIBAWAH INI ADALAH CREATE UPDATE UNTUK KEPERLUAN API
+    private fun setLoadingScreen(state: Boolean){
+        val layoutLoader: ConstraintLayout = findViewById<View>(R.id.layoutLoader).findViewById(R.id.layoutLoader)
+        if (state) {
+            layoutLoader.visibility = View.VISIBLE
+            layoutLoader.alpha = 1f
 
-    private fun getKostById(id: Long) {
-        setLoading(true)
-        val stringRequest: StringRequest = object : StringRequest(Method.GET, KostApi.GET_BY_ID_URL + id, Response.Listener { response ->
-            val gson = Gson()
-            val jsonObject = JSONObject(response)
-            var kost : Kost = gson.fromJson(
-                jsonObject.getJSONObject("data").toString(), Kost::class.java
-            )
-
-            tilTambahNama.editText?.setText(kost.namaKost)
-            tilTambahHarga.editText?.setText(kost.harga.toString())
-            tilTambahFasilitas.editText?.setText(kost.fasilitas)
-//                setExposedDropDownMenu()
-
-            if(kost.idPemilik != userId) {
-                action = READ
-                this.setEditDeleteBtn(false)
-            } else {
-                this.setEditDeleteBtn(true)
+            // set flag to disable click
+            layoutLoader.isClickable = true
+        } else {
+//            binding.layoutLoader.visibility = View.GONE
+            // fade out
+            layoutLoader.animate().alpha(0f).setDuration(250).withEndAction {
+                layoutLoader.visibility = View.GONE
             }
-
-            // Takutnya ngespam ini vvv
-//            Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil!", Toast.LENGTH_SHORT).show()
-            setLoading(false)
-        }, Response.ErrorListener { error ->
-            setLoading(false)
-
-            try{
-                val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                val errors = JSONObject(responseBody)
-                Toast.makeText(
-                    this@CRUDKostActivity,
-                    errors.getString("message"),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } catch(e: Exception){
-                Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-            }
-        }) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String>{
-                val headers = HashMap<String, String>()
-                headers["Accept"] = "application/json"
-                headers["Authorization"] = "Bearer " + token
-                return headers
-            }
-        }
-        queue!!.add(stringRequest)
-    }
-
-    private fun createKost(){
-        setLoading(true)
-        val kost = Kost(
-            namaKost = tilTambahNama.editText?.text.toString(),
-            fasilitas = tilTambahFasilitas.editText?.text.toString(),
-            harga = tilTambahHarga.editText?.text.toString().toDouble(),
-            idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
-        )
-
-        val stringRequest: StringRequest =
-            object: StringRequest(Method.POST, KostApi.ADD_URL, Response.Listener { response ->
-                val gson = Gson()
-                var kost = gson.fromJson(response, Kost::class.java)
-
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-
-                val returnIntent = Intent()
-                setResult(RESULT_OK, returnIntent)
-                finish()
-
-                setLoading(true)
-            }, Response.ErrorListener { error ->
-                setLoading(false)
-
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>{
-                    val headers = HashMap<String, String>()
-                    headers["Accept"] = "application/json"
-                    headers["Authorization"] = "Bearer " + token
-                    return headers
-                }
-
-                @Throws(AuthFailureError::class)
-                override fun getBody(): ByteArray {
-                    val gson = Gson()
-                    val requestBody = gson.toJson(kost)
-                    return requestBody.toByteArray(StandardCharsets.UTF_8)
-                }
-
-                override fun getBodyContentType(): String{
-                    return "application/json"
-                }
-            }
-        queue!!.add(stringRequest)
-        allKost()
-    }
-
-    private fun updateKost(id: Long){
-        setLoading(true)
-
-        val kost = Kost(
-            namaKost = tilTambahNama.editText?.text.toString(),
-            fasilitas = tilTambahFasilitas.editText?.text.toString(),
-            harga = tilTambahHarga.editText?.text.toString().toDouble(),
-            idPemilik = null // ini nanti diisi dengan id pemilik yang login secara otomatis di backend
-        )
-
-        val stringRequest: StringRequest =
-            object: StringRequest(Method.PUT, KostApi.UPDATE_URL + id, Response.Listener { response ->
-                val gson = Gson()
-                val jsonObject = JSONObject(response)
-                var kost : Kost = gson.fromJson(
-                    jsonObject.getJSONObject("data").toString(), Kost::class.java
-                )
-
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diubah", Toast.LENGTH_SHORT).show()
-
-                val returnIntent = Intent()
-                setResult(RESULT_OK, returnIntent)
-                finish()
-
-                setLoading(false)
-            }, Response.ErrorListener { error ->
-                setLoading(false)
-
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>{
-                    val headers = HashMap<String, String>()
-                    headers["Accept"] = "application/json"
-                    headers["Authorization"] = "Bearer " + token
-                    return headers
-                }
-
-                @Throws(AuthFailureError::class)
-                override fun getBody(): ByteArray {
-                    val gson = Gson()
-                    val requestBody = gson.toJson(kost)
-                    return requestBody.toByteArray(StandardCharsets.UTF_8)
-                }
-
-                override fun getBodyContentType(): String{
-                    return "application/json"
-                }
-            }
-        queue!!.add(stringRequest)
-    }
-
-    private fun setLoading(isLoading: Boolean){
-        if(isLoading){
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
-//            layoutLoading!!.visibility = View.VISIBLE
-        } else{
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//            layoutLoading!!.visibility = View.INVISIBLE
+            // set flag to enable click
+            layoutLoader.isClickable = false
         }
     }
 
-    private fun allKost(){
-//        srMahasiswa!!.isRefreshing = true
-        val stringRequest: StringRequest =
-            object: StringRequest(Method.GET, KostApi.GET_ALL_URL, Response.Listener { response ->
-                val gson = Gson()
-                val jsonObject = JSONObject(response)
-                var kost : Array<Kost> = gson.fromJson(
-                    jsonObject.getJSONArray("data").toString(), Array<Kost>::class.java
-                )
-
-//                adapter!!.setMahasiswaList(mahasiswa)
-//                adapter!!.filter.filter(svMahasiswa!!.query)
-//                srMahasiswa!!.isRefreshing = false
-
-                if(!kost.isEmpty())
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil diambil All Mahasiswa", Toast.LENGTH_SHORT).show()
-                else
-                    Toast.makeText(this@CRUDKostActivity, "Data kosong", Toast.LENGTH_SHORT).show()
-            }, Response.ErrorListener { error ->
-//                srMahasiswa!!.isRefreshing = false
-
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>{
-                    val headers = HashMap<String, String>()
-                    headers["Accept"] = "application/json"
-                    headers["Authorization"] = "Bearer " + token
-                    return headers
-                }
-            }
-        queue!!.add(stringRequest)
-    }
-
-    fun deleteKost(id: Long){
-        setLoading(true)
-        val stringRequest: StringRequest =
-            object: StringRequest(Method.DELETE, KostApi.DELETE_URL + id , Response.Listener { response ->
-                setLoading(false)
-
-                val gson = Gson()
-                var kost = gson.fromJson(response, Kost::class.java)
-
-                if(kost != null)
-                    Toast.makeText(this@CRUDKostActivity, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
-
-                allKost()
-            }, Response.ErrorListener { error ->
-                setLoading(false)
-
-                try{
-                    val responseBody = String(error.networkResponse.data, StandardCharsets.UTF_8)
-                    val errors = JSONObject(responseBody)
-                    Toast.makeText(
-                        this@CRUDKostActivity,
-                        errors.getString("message"),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch(e: Exception){
-                    Toast.makeText(this@CRUDKostActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>{
-                    val headers = HashMap<String, String>()
-                    headers["Accept"] = "application/json"
-                    headers["Authorization"] = "Bearer " + token
-                    return headers
-                }
-            }
-        queue!!.add(stringRequest)
-    }
-
+    // DIBAWAH INI ADALAH CREATE UPDATE UNTUK KEPERLUAN API --> sudah dipindahkan ke \api\http\KostApi (file baru) untuk mempermudah pembacaan
+    // end of file
 }

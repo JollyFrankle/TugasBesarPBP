@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#BF000000"
-    tools:context=".LoaderLayout">
+    tools:context=".LoaderLayout"
+    android:visibility="gone">
 
     <ProgressBar
         style="?android:attr/progressBarStyle"
