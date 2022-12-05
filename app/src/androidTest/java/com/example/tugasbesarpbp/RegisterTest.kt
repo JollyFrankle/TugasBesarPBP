@@ -44,7 +44,7 @@ class RegisterTest {
             )
         )
         materialButton.perform(scrollTo(), click())
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(3000))
 
         val materialButton2 = onView(
             allOf(
@@ -62,7 +62,7 @@ class RegisterTest {
             )
         )
         materialButton2.perform(scrollTo(), click())
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(3000))
 
         val materialBtnRegister = onView(
             allOf(
@@ -81,7 +81,7 @@ class RegisterTest {
         )
 //        materialBtnRegister.perform(click())
         materialBtnRegister.perform(scrollTo(), click())
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(3000))
 
         val textInputEditText = onView(
             allOf(
@@ -95,7 +95,7 @@ class RegisterTest {
                 isDisplayed()
             )
         )
-        textInputEditText.perform(replaceText("Jolly 123"), closeSoftKeyboard())
+        textInputEditText.perform(replaceText("Calvin 123"), closeSoftKeyboard())
 
         val textInputEditText2 = onView(
             allOf(
@@ -109,7 +109,7 @@ class RegisterTest {
                 isDisplayed()
             )
         )
-        textInputEditText2.perform(replaceText("jolly123"), closeSoftKeyboard())
+        textInputEditText2.perform(replaceText("calvin1234"), closeSoftKeyboard())
 
         val textInputEditText3 = onView(
             allOf(
@@ -123,14 +123,14 @@ class RegisterTest {
                 isDisplayed()
             )
         )
-        textInputEditText3.perform(replaceText("jollymail"), closeSoftKeyboard())
+        textInputEditText3.perform(replaceText("calvinmail"), closeSoftKeyboard())
 
         materialBtnRegister.perform(scrollTo(), click())
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(3000))
 
         val textInputEditText4 = onView(
             allOf(
-                withText("jollymail"),
+                withText("calvinmail"),
                 childAtPosition(
                     childAtPosition(
                         withId(R.id.tilRegisEmail),
@@ -145,7 +145,7 @@ class RegisterTest {
 
         val textInputEditText5 = onView(
             allOf(
-                withText("jollymail"),
+                withText("calvinmail"),
                 childAtPosition(
                     childAtPosition(
                         withId(R.id.tilRegisEmail),
@@ -156,11 +156,11 @@ class RegisterTest {
                 isDisplayed()
             )
         )
-        textInputEditText5.perform(replaceText("jollymail@gmail.com"))
+        textInputEditText5.perform(replaceText("calvinmail@gmail.com"))
 
         val textInputEditText6 = onView(
             allOf(
-                withText("jollymail@gmail.com"),
+                withText("calvinmail@gmail.com"),
                 childAtPosition(
                     childAtPosition(
                         withId(R.id.tilRegisEmail),
@@ -173,8 +173,40 @@ class RegisterTest {
         )
         textInputEditText6.perform(closeSoftKeyboard())
 
-        materialBtnRegister.perform(scrollTo(), click())
+        val materialBtnTanggal = onView(
+            allOf(
+                withId(R.id.btnPickDate), withContentDescription("JogjaKost"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.constraintLayout),
+                        childAtPosition(
+                            withId(R.id.constraintLayout2),
+                            2
+                        )
+                    ),
+                    4
+                )
+            )
+        )
+        materialBtnTanggal.perform(scrollTo(), click())
         onView(isRoot()).perform(waitFor(1000))
+
+        val materialButton3 = onView(
+            allOf(
+                withId(android.R.id.button1), withText("OK"),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.ScrollView")),
+                        0
+                    ),
+                    3
+                )
+            )
+        )
+        materialButton3.perform(scrollTo(), click())
+
+        materialBtnRegister.perform(scrollTo(), click())
+        onView(isRoot()).perform(waitFor(3000))
 
         val textInputEditText7 = onView(
             allOf(
@@ -188,7 +220,11 @@ class RegisterTest {
                 isDisplayed()
             )
         )
-        textInputEditText7.perform(replaceText("081288014094"), closeSoftKeyboard())
+        textInputEditText7.perform(replaceText("081"), closeSoftKeyboard())
+        materialBtnRegister.perform(scrollTo(), click())
+        onView(isRoot()).perform(waitFor(3000))
+
+        textInputEditText7.perform(replaceText("081234567890"), closeSoftKeyboard())
 
         val textInputEditText8 = onView(
             allOf(
@@ -234,7 +270,7 @@ class RegisterTest {
             )
         )
         materialButton8.perform(scrollTo(), click())
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(3000))
     }
 
     private fun childAtPosition(

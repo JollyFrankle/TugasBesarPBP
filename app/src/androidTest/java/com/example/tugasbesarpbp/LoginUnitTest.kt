@@ -4,6 +4,8 @@ package com.example.tugasbesarpbp
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -18,6 +20,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.concurrent.thread
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -50,6 +53,7 @@ class LoginUnitTest {
             )
         )
         materialButton.perform(scrollTo(), click())
+        onView(isRoot()).perform(waitFor(2000))
 
         val textInputEditText = onView(
             allOf(
@@ -81,6 +85,7 @@ class LoginUnitTest {
             )
         )
         materialButton2.perform(scrollTo(), click())
+        onView(isRoot()).perform(waitFor(2000))
 
         val textInputEditText2 = onView(
             allOf(
@@ -112,6 +117,7 @@ class LoginUnitTest {
             )
         )
         materialButton3.perform(scrollTo(), click())
+        onView(isRoot()).perform(waitFor(2000))
     }
 
     private fun childAtPosition(
@@ -128,6 +134,22 @@ class LoginUnitTest {
                 val parent = view.parent
                 return parent is ViewGroup && parentMatcher.matches(parent)
                         && view == parent.getChildAt(position)
+            }
+        }
+    }
+
+    private fun waitFor(delay: Long): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isRoot()
+            }
+
+            override fun getDescription(): String {
+                return "Wait for $delay milliseconds."
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                uiController.loopMainThreadForAtLeast(delay)
             }
         }
     }
