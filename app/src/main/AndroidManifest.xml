@@ -42,6 +42,9 @@
             android:name=".CRUDKostActivity"
             android:exported="true" />
         <activity
+            android:name=".CRUDReviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".FTOScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.TugasBesarPBP.Splash">

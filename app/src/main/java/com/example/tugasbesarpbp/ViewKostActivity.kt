@@ -6,11 +6,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tugasbesarpbp.api.http.KostApi
+import com.example.tugasbesarpbp.api.http.ReviewApi
 import com.example.tugasbesarpbp.api.models.Kost
+import com.example.tugasbesarpbp.api.models.Review
 import com.example.tugasbesarpbp.api.models.User
 import com.example.tugasbesarpbp.databinding.ActivityViewKostBinding
+import com.example.tugasbesarpbp.rv_adapters.RVReviewAdapter
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -31,6 +36,8 @@ class ViewKostActivity : AppCompatActivity() {
     )
     private lateinit var loader: ConstraintLayout
     private var id: Long? = null
+    private lateinit var rvReviewAdapter: RVReviewAdapter
+    private lateinit var rvReview: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +55,8 @@ class ViewKostActivity : AppCompatActivity() {
 
         // loader
         loader = binding.layoutLoader.layoutLoader
+
+        setupRVReview()
     }
 
     private fun loadData() {
@@ -63,6 +72,12 @@ class ViewKostActivity : AppCompatActivity() {
             val jsonObj = JSONObject(it).getJSONObject("data")
             val kost = gson.fromJson(jsonObj.toString(), Kost::class.java)
             val user = gson.fromJson(jsonObj.getJSONObject("users").toString(), User::class.java)
+
+            val reviews_count = jsonObj.getInt("reviews_count")
+            var reviews_avg_rating = 0.0
+            if(reviews_count > 0) {
+                reviews_avg_rating = jsonObj.getDouble("reviews_avg_rating")
+            }
 
             binding.tvAlamatKost.text = "Alamat kost entah di mana"
             binding.tvFasilitas.text = kost.fasilitas
@@ -82,7 +97,18 @@ class ViewKostActivity : AppCompatActivity() {
             imageViewQrCode.setImageBitmap(bitmap)
 
             setCardButton(jsonObj.getBoolean("isPemilik"), kost.id!!)
+
+            if(reviews_count > 0) {
+                binding.tvRatingCount.text = "${reviews_count} ulasan"
+                binding.tvAvgRating.text = String.format("%.1f", reviews_avg_rating, Locale("id", "ID"))
+            } else {
+                binding.tvRatingCount.text = "Belum ada ulasan"
+                binding.tvAvgRating.text = "?"
+            }
             setLoadingScreen(false)
+
+            // load review
+            loadReviews()
         }, {
             finish()
         })
@@ -119,6 +145,39 @@ class ViewKostActivity : AppCompatActivity() {
             // set flag to enable click
             loader.isClickable = false
         }
+    }
+
+    private fun setupRVReview() {
+        rvReview = binding.rvReview
+        rvReviewAdapter = RVReviewAdapter(arrayListOf(), object: RVReviewAdapter.OnAdapterListener {
+            override fun onClick(item: Review) {
+                // do nothing
+            }
+        })
+        rvReview.apply {
+            layoutManager = LinearLayoutManager(this@ViewKostActivity)
+            adapter = rvReviewAdapter
+        }
+
+        // btnCRUDReview
+        binding.btnCRUDReview.setOnClickListener {
+            val intent = Intent(this, CRUDReviewActivity::class.java)
+            intent.putExtra("id_kost", id) // <-- id kost, nanti akan dicari di backend apakah ketemu review dari user yg sedang login untuk kost ini atau tidak
+            startActivity(intent)
+        }
+    }
+
+    private fun loadReviews() {
+        ReviewApi.getAllByIdKost(this, id!!, { response->
+            val gson = Gson()
+            val jsonObject = JSONObject(response)
+            val kost = gson.fromJson(
+                jsonObject.getJSONArray("data").toString(), Array<Review>::class.java
+            )
+            rvReviewAdapter.setData(kost.toCollection(ArrayList()))
+        }, {
+            // do nothing
+        })
     }
 
     override fun onStart() {
