@@ -110,11 +110,7 @@ class LoginFragment : Fragment() {
                 if(it.statusCode == 422) {
                     FancyToast.makeText(requireContext(), "Username atau password salah", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
                 } else {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
+                    FancyToast.makeText(requireContext(), "Error ${it.statusCode}: ${it.jsonData.getString("message")}", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
                 }
 
                 // set login button enabled
@@ -130,63 +126,5 @@ class LoginFragment : Fragment() {
             val fragment = RegisterFragment()
             (activity as MainActivity).changeFragment(fragment)
         }
-    }
-
-    private fun login(username: String, password: String) {
-        // set login button disabled
-        btnLogin.isEnabled = false
-
-        val stringRequest: StringRequest = object: StringRequest(Method.POST, UserApi.LOGIN_URL, {
-            val jsonObject = JSONObject(it)
-            val token = jsonObject.getString("access_token")
-            val id = jsonObject.getJSONObject("user").getLong("id")
-
-            // save to shared preferences
-            spSession.edit()
-                .putString("token", token)
-                .putLong("id", id)
-                .putString("username", username)
-                .putString("password", password)
-                .apply()
-
-            (activity as MainActivity).goToHome()
-        }, {
-            var respObj: JSONObject? = null
-            try {
-                respObj = JSONObject(String(it.networkResponse.data))
-                if(it.networkResponse.statusCode == 401) {
-                    Snackbar.make(requireView(), "Username atau password salah!", Snackbar.LENGTH_LONG).show()
-                } else {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle("Terjadi Kesalahan!")
-                        .setMessage("Kode error: " + it.networkResponse.statusCode + "\r\nHubungi admin.")
-                        .setPositiveButton("OK", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val response = it.networkResponse
-                var dialogContent = ""
-                if(response != null) {
-                    dialogContent = "Error ${response.statusCode}\r\nHubungi admin."
-                } else {
-                    dialogContent = "Tidak dapat terhubung ke server.\r\nPeriksa koneksi internet."
-                }
-                AlertDialog.Builder(requireActivity())
-                    .setMessage(dialogContent)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-
-            // set login button enabled
-            btnLogin.isEnabled = true
-        }) {
-            override fun getParams(): MutableMap<String, String> {
-                val params = HashMap<String, String>()
-                params["username"] = username
-                params["password"] = password
-                return params
-            }
-        }
-        (activity as MainActivity).queue!!.add(stringRequest)
     }
 }

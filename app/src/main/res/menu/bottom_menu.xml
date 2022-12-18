@@ -14,10 +14,10 @@
         android:title="Search"
         android:icon="@drawable/ic_search_24"
         android:id="@+id/listItemFragment"/>
-    <item
-        android:title="Notifications"
-        android:icon="@drawable/ic_notifications_24"
-        android:id="@+id/notificationsFragment"/>
+<!--    <item-->
+<!--        android:title="Notifications"-->
+<!--        android:icon="@drawable/ic_notifications_24"-->
+<!--        android:id="@+id/notificationsFragment"/>-->
     <item
         android:icon="@drawable/ic_person_24"
         android:title="Profile"

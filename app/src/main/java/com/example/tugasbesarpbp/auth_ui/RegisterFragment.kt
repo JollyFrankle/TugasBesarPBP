@@ -141,7 +141,7 @@ class RegisterFragment : Fragment() {
                     // send notification
                     (activity as MainActivity).sendRegisterNotification(user.nama, user.username, user.password!!)
 
-                    FancyToast.makeText(requireContext(), "Register berhasil.\r\nSilakan login melalui notifikasi yang dikirimkan.", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+                    FancyToast.makeText(requireContext(), jsonObject.getString("message"), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
 
                     // change fragment to login fragment
                     val loginFragment: Fragment = LoginFragment()
@@ -163,13 +163,8 @@ class RegisterFragment : Fragment() {
                             }
                         }
                     } else {
-                        AlertDialog.Builder(requireActivity())
-                            .setTitle("Terjadi Kesalahan!")
-                            .setMessage("Kode error: " + it.statusCode + "\r\nHubungi admin.")
-                            .setPositiveButton("OK", null)
-                            .show()
+                        FancyToast.makeText(requireContext(), "Error ${it.statusCode}: ${it.jsonData.getString("message")}", FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show()
                     }
-
 
                     // enable button
                     binding.btnRegister.isEnabled = true
